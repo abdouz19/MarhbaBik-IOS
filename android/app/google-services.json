@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1079641719409",
+    "project_id": "marhbabik-pfe",
+    "storage_bucket": "marhbabik-pfe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079641719409:android:ac5cd27f82f763fdf111d0",
+        "android_client_info": {
+          "package_name": "com.example.marhba_bik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079641719409-8btlk7mi0lc0dlims3jvlkvtr0ff6gc6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.marhba_bik",
+            "certificate_hash": "3c055fd9db0db1c580144446efa5c18fb6d887d7"
+          }
+        },
+        {
+          "client_id": "1079641719409-hcvv7tb6nne6q21tteb9frqg9msnkaps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHD8TifkIGlTYjA597FfOdW3XEEPP4Hd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079641719409-hcvv7tb6nne6q21tteb9frqg9msnkaps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
