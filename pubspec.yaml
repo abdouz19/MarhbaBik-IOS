@@ -42,6 +42,7 @@ dependencies:
   listtextfield: ^0.0.1+1
   simple_chips_input: ^1.2.0
   outlined_text: ^1.0.1
+  transparent_image: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +61,7 @@ flutter:
     - assets/images/explore_top.jpg
     - assets/images/explore_oran.jpg
     - assets/images/explore_region.jpg
+    - assets/images/explore_june.jpg
   fonts:
     - family: KastelovAxiforma
       fonts:

@@ -4,7 +4,7 @@ import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/services/firestore_service.dart';
 
 class TripsListScreen extends StatefulWidget {
-  const TripsListScreen({super.key});
+  const TripsListScreen({Key? key}) : super(key: key);
 
   @override
   State<TripsListScreen> createState() => _TripsListScreenState();
@@ -33,13 +33,14 @@ class _TripsListScreenState extends State<TripsListScreen> {
         } else {
           List<Trip> trips = snapshot.data!;
           return ListView.builder(
-            shrinkWrap: true, // To allow embedding in another scrollable widget
-            physics:
-                const NeverScrollableScrollPhysics(), // Prevent scrolling conflicts
+            scrollDirection: Axis.horizontal,
             itemCount: trips.length,
             itemBuilder: (context, index) {
               Trip trip = trips[index];
-              return TripItem(trip: trip);
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TripItem(trip: trip),
+              );
             },
           );
         }

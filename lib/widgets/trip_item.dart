@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/trip.dart';
 
 class TripItem extends StatefulWidget {
-  const TripItem({super.key, required this.trip});
+  const TripItem({Key? key, required this.trip}) : super(key: key);
 
   final Trip trip;
 
@@ -12,84 +12,80 @@ class TripItem extends StatefulWidget {
 }
 
 class _TripItemState extends State<TripItem> {
-  late PageController _pageController;
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
-    return Container(
-      margin: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              SizedBox(
-                height: 300,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: images.length,
-                  onPageChanged: (int index) {
-                    setState(() {
-                      _currentPage = index;
-                    });
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CachedNetworkImage(
-                        imageUrl: images[index],
-                        placeholder: (context, url) {
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    images.length,
-                    (index) => buildDot(index),
+    //String title = widget.trip.title;
+    return SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: CachedNetworkImage(
+                      imageUrl: images[0],
+                      width: 250,
+                      height: 200,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) {
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
                   ),
-                ),
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.favorite_border,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        // Handle heart button click
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDot(int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      width: _currentPage == index ? 12 : 8,
-      height: 8,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: _currentPage == index ? Colors.white : Colors.grey,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Text(
+              'Memory de martyr, Algiers',
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Color(0xff001939),
+                fontWeight: FontWeight.w700,
+                fontFamily: 'KastelovAxiforma',
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Text(
+              'Cultural',
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Color(0xff666666),
+                fontWeight: FontWeight.w300,
+                fontFamily: 'KastelovAxiforma',
+                fontSize: 13,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
