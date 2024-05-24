@@ -29,7 +29,7 @@ class FirestoreService {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('cars').get();
       return querySnapshot.docs.map((doc) => Car.fromDocument(doc)).toList();
     } catch (e) {
-      print("Error fetching trips: $e");
+      print("Error fetching cars: $e");
       return [];
     }
   }
@@ -39,7 +39,7 @@ class FirestoreService {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('houses').get();
       return querySnapshot.docs.map((doc) => House.fromDocument(doc)).toList();
     } catch (e) {
-      print("Error fetching trips: $e");
+      print("Error fetching houses: $e");
       return [];
     }
   }
@@ -50,7 +50,7 @@ class FirestoreService {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('wilayas').get();
       return querySnapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
     } catch (e) {
-      print("Error fetching trips: $e");
+      print("Error fetching wilayas: $e");
       return [];
     }
   }
@@ -60,7 +60,7 @@ class FirestoreService {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('destinations').get();
       return querySnapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
     } catch (e) {
-      print("Error fetching trips: $e");
+      print("Error fetching destinations: $e");
       return [];
     }
   }
