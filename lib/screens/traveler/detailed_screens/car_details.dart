@@ -240,7 +240,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SendingCarRequestScreen()));
+                          builder: (context) => SendingCarRequestScreen(car: widget.car,)));
                 },
               ),
             ),

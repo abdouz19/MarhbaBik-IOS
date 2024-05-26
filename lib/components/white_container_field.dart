@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomContainer extends StatelessWidget {
-  final String title;
+  final String? title;
   final Widget content;
 
   const CustomContainer({
-    required this.title,
+    this.title,
     required this.content,
   });
 
@@ -28,24 +28,25 @@ class CustomContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xff001939),
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'KastelovAxiforma',
-                    fontSize: 18,
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title!,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xff001939),
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'KastelovAxiforma',
+                      fontSize: 18,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: content,
@@ -103,4 +104,22 @@ class _DescriptionFieldState extends State<DescriptionField> {
     _controller.dispose();
     super.dispose();
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: CustomContainer(
+          title: 'Sample Title',
+          content: DescriptionField(
+            initialValue: 'Initial description...',
+            onChanged: (value) {
+              print('Description changed: $value');
+            },
+          ),
+        ),
+      ),
+    ),
+  ));
 }
