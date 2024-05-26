@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomContainer extends StatelessWidget {
   final String title;
@@ -17,9 +16,9 @@ class CustomContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const[
+        boxShadow: const [
           BoxShadow(
-            color:  Color(0xfff2f2f2),
+            color: Color(0xfff2f2f2),
             spreadRadius: 2,
             blurRadius: 1,
             offset: Offset(0, 1), // Even shadow in all directions
@@ -36,9 +35,12 @@ class CustomContainer extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.lato(
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xff001939),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'KastelovAxiforma',
                     fontSize: 18,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -54,8 +56,6 @@ class CustomContainer extends StatelessWidget {
     );
   }
 }
-
-
 
 class DescriptionField extends StatefulWidget {
   final String initialValue;
@@ -88,7 +88,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
       maxLines: null, // Allow the text field to expand dynamically
       style: const TextStyle(
         fontSize: 16,
-        color:  Color(0xff8B8B8B),
+        color: Color(0xff8B8B8B),
         fontWeight: FontWeight.w500,
       ),
       decoration: const InputDecoration(
