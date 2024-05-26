@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
@@ -19,17 +18,6 @@ class HouseDetailedScreen extends StatefulWidget {
 
 class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
   @override
-  void initState() {
-    super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     List<String> images = widget.house.images;
     String title = widget.house.title;
@@ -45,18 +33,42 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250,
-              flexibleSpace: FlexibleSpaceBar(
-                background: CustomPageView(
-                  imageUrls: images,
-                  height: 300.0,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              background: CustomPageView(
+                imageUrls: images,
+                height: 300.0,
+              ),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipOval(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color.fromARGB(255, 168, 168, 168),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
                 ),
               ),
-              leading: Padding(
+            ),
+            actions: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipOval(
                   child: Container(
@@ -69,123 +81,96 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                     child: Center(
                       child: IconButton(
                         icon: const Icon(
-                          Icons.arrow_back,
+                          Icons.share,
                           color: Color.fromARGB(255, 168, 168, 168),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          // Share button action
                         },
                       ),
                     ),
                   ),
                 ),
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.share,
-                            color: Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Share button action
-                          },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        icon: Icon(
+                          MdiIcons.heart,
+                          color: const Color.fromARGB(255, 168, 168, 168),
                         ),
+                        onPressed: () {
+                          // Heart button action
+                        },
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(
-                            MdiIcons.heart,
-                            color: const Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Heart button action
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '$placeType in $address, $wilaya.',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$capacity guests',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ProfileBar(
-                      firstName: ownerFirstName,
-                      lastName: ownerLastName,
-                      profilePicture: ownerProfilePicture,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
                 ),
               ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '$placeType in $address, $wilaya.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$capacity guests',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ProfileBar(
+                    firstName: ownerFirstName,
+                    lastName: ownerLastName,
+                    profilePicture: ownerProfilePicture,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    description,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -250,7 +235,8 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SendingHouseRequestScreen()));
+                          builder: (context) =>
+                              SendingHouseRequestScreen(house: widget.house,)));
                 },
               ),
             ),

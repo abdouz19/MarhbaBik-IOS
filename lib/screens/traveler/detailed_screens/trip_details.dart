@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
@@ -20,17 +19,6 @@ class TripDetailedScreen extends StatefulWidget {
 }
 
 class _TripDetailedScreenState extends State<TripDetailedScreen> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
@@ -55,18 +43,42 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250,
-              flexibleSpace: FlexibleSpaceBar(
-                background: CustomPageView(
-                  imageUrls: images,
-                  height: 300.0,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              background: CustomPageView(
+                imageUrls: images,
+                height: 300.0,
+              ),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipOval(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color.fromARGB(255, 168, 168, 168),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
                 ),
               ),
-              leading: Padding(
+            ),
+            actions: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipOval(
                   child: Container(
@@ -79,122 +91,95 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                     child: Center(
                       child: IconButton(
                         icon: const Icon(
-                          Icons.arrow_back,
+                          Icons.share,
                           color: Color.fromARGB(255, 168, 168, 168),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          // Share button action
                         },
                       ),
                     ),
                   ),
                 ),
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.share,
-                            color: Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Share button action
-                          },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        icon: Icon(
+                          MdiIcons.heart,
+                          color: const Color.fromARGB(255, 168, 168, 168),
                         ),
+                        onPressed: () {
+                          // Heart button action
+                        },
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(
-                            MdiIcons.heart,
-                            color: const Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Heart button action
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'From $formattedStartDate To $formattedEndDate in $wilaya.',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$capacity guests',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ProfileBar(
-                      firstName: agencyName,
-                      profilePicture: agencyProfilePicture,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
                 ),
               ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'From $formattedStartDate To $formattedEndDate in $wilaya.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$capacity guests',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ProfileBar(
+                    firstName: agencyName,
+                    profilePicture: agencyProfilePicture,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    description,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -208,13 +193,12 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
             ),
           ],
         ),
-        height: 70, // Set a fixed height for the bottom navigation bar
+        height: 70,
         child: Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment
-                  .center, // Center align the column contents vertically
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text.rich(
                   TextSpan(

@@ -18,16 +18,6 @@ class CarDetailedScreen extends StatefulWidget {
 }
 
 class _CarDetailedScreenState extends State<CarDetailedScreen> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +35,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: CustomScrollView(
+      body: CustomScrollView(
           slivers: [
             SliverAppBar(
               expandedHeight: 250,
@@ -188,7 +177,6 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
             ),
           ],
         ),
-      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: const BoxDecoration(

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CapacitySelector extends StatefulWidget {
-  const CapacitySelector({super.key, required this.initialCapacity, required this.onCapacityChanged});
+  const CapacitySelector(
+      {super.key,
+      required this.initialCapacity,
+      required this.onCapacityChanged,
+      this.space = 20,
+      this.paddingNumber = 4});
 
   final int initialCapacity;
+  final double? paddingNumber;
+  final double? space;
   final void Function(int) onCapacityChanged;
 
   @override
@@ -46,18 +53,19 @@ class _CapacitySelectorState extends State<CapacitySelector> {
               shape: BoxShape.circle,
               border: Border.all(color: const Color(0xffC6C6C6), width: 1),
             ),
-            padding: const EdgeInsets.all(4),
-            child: const Icon(Icons.remove, color: Color(0xff494949)),
+            padding: EdgeInsets.all(widget.paddingNumber ?? 4),
+            child: const Icon(Icons.remove, color: Color(0xff001939)),
           ),
         ),
-        const SizedBox(width: 20),
+        SizedBox(width: widget.space ?? 20),
         Text(
           '$_capacity',
           style: const TextStyle(
             fontSize: 18,
+            color: Color(0xff001939),
           ),
         ),
-        const SizedBox(width: 20),
+        SizedBox(width: widget.space ?? 20),
         GestureDetector(
           onTap: _incrementCapacity,
           child: Container(
@@ -65,8 +73,8 @@ class _CapacitySelectorState extends State<CapacitySelector> {
               shape: BoxShape.circle,
               border: Border.all(color: const Color(0xffC6C6C6), width: 1),
             ),
-            padding: const EdgeInsets.all(4),
-            child: const Icon(Icons.add, color: Color(0xff494949)),
+            padding: EdgeInsets.all(widget.paddingNumber ?? 4),
+            child: const Icon(Icons.add, color: Color(0xff001939)),
           ),
         ),
       ],
