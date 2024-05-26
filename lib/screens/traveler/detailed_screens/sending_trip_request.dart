@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
+import 'package:marhba_bik/models/trip.dart';
 
 class SendingTripRequestScreen extends StatefulWidget {
-  const SendingTripRequestScreen({super.key});
+  const SendingTripRequestScreen({super.key, required this.trip});
+
+  final Trip trip;
 
   @override
   State<SendingTripRequestScreen> createState() =>
@@ -13,9 +18,83 @@ class SendingTripRequestScreen extends StatefulWidget {
 
 class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
   String? _paymentMethod;
+  int selectedCapacity = 1;
+  late int totalPrice;
+
+  @override
+  void initState() {
+    super.initState();
+    totalPrice = int.parse(widget.trip.price) + 200;
+  }
+
+  void _updateTotalPrice() {
+    setState(() {
+      totalPrice = calculateTotalPrice();
+    });
+  }
+
+  int getPeople() {
+    return selectedCapacity;
+  }
+
+  int calculateTotalPrice() {
+    int pricePerPerson = int.parse(widget.trip.price);
+    int people = getPeople();
+    int totalPrice = (pricePerPerson * people) + 200;
+    return totalPrice;
+  }
+
+  void presentDialog(bool requestSent) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(requestSent ? 'Request Sent' : 'Error'),
+          content: Text(
+            requestSent
+                ? 'Your booking request has been sent successfully.'
+                : 'Please select a payment method before sending the request.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _requestToBook() {
+    if (_paymentMethod == null) {
+      presentDialog(false); // Payment method not selected
+      return;
+    }
+    int people = getPeople();
+    String paymentMethod = _paymentMethod ?? 'Not selected';
+
+    print('People: $people');
+    print('Total Price: ${totalPrice}DZD');
+    print('Payment Method: $paymentMethod');
+
+    presentDialog(true); // Request sent successfully
+  }
 
   @override
   Widget build(BuildContext context) {
+    DateTime startDate = widget.trip.startDate.toDate();
+    DateTime endDate = widget.trip.endDate.toDate();
+
+    // Format the dates
+    String formattedStartDate = DateFormat('d MMM').format(startDate);
+    String formattedEndDate = DateFormat('d MMM').format(endDate);
+
+    // Combined date range string
+    String dateRange = '$formattedStartDate - $formattedEndDate';
+    int people = getPeople();
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -37,16 +116,77 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
             child: SingleChildScrollView(
               child: Column(children: [
                 CustomContainer(
+                  content: Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 5),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(7),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.trip.images[0],
+                            fit: BoxFit.cover,
+                            width: 130,
+                            height: 100,
+                          ),
+                        ),
+                        const SizedBox(
+                            width:
+                                12), // Add some spacing between the image and the text
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dateRange,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                widget.trip.title,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                              ),
+                              Text(
+                                widget.trip.wilaya,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomContainer(
                   title: 'Your Trip',
                   content: Column(
                     children: [
-                      const Row(
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Dates',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -56,12 +196,12 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                                   fontSize: 14,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
                               Text(
-                                'Click here to pick the dates',
-                                style: TextStyle(
+                                dateRange,
+                                style: const TextStyle(
                                   color: Color(0xff001939),
                                   fontWeight: FontWeight.w300,
                                   fontFamily: 'KastelovAxiforma',
@@ -70,17 +210,6 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                               )
                             ],
                           ),
-                          Spacer(),
-                          Text(
-                            'Edit',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(0xff001939),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'KastelovAxiforma',
-                              fontSize: 14,
-                            ),
-                          )
                         ],
                       ),
                       const SizedBox(
@@ -103,10 +232,16 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                             height: 8,
                           ),
                           CapacitySelector(
-                              space: 13,
-                              paddingNumber: 1,
-                              initialCapacity: 1,
-                              onCapacityChanged: (v) {})
+                            space: 13,
+                            paddingNumber: 1,
+                            initialCapacity: 1,
+                            onCapacityChanged: (v) {
+                              setState(() {
+                                selectedCapacity = v;
+                                _updateTotalPrice();
+                              });
+                            },
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -122,21 +257,21 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                   title: 'Price details',
                   content: Column(
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Text(
-                            '4000DZD x 5 people',
-                            style: TextStyle(
+                            '${widget.trip.price}DZD x $people people',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
                               fontSize: 13,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '20000DZD',
-                            style: TextStyle(
+                            '${int.parse(widget.trip.price) * people}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
@@ -161,7 +296,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                           ),
                           Spacer(),
                           Text(
-                            '400DZD',
+                            '200DZD',
                             style: TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
@@ -183,9 +318,9 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
+                          const Text(
                             'Total',
                             style: TextStyle(
                               color: Color(0xff001939),
@@ -194,10 +329,10 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                               fontSize: 14,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '2040DZD',
-                            style: TextStyle(
+                            '${totalPrice}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w700,
                               fontFamily: 'KastelovAxiforma',
@@ -292,7 +427,8 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                MaterialButtonAuth(onPressed: () {}, label: 'Request to book')
+                MaterialButtonAuth(
+                    onPressed: _requestToBook, label: 'Request to book')
               ]),
             )));
   }

@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
@@ -16,9 +18,104 @@ class SendingHouseRequestScreen extends StatefulWidget {
 
 class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
   String? _paymentMethod;
+  int selectedCapacity = 1;
+  DateTimeRange? dates;
+
+  void _pickDateRange() async {
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        dates = picked;
+      });
+    }
+  }
+
+  String getFormattedDateRange() {
+    if (dates == null) {
+      return 'Click here to pick the dates';
+    } else {
+      final DateFormat formatter = DateFormat('d MMM');
+      final String start = formatter.format(dates!.start);
+      final String end = formatter.format(dates!.end);
+      final int nights = dates!.duration.inDays;
+      return '$start to $end ($nights nights)';
+    }
+  }
+
+  int getNights() {
+    return dates?.duration.inDays ?? 0;
+  }
+
+  int calculateTotalPrice() {
+    int pricePerNight = int.parse(widget.house.price);
+    int nights = getNights();
+    int totalPrice = (pricePerNight * nights) + 200;
+    return totalPrice;
+  }
+
+  void presentDialog(bool requestSent, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(requestSent ? 'Request Sent' : 'Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _requestToBook() {
+    if (_paymentMethod == null) {
+      presentDialog(false,
+          'Please select a payment method before sending the request.'); // Payment method not selected
+      return;
+    }
+    // ignore: unnecessary_null_comparison
+    if (dates == null ||
+        dates!.duration.inDays == 0) {
+      presentDialog(false, 'Please select valid dates for your booking.');
+      return;
+    }
+
+    String startDate = dates?.start != null
+        ? DateFormat('yyyy-MM-dd').format(dates!.start)
+        : 'Not selected';
+    String endDate = dates?.end != null
+        ? DateFormat('yyyy-MM-dd').format(dates!.end)
+        : 'Not selected';
+    int nights = getNights();
+    int totalPrice = calculateTotalPrice();
+    String paymentMethod = _paymentMethod ?? 'Not selected';
+    int guests = selectedCapacity; // Added line for number of guests
+
+    print('Start Date: $startDate');
+    print('End Date: $endDate');
+    print('Nights: $nights');
+    print('Guests: $guests'); // Included guests
+    print('Total Price: ${totalPrice}DZD');
+    print('Payment Method: $paymentMethod');
+    presentDialog(true,'Your booking request has been sent successfully.'); // Request sent successfully
+  }
 
   @override
   Widget build(BuildContext context) {
+    String price = widget.house.price;
+    int nights = getNights();
+    int totalPrice = calculateTotalPrice();
+
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -40,16 +137,75 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
             child: SingleChildScrollView(
               child: Column(children: [
                 CustomContainer(
+                  content: Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 5),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(7),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.house.images[0],
+                            fit: BoxFit.cover,
+                            width: 130,
+                            height: 100,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.house.placeType,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                widget.house.title,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                              ),
+                              Text(
+                                '${widget.house.address}, ${widget.house.wilaya}',
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomContainer(
                   title: 'Your Homestay',
                   content: Column(
                     children: [
-                      const Row(
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Dates',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -59,29 +215,35 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                                   fontSize: 14,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
-                              Text(
-                                'Click here to pick the dates',
-                                style: TextStyle(
-                                  color: Color(0xff001939),
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'KastelovAxiforma',
-                                  fontSize: 13,
+                              InkWell(
+                                onTap: _pickDateRange,
+                                child: Text(
+                                  getFormattedDateRange(),
+                                  style: const TextStyle(
+                                    color: Color(0xff001939),
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'KastelovAxiforma',
+                                    fontSize: 13,
+                                  ),
                                 ),
                               )
                             ],
                           ),
-                          Spacer(),
-                          Text(
-                            'Edit',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(0xff001939),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'KastelovAxiforma',
-                              fontSize: 14,
+                          const Spacer(),
+                          InkWell(
+                            onTap: _pickDateRange,
+                            child: const Text(
+                              'Edit',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Color(0xff001939),
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'KastelovAxiforma',
+                                fontSize: 14,
+                              ),
                             ),
                           )
                         ],
@@ -106,10 +268,15 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                             height: 8,
                           ),
                           CapacitySelector(
-                              space: 13,
-                              paddingNumber: 1,
-                              initialCapacity: 1,
-                              onCapacityChanged: (v) {})
+                            space: 13,
+                            paddingNumber: 1,
+                            initialCapacity: 1,
+                            onCapacityChanged: (v) {
+                              setState(() {
+                                selectedCapacity = v;
+                              });
+                            },
+                          )
                         ],
                       ),
                       const SizedBox(
@@ -125,21 +292,21 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                   title: 'Price details',
                   content: Column(
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Text(
-                            '1500DZD x 5 nights',
-                            style: TextStyle(
+                            '${price}DZD x $nights nights',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
                               fontSize: 13,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '7500DZD',
-                            style: TextStyle(
+                            '${int.parse(price) * nights}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
@@ -186,9 +353,9 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
+                          const Text(
                             'Total',
                             style: TextStyle(
                               color: Color(0xff001939),
@@ -197,10 +364,10 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                               fontSize: 14,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '7700DZD',
-                            style: TextStyle(
+                            '${totalPrice}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w700,
                               fontFamily: 'KastelovAxiforma',
@@ -295,7 +462,8 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                MaterialButtonAuth(onPressed: () {}, label: 'Request to book')
+                MaterialButtonAuth(
+                    onPressed: _requestToBook, label: 'Request to book')
               ]),
             )));
   }

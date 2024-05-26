@@ -244,7 +244,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              const SendingTripRequestScreen()));
+                              SendingTripRequestScreen(trip: widget.trip,)));
                 },
               ),
             ),

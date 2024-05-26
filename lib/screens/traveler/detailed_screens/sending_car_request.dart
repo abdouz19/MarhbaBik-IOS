@@ -1,9 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
+import 'package:marhba_bik/models/car.dart';
 
 class SendingCarRequestScreen extends StatefulWidget {
-  const SendingCarRequestScreen({super.key});
+  const SendingCarRequestScreen({super.key, required this.car});
+
+  final Car car;
 
   @override
   State<SendingCarRequestScreen> createState() =>
@@ -12,9 +17,101 @@ class SendingCarRequestScreen extends StatefulWidget {
 
 class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
   String? _paymentMethod;
+  DateTimeRange? dates;
+
+  void _pickDateRange() async {
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        dates = picked;
+      });
+    }
+  }
+
+  String getFormattedDateRange() {
+    if (dates == null) {
+      return 'Click here to pick the dates';
+    } else {
+      final DateFormat formatter = DateFormat('d MMM');
+      final String start = formatter.format(dates!.start);
+      final String end = formatter.format(dates!.end);
+      final int days = dates!.duration.inDays;
+      return '$start to $end ($days days)';
+    }
+  }
+
+  int getDays() {
+    return dates?.duration.inDays ?? 0;
+  }
+
+  int calculateTotalPrice() {
+    int pricePerDay = int.parse(widget.car.price);
+    int days = getDays();
+    int totalPrice = (pricePerDay * days) + 200;
+    return totalPrice;
+  }
+
+  void presentDialog(bool requestSent, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(requestSent ? 'Request Sent' : 'Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _requestToBook() {
+    if (_paymentMethod == null) {
+      presentDialog(false,
+          'Please select a payment method before sending the request.'); // Payment method not selected
+      return;
+    }
+    // ignore: unnecessary_null_comparison
+    if (dates == null || dates!.duration.inDays == 0) {
+      presentDialog(false, 'Please select valid dates for your booking.');
+      return;
+    }
+    String startDate = dates?.start != null
+        ? DateFormat('yyyy-MM-dd').format(dates!.start)
+        : 'Not selected';
+    String endDate = dates?.end != null
+        ? DateFormat('yyyy-MM-dd').format(dates!.end)
+        : 'Not selected';
+    int days = getDays();
+    int totalPrice = calculateTotalPrice();
+    String paymentMethod = _paymentMethod ?? 'Not selected';
+
+    print('Start Date: $startDate');
+    print('End Date: $endDate');
+    print('Days: $days');
+    print('Total Price: ${totalPrice}DZD');
+    print('Payment Method: $paymentMethod');
+
+    presentDialog(true,
+        'Your booking request has been sent successfully.'); // Request sent successfully
+  }
 
   @override
   Widget build(BuildContext context) {
+    String price = widget.car.price;
+    int days = getDays();
+    int totalPrice = calculateTotalPrice();
+
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -35,7 +132,68 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: SingleChildScrollView(
               child: Column(children: [
-                const CustomContainer(
+                CustomContainer(
+                  content: Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 5),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(7),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.car.images[0],
+                            fit: BoxFit.cover,
+                            width: 130,
+                            height: 100,
+                          ),
+                        ),
+                        const SizedBox(
+                            width:
+                                12), // Add some spacing between the image and the text
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${widget.car.brand} ${widget.car.model}',
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              Text(
+                                widget.car.title,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                              ),
+                              Text(
+                                widget.car.wilaya,
+                                style: const TextStyle(
+                                  color: Color(0xff001939),
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomContainer(
                   title: 'Your Car Rental',
                   content: Column(
                     children: [
@@ -45,7 +203,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Dates',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -55,34 +213,40 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                                   fontSize: 14,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8,
                               ),
-                              Text(
-                                'Click here to pick the dates',
-                                style: TextStyle(
-                                  color: Color(0xff001939),
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'KastelovAxiforma',
-                                  fontSize: 13,
+                              InkWell(
+                                onTap: _pickDateRange,
+                                child: Text(
+                                  getFormattedDateRange(),
+                                  style: const TextStyle(
+                                    color: Color(0xff001939),
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'KastelovAxiforma',
+                                    fontSize: 13,
+                                  ),
                                 ),
                               )
                             ],
                           ),
-                          Spacer(),
-                          Text(
-                            'Edit',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(0xff001939),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'KastelovAxiforma',
-                              fontSize: 14,
+                          const Spacer(),
+                          InkWell(
+                            onTap: _pickDateRange,
+                            child: const Text(
+                              'Edit',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Color(0xff001939),
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'KastelovAxiforma',
+                                fontSize: 14,
+                              ),
                             ),
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                     ],
@@ -95,21 +259,21 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                   title: 'Price details',
                   content: Column(
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Text(
-                            '7000DZD x 5 days',
-                            style: TextStyle(
+                            '${price}DZD x $days days',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
                               fontSize: 13,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '35000DZD',
-                            style: TextStyle(
+                            '${int.parse(price) * days}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'KastelovAxiforma',
@@ -134,7 +298,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                           ),
                           Spacer(),
                           Text(
-                            '500DZD',
+                            '200DZD',
                             style: TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
@@ -156,9 +320,9 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
+                          const Text(
                             'Total',
                             style: TextStyle(
                               color: Color(0xff001939),
@@ -167,10 +331,10 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                               fontSize: 14,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            '34000DZD',
-                            style: TextStyle(
+                            '${totalPrice}DZD',
+                            style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w700,
                               fontFamily: 'KastelovAxiforma',
@@ -265,7 +429,8 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                MaterialButtonAuth(onPressed: () {}, label: 'Request to book')
+                MaterialButtonAuth(
+                    onPressed: _requestToBook, label: 'Request to book')
               ]),
             )));
   }
