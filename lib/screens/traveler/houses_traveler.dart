@@ -428,7 +428,7 @@ class HousesTraveler extends StatelessWidget {
                 ],
               ),
               const SizedBox(
-                height: 300,
+                height: 60,
               )
             ],
           )),
