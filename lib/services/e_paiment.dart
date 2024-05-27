@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String _apiUrl =
-      'https://devapi.slick-pay.com/api/v2/users/transfers/commission';
+      'https://prodapi.slick-pay.com/api/v2/users/transfers/commission';
   static const String _authToken =
-      '48|e38u499dLrh94cPipLkranYXjHdUjWGsbEb9o2ud';
+      '4369|G2oAPkJEOE7rozz6loHDUL1lu69FOyD5Fd6HIaNr';
 
   Future<Map<String, dynamic>> calculateCommission(int amount) async {
     try {
@@ -14,7 +15,7 @@ class ApiService {
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $_authToken',
-          'Content-Type': 'application/json', // Add content type header
+          'Content-Type': 'application/json',
         },
         body: jsonEncode({'amount': amount}),
       );

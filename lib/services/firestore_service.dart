@@ -64,5 +64,80 @@ class FirestoreService {
       return [];
     }
   }
+
+  Future<String> uploadBookingCars({
+  required String travelerID,
+  required String targetID,
+  required String targetType,
+  required String bookingStatus,
+  required int price,
+  required int commission,
+  required int totalPrice,
+  required int days,
+  required String pickupDate,
+  required String returnDate,
+  required String paymentMethod,
+}) async {
+  try {
+    DocumentReference docRef = await FirebaseFirestore.instance.collection('bookings').add({
+      'travelerID': travelerID,
+      'targetID': targetID,
+      'targetType': targetType,
+      'bookingStatus': bookingStatus,
+      'price': price,
+      'commission': commission,
+      'totalPrice': totalPrice,
+      'days': days,
+      'pickupDate': pickupDate,
+      'returnDate': returnDate,
+      'paymentMethod': paymentMethod,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    print("Booking uploaded successfully with ID: ${docRef.id}");
+    return docRef.id;
+  } catch (e) {
+    print("Error uploading booking: $e");
+    return '';
+  }
+}
+
+  Future<String> uploadBookingHouses({
+  required String travelerID,
+  required String targetID,
+  required String targetType,
+  required String bookingStatus,
+  required int price,
+  required int commission,
+  required int totalPrice,
+  required int days,
+  required String pickupDate,
+  required String returnDate,
+  required String paymentMethod,
+  required int guests,
+}) async {
+  try {
+    DocumentReference docRef = await FirebaseFirestore.instance.collection('bookings').add({
+      'travelerID': travelerID,
+      'targetID': targetID,
+      'targetType': targetType,
+      'bookingStatus': bookingStatus,
+      'price': price,
+      'commission': commission,
+      'totalPrice': totalPrice,
+      'days': days,
+      'guests': guests,
+      'pickupDate': pickupDate,
+      'returnDate': returnDate,
+      'paymentMethod': paymentMethod,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    print("Booking uploaded successfully with ID: ${docRef.id}");
+    return docRef.id;
+  } catch (e) {
+    print("Error uploading booking: $e");
+    return '';
+  }
+}
+
   
 }
