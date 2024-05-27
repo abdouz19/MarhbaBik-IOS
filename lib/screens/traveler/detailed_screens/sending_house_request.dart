@@ -5,6 +5,7 @@ import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/house.dart';
+import 'package:marhba_bik/services/e_paiment.dart';
 
 class SendingHouseRequestScreen extends StatefulWidget {
   const SendingHouseRequestScreen({super.key, required this.house});
@@ -20,6 +21,17 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
   String? _paymentMethod;
   int selectedCapacity = 1;
   DateTimeRange? dates;
+  int commission = 0;
+  bool isLoading = false;
+
+  final ApiService apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Calculate commission when the screen initializes
+    calculateTotalPrice();
+  }
 
   void _pickDateRange() async {
     DateTimeRange? picked = await showDateRangePicker(
@@ -31,6 +43,8 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
       setState(() {
         dates = picked;
       });
+      // Recalculate total price when dates change
+      calculateTotalPrice();
     }
   }
 
@@ -50,11 +64,30 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
     return dates?.duration.inDays ?? 0;
   }
 
-  int calculateTotalPrice() {
+  Future<void> calculateTotalPrice() async {
+    setState(() {
+      isLoading = true;
+    });
+
     int pricePerNight = int.parse(widget.house.price);
     int nights = getNights();
-    int totalPrice = (pricePerNight * nights) + 200;
-    return totalPrice;
+    int totalPrice = pricePerNight * nights;
+
+    try {
+      final commissionData = await apiService.calculateCommission(totalPrice);
+      setState(() {
+        commission = commissionData['commission'];
+      });
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        commission = 0;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void presentDialog(bool requestSent, String message) {
@@ -77,18 +110,26 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
     );
   }
 
-  void _requestToBook() {
+  void _requestToBook() async {
     if (_paymentMethod == null) {
       presentDialog(false,
           'Please select a payment method before sending the request.'); // Payment method not selected
       return;
     }
-    // ignore: unnecessary_null_comparison
-    if (dates == null ||
-        dates!.duration.inDays == 0) {
+    if (dates == null || dates!.duration.inDays == 0) {
       presentDialog(false, 'Please select valid dates for your booking.');
       return;
     }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    await calculateTotalPrice();
+
+    setState(() {
+      isLoading = false;
+    });
 
     String startDate = dates?.start != null
         ? DateFormat('yyyy-MM-dd').format(dates!.start)
@@ -97,9 +138,9 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
         ? DateFormat('yyyy-MM-dd').format(dates!.end)
         : 'Not selected';
     int nights = getNights();
-    int totalPrice = calculateTotalPrice();
+    int totalPrice = (int.parse(widget.house.price) * nights) + commission;
     String paymentMethod = _paymentMethod ?? 'Not selected';
-    int guests = selectedCapacity; // Added line for number of guests
+    int guests = selectedCapacity;
 
     print('Start Date: $startDate');
     print('End Date: $endDate');
@@ -107,14 +148,16 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
     print('Guests: $guests'); // Included guests
     print('Total Price: ${totalPrice}DZD');
     print('Payment Method: $paymentMethod');
-    presentDialog(true,'Your booking request has been sent successfully.'); // Request sent successfully
+
+    presentDialog(true,
+        'Your booking request has been sent successfully.'); // Request sent successfully
   }
 
   @override
   Widget build(BuildContext context) {
     String price = widget.house.price;
     int nights = getNights();
-    int totalPrice = calculateTotalPrice();
+    int totalPrice = (int.parse(price) * nights) + commission;
 
     return Scaffold(
         appBar: PreferredSize(
@@ -318,9 +361,9 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
+                          const Text(
                             'Tax',
                             style: TextStyle(
                               color: Color(0xff001939),
@@ -329,16 +372,18 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                               fontSize: 13,
                             ),
                           ),
-                          Spacer(),
-                          Text(
-                            '200DZD',
-                            style: TextStyle(
-                              color: Color(0xff001939),
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'KastelovAxiforma',
-                              fontSize: 13,
-                            ),
-                          )
+                          const Spacer(),
+                          isLoading
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  '${commission}DZD',
+                                  style: const TextStyle(
+                                    color: Color(0xff001939),
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'KastelovAxiforma',
+                                    fontSize: 13,
+                                  ),
+                                )
                         ],
                       ),
                       const SizedBox(
@@ -366,7 +411,7 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            '${totalPrice}DZD',
+                            isLoading ? 'Loading...' : '${totalPrice}DZD',
                             style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w700,

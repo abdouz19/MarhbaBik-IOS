@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/car.dart';
+import 'package:marhba_bik/services/e_paiment.dart';
 
 class SendingCarRequestScreen extends StatefulWidget {
   const SendingCarRequestScreen({super.key, required this.car});
@@ -18,6 +19,17 @@ class SendingCarRequestScreen extends StatefulWidget {
 class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
   String? _paymentMethod;
   DateTimeRange? dates;
+  int commission = 0;
+  bool isLoading = false;
+
+  final ApiService apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Calculate commission when the screen initializes
+    calculateTotalPrice();
+  }
 
   void _pickDateRange() async {
     DateTimeRange? picked = await showDateRangePicker(
@@ -29,6 +41,8 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
       setState(() {
         dates = picked;
       });
+      // Recalculate total price when dates change
+      calculateTotalPrice();
     }
   }
 
@@ -48,11 +62,30 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
     return dates?.duration.inDays ?? 0;
   }
 
-  int calculateTotalPrice() {
+  Future<void> calculateTotalPrice() async {
+    setState(() {
+      isLoading = true;
+    });
+
     int pricePerDay = int.parse(widget.car.price);
     int days = getDays();
-    int totalPrice = (pricePerDay * days) + 200;
-    return totalPrice;
+    int totalPrice = pricePerDay * days;
+
+    try {
+      final commissionData = await apiService.calculateCommission(totalPrice);
+      setState(() {
+        commission = commissionData['commission'];
+      });
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        commission = 0;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void presentDialog(bool requestSent, String message) {
@@ -75,17 +108,27 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
     );
   }
 
-  void _requestToBook() {
+  void _requestToBook() async {
     if (_paymentMethod == null) {
       presentDialog(false,
           'Please select a payment method before sending the request.'); // Payment method not selected
       return;
     }
-    // ignore: unnecessary_null_comparison
     if (dates == null || dates!.duration.inDays == 0) {
       presentDialog(false, 'Please select valid dates for your booking.');
       return;
     }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    await calculateTotalPrice();
+
+    setState(() {
+      isLoading = false;
+    });
+
     String startDate = dates?.start != null
         ? DateFormat('yyyy-MM-dd').format(dates!.start)
         : 'Not selected';
@@ -93,7 +136,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
         ? DateFormat('yyyy-MM-dd').format(dates!.end)
         : 'Not selected';
     int days = getDays();
-    int totalPrice = calculateTotalPrice();
+    int totalPrice = (int.parse(widget.car.price) * days) + commission;
     String paymentMethod = _paymentMethod ?? 'Not selected';
 
     print('Start Date: $startDate');
@@ -110,7 +153,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
   Widget build(BuildContext context) {
     String price = widget.car.price;
     int days = getDays();
-    int totalPrice = calculateTotalPrice();
+    int totalPrice = (int.parse(price) * days) + commission;
 
     return Scaffold(
         appBar: PreferredSize(
@@ -285,10 +328,10 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
-                            'Tax',
+                          const Text(
+                            'Commission',
                             style: TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w300,
@@ -296,16 +339,18 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                               fontSize: 13,
                             ),
                           ),
-                          Spacer(),
-                          Text(
-                            '200DZD',
-                            style: TextStyle(
-                              color: Color(0xff001939),
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'KastelovAxiforma',
-                              fontSize: 13,
-                            ),
-                          )
+                          const Spacer(),
+                          isLoading
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  '${commission}DZD',
+                                  style: const TextStyle(
+                                    color: Color(0xff001939),
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'KastelovAxiforma',
+                                    fontSize: 13,
+                                  ),
+                                )
                         ],
                       ),
                       const SizedBox(
@@ -333,7 +378,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            '${totalPrice}DZD',
+                            isLoading ? 'Loading...' : '${totalPrice}DZD',
                             style: const TextStyle(
                               color: Color(0xff001939),
                               fontWeight: FontWeight.w700,

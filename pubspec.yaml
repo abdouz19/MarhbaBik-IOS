@@ -43,6 +43,7 @@ dependencies:
   simple_chips_input: ^1.2.0
   outlined_text: ^1.0.1
   transparent_image: ^2.0.1
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
