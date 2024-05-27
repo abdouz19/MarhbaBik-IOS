@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/car.dart';
+import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
 import 'package:marhba_bik/services/e_paiment.dart';
+import 'package:marhba_bik/services/firestore_service.dart';
 
 class SendingCarRequestScreen extends StatefulWidget {
   const SendingCarRequestScreen({super.key, required this.car});
@@ -99,6 +103,10 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HousesTraveler()));
               },
               child: const Text('OK'),
             ),
@@ -125,10 +133,6 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
 
     await calculateTotalPrice();
 
-    setState(() {
-      isLoading = false;
-    });
-
     String startDate = dates?.start != null
         ? DateFormat('yyyy-MM-dd').format(dates!.start)
         : 'Not selected';
@@ -139,14 +143,40 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
     int totalPrice = (int.parse(widget.car.price) * days) + commission;
     String paymentMethod = _paymentMethod ?? 'Not selected';
 
-    print('Start Date: $startDate');
-    print('End Date: $endDate');
-    print('Days: $days');
-    print('Total Price: ${totalPrice}DZD');
-    print('Payment Method: $paymentMethod');
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    String travelerID = userId;
+    String targetID = widget.car.ownerId;
+    String targetType = "cars";
 
-    presentDialog(true,
-        'Your booking request has been sent successfully.'); // Request sent successfully
+    String bookingID = await FirestoreService().uploadBookingCars(
+      travelerID: travelerID,
+      targetID: targetID,
+      targetType: targetType,
+      bookingStatus: 'pending',
+      price: (int.parse(widget.car.price) * days),
+      commission: commission,
+      totalPrice: totalPrice,
+      days: days,
+      pickupDate: startDate,
+      returnDate: endDate,
+      paymentMethod: paymentMethod,
+    );
+
+    if (bookingID.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingID)
+          .update({
+        'bookingID': bookingID,
+      });
+      print("Booking ID updated successfully: $bookingID");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    presentDialog(true, 'Your booking request has been sent successfully.');
   }
 
   @override
