@@ -139,5 +139,38 @@ class FirestoreService {
   }
 }
 
-  
+
+Future<String> uploadBookingTrips({
+  required String travelerID,
+  required String targetID,
+  required String targetType,
+  required String bookingStatus,
+  required int price,
+  required int commission,
+  required int totalPrice,
+  required int people,
+  required String paymentMethod,
+}) async {
+  try {
+    DocumentReference docRef = await FirebaseFirestore.instance.collection('bookings').add({
+      'travelerID': travelerID,
+      'targetID': targetID,
+      'targetType': targetType,
+      'bookingStatus': bookingStatus,
+      'price': price,
+      'commission': commission,
+      'totalPrice': totalPrice,
+      'people': people,
+      'paymentMethod': paymentMethod,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    print("Booking uploaded successfully with ID: ${docRef.id}");
+    return docRef.id;
+  } catch (e) {
+    print("Error uploading booking: $e");
+    return '';
+  }
+}
+
+
 }

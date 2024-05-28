@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:marhba_bik/screens/car_owner/messages_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/offers_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/profile_car_owner.dart';
@@ -28,6 +29,24 @@ class _CarOwnerHomeScreenState extends State<CarOwnerHomeScreen> {
       size: iconSize.toDouble(),
       color: selected ? const Color(0xff3F75BB) : const Color(0xff828181),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print('Notification Title: ${message.notification?.title}');
+        print('Notification Body: ${message.notification?.body}');
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.data['booking_id'] != null) {
+        Navigator.pushNamed(context, '/booking_details',
+            arguments: message.data['booking_id']);
+      }
+    });
   }
 
   @override

@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/house.dart';
+import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
 import 'package:marhba_bik/services/e_paiment.dart';
+import 'package:marhba_bik/services/firestore_service.dart';
 
 class SendingHouseRequestScreen extends StatefulWidget {
   const SendingHouseRequestScreen({super.key, required this.house});
@@ -101,6 +105,13 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                if(requestSent){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HousesTraveler()));
+                }
+                
               },
               child: const Text('OK'),
             ),
@@ -127,10 +138,6 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
 
     await calculateTotalPrice();
 
-    setState(() {
-      isLoading = false;
-    });
-
     String startDate = dates?.start != null
         ? DateFormat('yyyy-MM-dd').format(dates!.start)
         : 'Not selected';
@@ -142,15 +149,41 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
     String paymentMethod = _paymentMethod ?? 'Not selected';
     int guests = selectedCapacity;
 
-    print('Start Date: $startDate');
-    print('End Date: $endDate');
-    print('Nights: $nights');
-    print('Guests: $guests'); // Included guests
-    print('Total Price: ${totalPrice}DZD');
-    print('Payment Method: $paymentMethod');
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    String travelerID = userId;
+    String targetID = widget.house.ownerId;
+    String targetType = "houses";
 
-    presentDialog(true,
-        'Your booking request has been sent successfully.'); // Request sent successfully
+    String bookingID = await FirestoreService().uploadBookingHouses(
+      travelerID: travelerID,
+      targetID: targetID,
+      targetType: targetType,
+      bookingStatus: 'pending',
+      price: (int.parse(widget.house.price) * nights),
+      commission: commission,
+      totalPrice: totalPrice,
+      days: nights,
+      pickupDate: startDate,
+      returnDate: endDate,
+      paymentMethod: paymentMethod,
+      guests: guests,
+    );
+
+    if (bookingID.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingID)
+          .update({
+        'bookingID': bookingID,
+      });
+      print("Booking ID updated successfully: $bookingID");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    presentDialog(true, 'Your booking request has been sent successfully.');
   }
 
   @override

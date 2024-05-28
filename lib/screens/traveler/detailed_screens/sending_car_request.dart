@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/car.dart';
-import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
+import 'package:marhba_bik/screens/traveler/home.dart';
 import 'package:marhba_bik/services/e_paiment.dart';
 import 'package:marhba_bik/services/firestore_service.dart';
 
@@ -103,10 +103,12 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HousesTraveler()));
+                if (requestSent) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TravelerHomeScreen()));
+                }
               },
               child: const Text('OK'),
             ),
@@ -115,6 +117,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
       },
     );
   }
+
 
   void _requestToBook() async {
     if (_paymentMethod == null) {
@@ -169,6 +172,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
           .update({
         'bookingID': bookingID,
       });
+      
       print("Booking ID updated successfully: $bookingID");
     }
 
