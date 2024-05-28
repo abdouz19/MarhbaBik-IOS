@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/textfield.dart';
+import 'package:marhba_bik/services/user_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  final UserService _userService = UserService();
   @override
   void dispose() {
     emailController.dispose();
@@ -174,7 +175,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   final userRole = userData['role'];
                                   final personalDataProvided =
                                       userData['personalDataProvided'] ?? false;
+                                  
 
+                                   await _userService.storeUserToken();
                                   // Check if personal data is provided
                                   if (personalDataProvided) {
                                     // Navigate based on user role

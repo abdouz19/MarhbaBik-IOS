@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:marhba_bik/services/user_services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GetStartedScreen extends StatefulWidget {
   const GetStartedScreen({super.key});
@@ -15,54 +16,59 @@ class GetStartedScreen extends StatefulWidget {
 }
 
 class _GetStartedScreenState extends State<GetStartedScreen> {
-
-
+  final UserService _userService = UserService();
   Future<void> signInWithGoogle(BuildContext context) async {
-  try {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    if (googleUser == null) {
-      return; // The user canceled the sign-in
-    }
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
-
-    // Create a new credential
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    final User? user = userCredential.user;
-
-    if (user != null) {
-      // Add user data to Firestore with additional details
-      final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-      final docSnapshot = await userDoc.get();
-
-      if (!docSnapshot.exists) {
-        await userDoc.set({
-          'uid': user.uid,
-          'email': user.email,
-          'role': 'traveler',
-          'personalDataProvided': true,
-          'firstName': user.displayName?.split(' ')?.first ?? '',
-          'lastName': user.displayName?.split(' ')?.last ?? '',
-          'phoneNumber': user.phoneNumber ?? '',
-          'profilePicture': user.photoURL ?? '',
-        });
+      if (googleUser == null) {
+        return; // The user canceled the sign-in
       }
 
-      Navigator.of(context).pushNamed('/traveler_home');
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        // Add user data to Firestore with additional details
+        final userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.uid);
+        final docSnapshot = await userDoc.get();
+
+        if (!docSnapshot.exists) {
+          await userDoc.set({
+            'uid': user.uid,
+            'email': user.email,
+            'role': 'traveler',
+            'personalDataProvided': true,
+            'firstName': user.displayName?.split(' ').first ?? '',
+            'lastName': user.displayName?.split(' ').last ?? '',
+            'phoneNumber': user.phoneNumber ?? '',
+            'profilePicture': user.photoURL ?? '',
+          });
+        }
+
+        // Store or update the FCM token
+        await _userService.storeUserToken();
+
+        Navigator.of(context).pushNamed('/traveler_home');
+      }
+    } catch (e) {
+      print('Error signing in with Google: $e');
     }
-  } catch (e) {
-    print('Error signing in with Google: $e');
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +81,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
         color: Colors.white,
         child: SizedBox(
           height:
-              MediaQuery.of(context).size.height, // Set height to screen height
+              MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -153,9 +159,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                         child: SizedBox(
                           height: 45,
                           child: OutlinedButton(
-                            onPressed: () {
-                              
-                            },
+                            onPressed: () {},
                             style: OutlinedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
@@ -208,12 +212,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                               children: [
                                 Icon(
                                   MdiIcons.google,
-                                  color: const Color(
-                                      0xff3F75BB),
+                                  color: const Color(0xff3F75BB),
                                 ),
-                                const SizedBox(
-                                    width:
-                                        10),
+                                const SizedBox(width: 10),
                                 Text(
                                   'Continue with Google',
                                   style: GoogleFonts.getFont(

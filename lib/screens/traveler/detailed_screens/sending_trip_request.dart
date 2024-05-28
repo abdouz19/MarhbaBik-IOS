@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/trip.dart';
+import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
 import 'package:marhba_bik/services/e_paiment.dart';
+import 'package:marhba_bik/services/firestore_service.dart';
 
 class SendingTripRequestScreen extends StatefulWidget {
   const SendingTripRequestScreen({Key? key, required this.trip})
@@ -71,21 +75,23 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
     return totalPrice;
   }
 
-  void presentDialog(bool requestSent) {
+  void presentDialog(bool requestSent, String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(requestSent ? 'Request Sent' : 'Error'),
-          content: Text(
-            requestSent
-                ? 'Your booking request has been sent successfully.'
-                : 'Please select a payment method before sending the request.',
-          ),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                if(requestSent){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HousesTraveler()));
+                }
               },
               child: const Text('OK'),
             ),
@@ -97,19 +103,52 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
 
   void _requestToBook() async {
     if (_paymentMethod == null) {
-      presentDialog(false); // Payment method not selected
+      presentDialog(false,
+          'Please select a payment method before sending the request.'); // Payment method not selected
       return;
     }
+
+    setState(() {
+      isLoading = true;
+    });
+
     int people = getPeople();
     String paymentMethod = _paymentMethod ?? 'Not selected';
     int pricePerPerson = int.parse(widget.trip.price);
-    int totalPrice =
-        (pricePerPerson * people) + commission; // Include commission
-    print('People: $people');
-    print('Total Price: ${totalPrice}DZD');
-    print('Payment Method: $paymentMethod');
+    int totalPrice = (pricePerPerson * people) + commission;
 
-    presentDialog(true); // Request sent successfully
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    String travelerID = userId;
+    String targetID = widget.trip.agencyId;
+    String targetType = "trips";
+
+    String bookingID = await FirestoreService().uploadBookingTrips(
+      travelerID: travelerID,
+      targetID: targetID,
+      targetType: targetType,
+      bookingStatus: 'pending',
+      price: pricePerPerson * people,
+      commission: commission,
+      totalPrice: totalPrice,
+      people: people,
+      paymentMethod: paymentMethod,
+    );
+
+    if (bookingID.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingID)
+          .update({
+        'bookingID': bookingID,
+      });
+      print("Booking ID updated successfully: $bookingID");
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    presentDialog(true, 'Your booking request has been sent successfully.');
   }
 
   @override
