@@ -118,7 +118,6 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
     );
   }
 
-
   void _requestToBook() async {
     if (_paymentMethod == null) {
       presentDialog(false,
@@ -147,11 +146,13 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
     String paymentMethod = _paymentMethod ?? 'Not selected';
 
     String userId = FirebaseAuth.instance.currentUser!.uid;
+    String carID = widget.car.id;
     String travelerID = userId;
     String targetID = widget.car.ownerId;
     String targetType = "cars";
 
     String bookingID = await FirestoreService().uploadBookingCars(
+      carID: carID,
       travelerID: travelerID,
       targetID: targetID,
       targetType: targetType,
@@ -172,7 +173,7 @@ class _SendingCarRequestScreenState extends State<SendingCarRequestScreen> {
           .update({
         'bookingID': bookingID,
       });
-      
+
       print("Booking ID updated successfully: $bookingID");
     }
 
