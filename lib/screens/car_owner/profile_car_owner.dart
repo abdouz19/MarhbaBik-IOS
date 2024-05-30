@@ -1,11 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marhba_bik/components/outlined_material_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:marhba_bik/screens/car_owner/car_owner_edit_info.dart';
+import 'package:marhba_bik/screens/car_owner/cars_offers.dart';
 
 class CarOwnerProfile extends StatefulWidget {
   const CarOwnerProfile({super.key});
@@ -17,6 +18,7 @@ class CarOwnerProfile extends StatefulWidget {
 class _CarOwnerProfileState extends State<CarOwnerProfile> {
   String _firstName = '';
   String _profilePicture = '';
+  String _userID = '';
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
         setState(() {
           _firstName = userSnapshot['firstName'];
           _profilePicture = userSnapshot['profilePicture'];
+          _userID = userId;
         });
       }
     } catch (error) {
@@ -136,7 +139,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
                           Text(
                             "42",
                             style: GoogleFonts.poppins(
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
@@ -184,7 +187,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
                 "Settings",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.poppins(
-                  color:const Color(0xff001939),
+                  color: const Color(0xff001939),
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
@@ -208,7 +211,10 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
                 icon: Icons.car_rental_rounded,
                 color: const Color(0xff3F75BB),
                 label: 'Your offers',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CarsOffersScreen(userID: _userID,)));
+                },
               ),
               const SizedBox(
                 height: 10,

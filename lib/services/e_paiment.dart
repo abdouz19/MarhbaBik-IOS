@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String _apiUrl =
-      'https://prodapi.slick-pay.com/api/v2/users/transfers/commission';
+      'https://devapi.slick-pay.com/api/v2/users/transfers/commission';
   static const String _authToken =
-      '4369|G2oAPkJEOE7rozz6loHDUL1lu69FOyD5Fd6HIaNr';
+      '48|e38u499dLrh94cPipLkranYXjHdUjWGsbEb9o2ud';
 
   Future<Map<String, dynamic>> calculateCommission(int amount) async {
     try {

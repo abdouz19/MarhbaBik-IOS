@@ -104,7 +104,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
   void _requestToBook() async {
     if (_paymentMethod == null) {
       presentDialog(false,
-          'Please select a payment method before sending the request.'); // Payment method not selected
+          'Please select a payment method before sending the request.');
       return;
     }
 
@@ -121,8 +121,10 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
     String travelerID = userId;
     String targetID = widget.trip.agencyId;
     String targetType = "trips";
+    String tripID = widget.trip.id;
 
     String bookingID = await FirestoreService().uploadBookingTrips(
+      tripId: tripID,
       travelerID: travelerID,
       targetID: targetID,
       targetType: targetType,

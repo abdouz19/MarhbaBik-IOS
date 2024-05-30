@@ -153,8 +153,10 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
     String travelerID = userId;
     String targetID = widget.house.ownerId;
     String targetType = "houses";
+    String houseID = widget.house.id;
 
     String bookingID = await FirestoreService().uploadBookingHouses(
+      houseId: houseID,
       travelerID: travelerID,
       targetID: targetID,
       targetType: targetType,
