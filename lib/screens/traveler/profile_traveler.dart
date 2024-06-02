@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marhba_bik/components/outlined_material_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:marhba_bik/screens/traveler/bookings_traveler.dart';
+import 'package:marhba_bik/screens/traveler/edit_info_traveler.dart';
 
 class ProfileTraveler extends StatefulWidget {
   const ProfileTraveler({super.key});
@@ -104,7 +106,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                                     : _firstName,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
-                                  color:const Color(0xff001939),
+                                  color: const Color(0xff001939),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -113,7 +115,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                                   _firstName.substring(10),
                                   style: GoogleFonts.poppins(
                                     fontSize: 14,
-                                    color:const Color(0xff001939),
+                                    color: const Color(0xff001939),
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -136,7 +138,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                             "42",
                             style: GoogleFonts.poppins(
                               fontSize: 18,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -144,7 +146,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                             "Bookings",
                             style: GoogleFonts.poppins(
                               fontSize: 16,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -158,7 +160,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                             "4.2/5 rating",
                             style: GoogleFonts.poppins(
                               fontSize: 18,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -166,7 +168,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                             "Reviews",
                             style: GoogleFonts.poppins(
                               fontSize: 16,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -185,7 +187,7 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color:const Color(0xff001939),
+                  color: const Color(0xff001939),
                 ),
               ),
               const SizedBox(
@@ -196,7 +198,11 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                 color: const Color(0xff3F75BB),
                 label: 'Personal Information',
                 onPressed: () {
-                  
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TravelerEditProfileScreen(),
+                      ));
                 },
               ),
               const SizedBox(
@@ -206,7 +212,16 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                 icon: Icons.calendar_month,
                 color: const Color(0xff3F75BB),
                 label: 'Your bookings',
-                onPressed: () {},
+                onPressed: () {
+                  String uid = FirebaseAuth.instance.currentUser!.uid;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TravelerBookingsScreen(
+                          travelerID: uid,
+                        ),
+                      ));
+                },
               ),
               const SizedBox(
                 height: 10,
@@ -228,7 +243,8 @@ class _ProfileTravelerState extends State<ProfileTraveler> {
                   GoogleSignIn googleSignIn = GoogleSignIn();
                   googleSignIn.disconnect();
                   await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil('/getstarted', (route) => false);
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/getstarted', (route) => false);
                 },
               ),
             ],

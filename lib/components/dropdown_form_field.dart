@@ -38,18 +38,17 @@ class _WilayaDropdownState extends State<WilayaDropdown> {
     }
   }
 
-    @override
+  @override
   void didUpdateWidget(WilayaDropdown oldWidget) {
-  super.didUpdateWidget(oldWidget);
-  if (widget.initialText?.toLowerCase() != oldWidget.initialText?.toLowerCase()) {
-    setState(() {
-      _selectedWilaya = widget.initialText;
-      widget.controller?.text = widget.initialText!;
-    });
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialText?.toLowerCase() !=
+        oldWidget.initialText?.toLowerCase()) {
+      setState(() {
+        _selectedWilaya = widget.initialText;
+        widget.controller?.text = widget.initialText!;
+      });
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +71,15 @@ class _WilayaDropdownState extends State<WilayaDropdown> {
         ),
         const SizedBox(height: 5),
         DropdownButtonFormField<String>(
-          validator: widget.validator != null ? (v) => widget.validator!(v) : null,
+          validator:
+              widget.validator != null ? (v) => widget.validator!(v) : null,
           value: _selectedWilaya,
           onChanged: (newValue) {
             setState(() {
               _selectedWilaya = newValue;
             });
-            widget.onWilayaSelected?.call(newValue); // Call the callback function
+            widget.onWilayaSelected
+                ?.call(newValue); // Call the callback function
             widget.onChanged?.call(newValue);
           },
           items: wilayaNames.map<DropdownMenuItem<String>>((String wilayaName) {
@@ -102,7 +103,6 @@ class _WilayaDropdownState extends State<WilayaDropdown> {
             contentPadding: const EdgeInsets.only(left: 20),
           ),
         ),
-
       ],
     );
   }

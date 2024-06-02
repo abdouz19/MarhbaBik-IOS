@@ -1,19 +1,14 @@
-enum UserTypes {
-  traveler,
-  homeOwner,
-  carOwner,
-  travellingAgency
-}
+enum UserTypes { traveler, homeOwner, carOwner, travellingAgency }
 
 final List<String> placeTypes = [
-    "Villa",
-    "Apartment",
-    "Cottage",
-    "Condo",
-    "Bed & Breakfast",
-    "House",
-    "Chalet",
-  ];
+  "Villa",
+  "Apartment",
+  "Cottage",
+  "Condo",
+  "Bed & Breakfast",
+  "House",
+  "Chalet",
+];
 
 List<String> wilayaNames = [
   'Adrar',

@@ -1,11 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marhba_bik/components/outlined_material_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:marhba_bik/screens/home_owner/home_owner_edit_info.dart';
+import 'package:marhba_bik/screens/home_owner/homes_requests.dart';
 
 class HomeOwnerProfile extends StatefulWidget {
   const HomeOwnerProfile({super.key});
@@ -58,7 +59,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color:const Color(0xff001939).withOpacity(0.1),
+                      color: const Color(0xff001939).withOpacity(0.1),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3),
@@ -105,7 +106,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                                     : _firstName,
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
-                                  color:const Color(0xff001939),
+                                  color: const Color(0xff001939),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -114,7 +115,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                                   _firstName.substring(10),
                                   style: GoogleFonts.poppins(
                                     fontSize: 14,
-                                    color:const Color(0xff001939),
+                                    color: const Color(0xff001939),
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -136,7 +137,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                           Text(
                             "42",
                             style: GoogleFonts.poppins(
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
@@ -145,7 +146,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                             "Bookings",
                             style: GoogleFonts.poppins(
                               fontSize: 16,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -159,7 +160,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                             "4.2/5 rating",
                             style: GoogleFonts.poppins(
                               fontSize: 18,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -167,7 +168,7 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                             "Reviews",
                             style: GoogleFonts.poppins(
                               fontSize: 16,
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -208,7 +209,16 @@ class _HomeOwnerProfileState extends State<HomeOwnerProfile> {
                 icon: Icons.home_rounded,
                 color: const Color(0xff3F75BB),
                 label: 'Your offers',
-                onPressed: () {},
+                onPressed: () {
+                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HousesOffersScreen(
+                          userID: userId,
+                        ),
+                      ));
+                },
               ),
               const SizedBox(
                 height: 10,
