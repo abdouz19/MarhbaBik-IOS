@@ -164,7 +164,7 @@ class _SendingHouseRequestScreenState extends State<SendingHouseRequestScreen> {
       price: (int.parse(widget.house.price) * nights),
       commission: commission,
       totalPrice: totalPrice,
-      days: nights,
+      nights: nights,
       pickupDate: startDate,
       returnDate: endDate,
       paymentMethod: paymentMethod,

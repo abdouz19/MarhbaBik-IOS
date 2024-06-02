@@ -1,11 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marhba_bik/components/outlined_material_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:marhba_bik/screens/traveling_agency/edit_profile_trevling_agency.dart';
+import 'package:marhba_bik/screens/traveling_agency/trips_requests.dart';
 
 class TravelingAgencyProfile extends StatefulWidget {
   const TravelingAgencyProfile({super.key});
@@ -190,7 +191,9 @@ class _TravelingAgencyProfileState extends State<TravelingAgencyProfile> {
                 color: const Color(0xff3F75BB),
                 label: 'Personal Information',
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: ((contaxt)=> const TravelingAgencyEditProfile())));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: ((contaxt) =>
+                          const TravelingAgencyEditProfile())));
                 },
               ),
               const SizedBox(
@@ -200,7 +203,16 @@ class _TravelingAgencyProfileState extends State<TravelingAgencyProfile> {
                 icon: Icons.travel_explore_rounded,
                 color: const Color(0xff3F75BB),
                 label: 'Your offers',
-                onPressed: () {},
+                onPressed: () {
+                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TripsOffersScreen(
+                          userID: userId,
+                        ),
+                      ));
+                },
               ),
               const SizedBox(
                 height: 10,

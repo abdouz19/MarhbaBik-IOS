@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marhba_bik/components/outlined_material_button.dart';
 import 'package:marhba_bik/screens/car_owner/car_owner_edit_info.dart';
-import 'package:marhba_bik/screens/car_owner/cars_offers.dart';
+import 'package:marhba_bik/screens/car_owner/cars_requests.dart';
 
 class CarOwnerProfile extends StatefulWidget {
   const CarOwnerProfile({super.key});

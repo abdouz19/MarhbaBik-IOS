@@ -4,30 +4,30 @@ import 'package:intl/intl.dart';
 import 'package:marhba_bik/services/firestore_service.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CarsOffersScreen extends StatefulWidget {
-  const CarsOffersScreen({Key? key, required this.userID}) : super(key: key);
+class HousesOffersScreen extends StatefulWidget {
+  const HousesOffersScreen({Key? key, required this.userID}) : super(key: key);
   final String userID;
 
   @override
-  State<CarsOffersScreen> createState() => _CarsOffersScreenState();
+  State<HousesOffersScreen> createState() => _HousesOffersScreenState();
 }
 
-class _CarsOffersScreenState extends State<CarsOffersScreen> {
+class _HousesOffersScreenState extends State<HousesOffersScreen> {
   bool _loading = true;
-  List<Map<String, dynamic>> _carBookings = [];
+  List<Map<String, dynamic>> _houseBookings = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchCarBookings();
+    _fetchHouseBookings();
   }
 
-  Future<void> _fetchCarBookings() async {
+  Future<void> _fetchHouseBookings() async {
     FirestoreService firestoreService = FirestoreService();
     List<Map<String, dynamic>> bookings =
-        await firestoreService.fetchBookingCars(widget.userID);
+        await firestoreService.fetchBookingHouses(widget.userID);
     setState(() {
-      _carBookings = bookings;
+      _houseBookings = bookings;
       _loading = false;
     });
   }
@@ -37,9 +37,9 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
     return await firestoreService.getUserDataById(userID);
   }
 
-  Future<Map<String, dynamic>?> _getCar(String carID) async {
+  Future<Map<String, dynamic>?> _getHouse(String houseID) async {
     FirestoreService firestoreService = FirestoreService();
-    return await firestoreService.getCarById(carID);
+    return await firestoreService.getHouseById(houseID);
   }
 
   String _formatDate(String date) {
@@ -69,7 +69,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
     // Update UI
     setState(() {
       // Update the booking status in the local list
-      _carBookings[index]['bookingStatus'] = status;
+      _houseBookings[index]['bookingStatus'] = status;
     });
   }
 
@@ -77,25 +77,25 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Car Bookings'),
+        title: const Text('House Bookings'),
         centerTitle: true,
       ),
       body: SafeArea(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
-            : _carBookings.isEmpty
+            : _houseBookings.isEmpty
                 ? _buildNoBookingsWidget()
                 : RefreshIndicator(
-                    onRefresh: _fetchCarBookings,
+                    onRefresh: _fetchHouseBookings,
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 25, vertical: 20),
-                      itemCount: _carBookings.length,
+                      itemCount: _houseBookings.length,
                       itemBuilder: (context, index) {
-                        final booking = _carBookings[index];
+                        final booking = _houseBookings[index];
                         return FutureBuilder(
                           future: Future.wait([
-                            _getCar(booking['id']),
+                            _getHouse(booking['id']),
                             _getUserData(booking['travelerID']),
                           ]),
                           builder:
@@ -107,9 +107,8 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                               return Text('Error: ${snapshot.error}');
                             } else {
                               final List<dynamic>? data = snapshot.data;
-
                               if (data != null && data.length == 2) {
-                                Map<String, dynamic>? car =
+                                Map<String, dynamic>? house =
                                     data[0] as Map<String, dynamic>?;
                                 Map<String, dynamic>? user =
                                     data[1] as Map<String, dynamic>?;
@@ -159,7 +158,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                 BorderRadius.circular(7),
                                             child: CachedNetworkImage(
                                               imageUrl:
-                                                  car?['images']?[0] ?? '',
+                                                  house?['images']?[0] ?? '',
                                               fit: BoxFit.cover,
                                               width: 150,
                                               height: 100,
@@ -172,7 +171,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  '${car?['brand']} ${car?['model']}',
+                                                  '${house?['placeType']}}',
                                                   style: const TextStyle(
                                                     color: Color(0xff001939),
                                                     fontWeight: FontWeight.w300,
@@ -183,7 +182,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                   maxLines: 1,
                                                 ),
                                                 Text(
-                                                  car?['title'] ?? '',
+                                                  house?['title'] ?? '',
                                                   style: const TextStyle(
                                                     color: Color(0xff001939),
                                                     fontWeight: FontWeight.w500,
@@ -194,7 +193,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                   maxLines: 3,
                                                 ),
                                                 Text(
-                                                  car?['wilaya'] ?? '',
+                                                  "${house?['address']}, ${house?['wilaya']}",
                                                   style: const TextStyle(
                                                     color: Color(0xff001939),
                                                     fontWeight: FontWeight.w300,
@@ -250,7 +249,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedPickupDate to $formattedReturnDate (${booking['days']} days)',
+                                            '$formattedPickupDate to $formattedReturnDate (${booking['nights']} nights)',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,

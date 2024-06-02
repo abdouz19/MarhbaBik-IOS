@@ -57,6 +57,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
             'lastName': user.displayName?.split(' ').last ?? '',
             'phoneNumber': user.phoneNumber ?? '',
             'profilePicture': user.photoURL ?? '',
+            'wilaya': 'Algiers',
           });
         }
 

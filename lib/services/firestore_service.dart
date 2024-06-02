@@ -119,7 +119,7 @@ class FirestoreService {
     required int price,
     required int commission,
     required int totalPrice,
-    required int days,
+    required int nights,
     required String pickupDate,
     required String returnDate,
     required String paymentMethod,
@@ -136,7 +136,7 @@ class FirestoreService {
         'price': price,
         'commission': commission,
         'totalPrice': totalPrice,
-        'days': days,
+        'nights': nights,
         'guests': guests,
         'pickupDate': pickupDate,
         'returnDate': returnDate,
@@ -313,10 +313,51 @@ class FirestoreService {
       if (carSnapshot.exists) {
         Map<String, dynamic> carData =
             carSnapshot.data() as Map<String, dynamic>;
-        print("Car data: $carData"); // Add this line for debugging
         return carData;
       } else {
         print("Car with ID $carId not found");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching car data: $e");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getTripById(String tripId) async {
+    try {
+      DocumentSnapshot carSnapshot = await FirebaseFirestore.instance
+          .collection('trips')
+          .doc(tripId)
+          .get();
+
+      if (carSnapshot.exists) {
+        Map<String, dynamic> tripData =
+            carSnapshot.data() as Map<String, dynamic>;
+        return tripData;
+      } else {
+        print("Trip with ID $tripId not found");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching car data: $e");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getHouseById(String houseId) async {
+    try {
+      DocumentSnapshot carSnapshot = await FirebaseFirestore.instance
+          .collection('houses')
+          .doc(houseId)
+          .get();
+
+      if (carSnapshot.exists) {
+        Map<String, dynamic> houseData =
+            carSnapshot.data() as Map<String, dynamic>;
+        return houseData;
+      } else {
+        print("House with ID $houseId not found");
         return null;
       }
     } catch (e) {
@@ -336,6 +377,106 @@ class FirestoreService {
       print('Booking status updated to $status');
     } catch (e) {
       print('Error updating booking status: $e');
+    }
+  }
+
+  // New methods for fetching bookings by travelerID
+  Future<List<Map<String, dynamic>>> fetchCarBookingsByTravelerID(
+      String travelerID) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('travelerID', isEqualTo: travelerID)
+          .where('targetType', isEqualTo: 'cars')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      List<Map<String, dynamic>> bookings = [];
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
+        String carID = bookingData['id'];
+
+        DocumentSnapshot carSnapshot = await FirebaseFirestore.instance
+            .collection('cars')
+            .doc(carID)
+            .get();
+
+        if (carSnapshot.exists) {
+          bookings.add(bookingData);
+        }
+      }
+
+      return bookings;
+    } catch (e) {
+      print("Error fetching car bookings: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchHouseBookingsByTravelerID(
+      String travelerID) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('travelerID', isEqualTo: travelerID)
+          .where('targetType', isEqualTo: 'houses')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      List<Map<String, dynamic>> bookings = [];
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
+        String houseID = bookingData['id'];
+
+        DocumentSnapshot houseSnapshot = await FirebaseFirestore.instance
+            .collection('houses')
+            .doc(houseID)
+            .get();
+
+        if (houseSnapshot.exists) {
+          bookings.add(bookingData);
+        }
+      }
+
+      return bookings;
+    } catch (e) {
+      print("Error fetching house bookings: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTripBookingsByTravelerID(
+      String travelerID) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('travelerID', isEqualTo: travelerID)
+          .where('targetType', isEqualTo: 'trips')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      List<Map<String, dynamic>> bookings = [];
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
+        String tripID = bookingData['id'];
+
+        DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
+            .collection('trips')
+            .doc(tripID)
+            .get();
+
+        if (tripSnapshot.exists) {
+          bookings.add(bookingData);
+        }
+      }
+
+      return bookings;
+    } catch (e) {
+      print("Error fetching trip bookings: $e");
+      return [];
     }
   }
 }
