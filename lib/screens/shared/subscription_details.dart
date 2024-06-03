@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/e_paiment.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
+import 'package:marhba_bik/launchers/url_launcher.dart';
 import 'package:marhba_bik/screens/shared/subscription_card.dart';
 import 'package:marhba_bik/screens/shared/subscription_header.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionDetailsScreen extends StatefulWidget {
   const SubscriptionDetailsScreen(
@@ -67,14 +67,12 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
       isLoading = true;
     });
     try {
-      final result = await apiService.createTransfer(
-          totalPrice, uid, 'https://www.google.com/');
+      final result = await apiService.createTransfer(totalPrice, uid, '');
       print(result);
       if (result['success']) {
-        final Uri url = Uri.parse(result['url']);
-        if (await canLaunchUrl(url)) {
-          await launchUrl(url);
-        } else {
+        final String url = result['url'];
+        bool launched = await UrlHandler.open(url);
+        if (!launched) {
           throw 'Could not launch $url';
         }
       } else {
