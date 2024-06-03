@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/launchers/phone_handler.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TravelerBookingsScreen extends StatefulWidget {
   const TravelerBookingsScreen({super.key, required this.travelerID});
@@ -532,15 +532,12 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                                       if (phoneNumber != null &&
                                                           phoneNumber
                                                               .isNotEmpty) {
-                                                        String url =
-                                                            'tel:$phoneNumber';
-
-                                                        if (await canLaunch(
-                                                            url)) {
-                                                          await launch(url);
-                                                        } else {
-                                                          print(
-                                                              'Could not launch phone call');
+                                                        try {
+                                                          await PhoneHandler
+                                                              .makeCall(
+                                                                  phoneNumber);
+                                                        } catch (e) {
+                                                          print('Error: $e');
                                                         }
                                                       } else {
                                                         print(
