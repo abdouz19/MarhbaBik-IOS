@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:marhba_bik/services/firestore_service.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -510,40 +510,48 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                         const SizedBox(width: 10),
                                         Expanded(
                                           child: ElevatedButton(
-                                            onPressed: () async {
-                                              var status = await Permission
-                                                  .phone
-                                                  .request();
-                                              if (status.isGranted) {
-                                                String targetID =
-                                                    booking['targetID'];
-                                                Map<String, dynamic>? userData =
-                                                    await FirestoreService()
-                                                        .getUserDataById(
-                                                            targetID);
-                                                String? phoneNumber =
-                                                    userData?['phoneNumber'];
+                                            onPressed: booking[
+                                                        'bookingStatus'] ==
+                                                    'accepted'
+                                                ? () async {
+                                                    var status =
+                                                        await Permission.phone
+                                                            .request();
+                                                    if (status.isGranted) {
+                                                      String targetID =
+                                                          booking['targetID'];
+                                                      Map<String, dynamic>?
+                                                          userData =
+                                                          await FirestoreService()
+                                                              .getUserDataById(
+                                                                  targetID);
+                                                      String? phoneNumber =
+                                                          userData?[
+                                                              'phoneNumber'];
 
-                                                if (phoneNumber != null &&
-                                                    phoneNumber.isNotEmpty) {
-                                                  String url =
-                                                      'tel:$phoneNumber';
+                                                      if (phoneNumber != null &&
+                                                          phoneNumber
+                                                              .isNotEmpty) {
+                                                        String url =
+                                                            'tel:$phoneNumber';
 
-                                                  if (await canLaunch(url)) {
-                                                    await launch(url);
-                                                  } else {
-                                                    print(
-                                                        'Could not launch phone call');
+                                                        if (await canLaunch(
+                                                            url)) {
+                                                          await launch(url);
+                                                        } else {
+                                                          print(
+                                                              'Could not launch phone call');
+                                                        }
+                                                      } else {
+                                                        print(
+                                                            'Phone number not available');
+                                                      }
+                                                    } else {
+                                                      await Permission.phone
+                                                          .request();
+                                                    }
                                                   }
-                                                } else {
-                                                  print(
-                                                      'Phone number not available');
-                                                }
-                                              } else {
-                                                await Permission.phone
-                                                    .request();
-                                              }
-                                            },
+                                                : null,
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.green,
                                               elevation: 1,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/widgets/car_item.dart';
-import 'package:marhba_bik/services/firestore_service.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 
 class CarsListScreen extends StatefulWidget {
   const CarsListScreen({Key? key}) : super(key: key);

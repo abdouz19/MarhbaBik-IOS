@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/house.dart';
 import 'package:marhba_bik/widgets/house_item.dart';
-import 'package:marhba_bik/services/firestore_service.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 
 class HousesListScreen extends StatefulWidget {
   const HousesListScreen({Key? key}) : super(key: key);

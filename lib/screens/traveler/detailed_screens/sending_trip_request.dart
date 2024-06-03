@@ -8,8 +8,8 @@ import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
-import 'package:marhba_bik/services/e_paiment.dart';
-import 'package:marhba_bik/services/firestore_service.dart';
+import 'package:marhba_bik/api/e_paiment.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 
 class SendingTripRequestScreen extends StatefulWidget {
   const SendingTripRequestScreen({Key? key, required this.trip})
