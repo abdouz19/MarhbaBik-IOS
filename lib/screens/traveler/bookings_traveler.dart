@@ -33,9 +33,23 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
         .fetchHouseBookingsByTravelerID(widget.travelerID);
     List<Map<String, dynamic>> tripBookings =
         await firestoreService.fetchTripBookingsByTravelerID(widget.travelerID);
-    print('------------- $tripBookings.isEmpty');
+
+    // Combine all bookings into one list
+    List<Map<String, dynamic>> allBookings = [
+      ...carBookings,
+      ...houseBookings,
+      ...tripBookings
+    ];
+
+    // Sort the bookings based on the 'createdAt' field
+    allBookings.sort((a, b) {
+      Timestamp timestampA = a['createdAt'];
+      Timestamp timestampB = b['createdAt'];
+      return timestampB.compareTo(timestampA); // Descending order
+    });
+
     setState(() {
-      _bookings = carBookings + houseBookings + tripBookings;
+      _bookings = allBookings;
       _loading = false;
     });
   }
@@ -84,6 +98,36 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
         .join(' ');
   }
 
+  Future<void> _cancelBooking(
+      BuildContext context, String bookingID, int index) async {
+    FirestoreService firestoreService = FirestoreService();
+    await firestoreService.cancelBooking(bookingID);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking canceled'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+    // Update UI
+    setState(() {});
+  }
+
+  Future<void> _deleteBooking(
+      BuildContext context, String bookingID, int index) async {
+    FirestoreService firestoreService = FirestoreService();
+    await firestoreService.deleteBooking(bookingID);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking canceled'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+    // Update UI
+    setState(() {
+      _bookings.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,11 +170,9 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                   _formatPaymentMethod(
                                       booking['paymentMethod']);
                               String formattedStartDate =
-                                  _formatDate(booking['startDate']);
+                                  formatDate(targetData?['startDate']);
                               String formattedEndDate =
-                                  _formatDate(booking['endDate']);
-
-                              
+                                  formatDate(targetData?['endDate']);
 
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 15),
@@ -314,7 +356,11 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                                 : booking['bookingStatus'] ==
                                                         'declined'
                                                     ? Colors.red
-                                                    : Colors.orange,
+                                                    : booking['bookingStatus'] ==
+                                                            'canceled' // Added this condition
+                                                        ? Colors
+                                                            .red // Set color to red for canceled status
+                                                        : Colors.orange,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15,
                                           ),
@@ -424,58 +470,105 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                       ],
                                     ),
                                     const SizedBox(height: 15),
-                                    MaterialButton(
-                                      onPressed: () async {
-                                        var status =
-                                            await Permission.phone.request();
-                                        if (status.isGranted) {
-                                          String targetID = booking['targetID'];
-                                          Map<String, dynamic>? userData =
-                                              await FirestoreService()
-                                                  .getUserDataById(targetID);
-                                          String? phoneNumber =
-                                              userData?['phoneNumber'];
-
-                                          if (phoneNumber != null &&
-                                              phoneNumber.isNotEmpty) {
-                                            String url = 'tel:$phoneNumber';
-
-                                            if (await canLaunch(url)) {
-                                              await launch(url);
-                                            } else {
-                                              print(
-                                                  'Could not launch phone call');
-                                            }
-                                          } else {
-                                            print('Phone number not available');
-                                          }
-                                        } else {
-                                          await Permission.phone.request();
-                                        }
-                                      },
-                                      color: Colors.green,
-                                      textColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.phone),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            'Call',
-                                            style: TextStyle(
-                                              fontFamily: 'KastelovAxiforma',
-                                              fontSize: 17,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              await _cancelBooking(
+                                                context,
+                                                booking['bookingID'],
+                                                index,
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              elevation: 1,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 12.0),
+                                              child: Text(
+                                                'Cancel',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily:
+                                                      'KastelovAxiforma',
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              var status = await Permission
+                                                  .phone
+                                                  .request();
+                                              if (status.isGranted) {
+                                                String targetID =
+                                                    booking['targetID'];
+                                                Map<String, dynamic>? userData =
+                                                    await FirestoreService()
+                                                        .getUserDataById(
+                                                            targetID);
+                                                String? phoneNumber =
+                                                    userData?['phoneNumber'];
+
+                                                if (phoneNumber != null &&
+                                                    phoneNumber.isNotEmpty) {
+                                                  String url =
+                                                      'tel:$phoneNumber';
+
+                                                  if (await canLaunch(url)) {
+                                                    await launch(url);
+                                                  } else {
+                                                    print(
+                                                        'Could not launch phone call');
+                                                  }
+                                                } else {
+                                                  print(
+                                                      'Phone number not available');
+                                                }
+                                              } else {
+                                                await Permission.phone
+                                                    .request();
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.green,
+                                              elevation: 1,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            child: const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 12.0),
+                                              child: Text(
+                                                'Call',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily:
+                                                      'KastelovAxiforma',
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -523,26 +616,42 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
         child: ListView.builder(
           itemCount: 5,
           itemBuilder: (context, index) {
-            return ListTile(
-              leading: Container(
-                width: 48,
-                height: 48,
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              title: Container(
-                width: double.infinity,
-                height: 16,
-                color: Colors.white,
-              ),
-              subtitle: Container(
-                width: double.infinity,
-                height: 16,
-                color: Colors.white,
-              ),
-              trailing: Container(
-                width: 48,
-                height: 48,
-                color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 16,
+                    color: Colors.grey[300],
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    height: 12,
+                    color: Colors.grey[300],
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    height: 12,
+                    color: Colors.grey[300],
+                  ),
+                ],
               ),
             );
           },
