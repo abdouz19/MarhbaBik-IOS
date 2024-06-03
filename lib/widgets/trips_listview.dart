@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/widgets/trip_item.dart';
 import 'package:marhba_bik/models/trip.dart';
-import 'package:marhba_bik/services/firestore_service.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 
 class TripsListScreen extends StatefulWidget {
   const TripsListScreen({Key? key}) : super(key: key);

@@ -46,7 +46,7 @@ dependencies:
   http: ^1.2.1
   firebase_messaging: ^14.9.3
   shimmer: ^3.0.0
-  url_launcher: ^6.2.6
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +66,9 @@ flutter:
     - assets/images/explore_oran.jpg
     - assets/images/explore_region.jpg
     - assets/images/explore_june.jpg
+    - assets/icons/house_icon.png
+    - assets/icons/building.png
+    - assets/icons/rocket.png
   fonts:
     - family: KastelovAxiforma
       fonts:
