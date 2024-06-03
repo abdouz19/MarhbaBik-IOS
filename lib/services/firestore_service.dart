@@ -479,4 +479,23 @@ class FirestoreService {
       return [];
     }
   }
+
+  Future<void> deleteBooking(String bookingID) async {
+    await FirebaseFirestore.instance
+        .collection('bookings')
+        .doc(bookingID)
+        .delete();
+  }
+
+  Future<void> cancelBooking(String bookingID) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingID)
+          .update({'bookingStatus': 'canceled'});
+    } catch (e) {
+      // Handle error
+      print('Error canceling booking: $e');
+    }
+  }
 }
