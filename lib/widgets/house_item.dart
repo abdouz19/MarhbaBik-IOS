@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/house.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/house_details.dart';
 
 class HouseItem extends StatefulWidget {
-  const HouseItem({Key? key, required this.house}) : super(key: key);
+  const HouseItem({super.key, required this.house});
 
   final House house;
 
@@ -13,9 +15,37 @@ class HouseItem extends StatefulWidget {
 }
 
 class _HouseItemState extends State<HouseItem> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if house is already favorited on initial load
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String houseId = widget.house.id;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(houseId, "house");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.house.images;
+    String title = "${widget.house.wilaya}, ${widget.house.placeType}";
+    int maxLength = 33; // Adjust this value as needed
+
+    String displayedTitle;
+    if (title.length > maxLength) {
+      displayedTitle =
+          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
+    } else {
+      displayedTitle = title; // No truncation needed
+    }
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -54,12 +84,18 @@ class _HouseItemState extends State<HouseItem> {
                       top: 5,
                       right: 5,
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.favorite_border,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          // Handle heart button click
+                        icon: HeartIcon(isFavorited: _isFavorited),
+                        onPressed: () async {
+                          setState(() {
+                            _isFavorited = !_isFavorited;
+                          });
+                          if (_isFavorited) {
+                            await FirestoreService()
+                                .addToWishlist(widget.house.id, "house");
+                          } else {
+                            await FirestoreService()
+                                .removeFromWishlist(widget.house.id, "house");
+                          }
                         },
                       ),
                     ),
@@ -69,11 +105,11 @@ class _HouseItemState extends State<HouseItem> {
               const SizedBox(
                 height: 5,
               ),
-              const Text(
-                'Great apartment, Algiers',
+              Text(
+                displayedTitle,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff001939),
                   fontWeight: FontWeight.w700,
                   fontFamily: 'KastelovAxiforma',

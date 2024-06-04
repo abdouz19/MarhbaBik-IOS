@@ -67,7 +67,8 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
       isLoading = true;
     });
     try {
-      final result = await apiService.createTransfer(totalPrice, uid, '');
+      final result = await apiService.createTransfer(
+          totalPrice, uid, 'https://www.google.com/');
       print(result);
       if (result['success']) {
         final String url = result['url'];
