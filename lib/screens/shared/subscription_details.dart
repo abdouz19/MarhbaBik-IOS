@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/api/e_paiment.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/launchers/url_launcher.dart';
@@ -72,9 +74,45 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
       print(result);
       if (result['success']) {
         final String url = result['url'];
+        final String transferId = result['id'].toString();
+
+        // Open URL in scaffold
         bool launched = await UrlHandler.open(url);
         if (!launched) {
           throw 'Could not launch $url';
+        }
+
+        // Check transfer details
+        final transferDetails = await apiService.getTransferDetails(transferId);
+        print('Transfer details: $transferDetails');
+        if (transferDetails['completed']) {
+          // Parse created_at and calculate expiration date
+          final createdAt =
+              DateTime.parse(transferDetails['data']['created_at']);
+          final expirationDate = createdAt.add(Duration(days: 30));
+
+          // Save subscription to Firestore
+          final subscriptionData = {
+            'userId': uid,
+            'transferId': transferDetails['data']['id'],
+            'serial': transferDetails['data']['serial'],
+            'amount': transferDetails['data']['amount'],
+            'rib': transferDetails['data']['rib'],
+            'firstname': transferDetails['data']['firstname'],
+            'lastname': transferDetails['data']['lastname'],
+            'address': transferDetails['data']['address'],
+            'status': transferDetails['data']['status'],
+            'created_at': transferDetails['data']['created_at'],
+            'expiration_date': DateFormat('yyyy-MM-dd').format(expirationDate),
+          };
+
+          await FirestoreService().saveSubscription(uid, subscriptionData);
+
+          // Handle completed transfer
+          print('Transfer completed successfully and subscription saved.');
+        } else {
+          // Handle incomplete transfer
+          print('Transfer not completed.');
         }
       } else {
         throw Exception(result['message']);

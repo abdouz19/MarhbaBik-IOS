@@ -95,4 +95,32 @@ class ApiService {
       throw Exception('Failed to create transfer: $e');
     }
   }
+
+  // method to get transfer details
+  Future<Map<String, dynamic>> getTransferDetails(String transferId) async {
+    final url = '$_apiUrlTransfer/$transferId';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $_authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': data['success'] == 1,
+          'completed': data['completed'] == 1,
+          'data': data['data'],
+        };
+      } else {
+        throw Exception('Failed to fetch transfer details: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch transfer details: $e');
+    }
+  }
 }
