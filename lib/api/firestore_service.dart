@@ -578,4 +578,12 @@ class FirestoreService {
   Future<String> getCurrentUserId() async {
     return FirebaseAuth.instance.currentUser!.uid;
   }
+
+  Future<void> saveSubscription(String userId, Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance.collection('subscriptions').doc(userId).set(data);
+    } catch (e) {
+      throw Exception('Failed to save subscription: $e');
+    }
+  }
 }
