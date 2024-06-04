@@ -95,6 +95,4 @@ class ApiService {
       throw Exception('Failed to create transfer: $e');
     }
   }
-
-  
 }

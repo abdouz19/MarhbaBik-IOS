@@ -510,21 +510,25 @@ class FirestoreService {
     DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
 
     if (wishlistSnapshot.exists) {
-      // Wishlist document exists, update the appropriate field
-      Map<String, List<String>> wishlistData =
-          wishlistSnapshot.data() as Map<String, List<String>>;
-      wishlistData.putIfAbsent('${collection}Ids', () => []).add(itemId);
-      await wishlistRef.update(wishlistData);
+      // Construct the field name dynamically within the update data
+      String fieldToUpdate = '${collection}Ids';
+      Map<String, dynamic> updateData = {
+        fieldToUpdate: FieldValue.arrayUnion([itemId])
+      };
+
+      await wishlistRef.update(updateData);
     } else {
-      // Create a new wishlist document for the user
+      // Create a new wishlist document with an empty array for the collection
+      String fieldToUpdate =
+          '${collection}Ids'; // Define fieldToUpdate within the else block
       await wishlistRef.set({
-        'tripIds': [], // Initialize empty arrays for all collections
-        'houseIds': [],
-        'carIds': [], // Add more collections as needed
-        'wilayaIds': [], // Add more collections as needed
-        'destinationIds': [], // Add more collections as needed
+        fieldToUpdate: [], // Initialize with an empty array
         'userId': currentUserId, // Add the user ID field
       });
+
+      // Then, add the item to the newly created array using another call to addToWishlist
+      await addToWishlist(
+          itemId, collection); // Recursive call to add the first item
     }
   }
 
@@ -538,14 +542,16 @@ class FirestoreService {
     DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
 
     if (wishlistSnapshot.exists) {
-      // Wishlist document exists, update the appropriate field
-      Map<String, List<String>> wishlistData =
-          wishlistSnapshot.data() as Map<String, List<String>>;
-      List<String> itemIds = wishlistData['$collection}Ids'] ?? [];
+      // Wishlist document exists, update the appropriate array field
+      String fieldToUpdate =
+          '${collection}Ids'; // Construct field name dynamically
+      List<String> itemIds =
+          wishlistSnapshot.get(fieldToUpdate)?.cast<String>() ?? [];
       if (itemIds.contains(itemId)) {
         itemIds.remove(itemId);
-        await wishlistRef.update(wishlistData);
+        await wishlistRef.update({fieldToUpdate: itemIds});
       }
+      // Not present, handle it if needed (e.g., show a toast)
     } else {
       // No wishlist document, nothing to remove
     }
@@ -558,9 +564,10 @@ class FirestoreService {
     DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
 
     if (wishlistSnapshot.exists) {
-      Map<String, List<String>> wishlistData =
-          wishlistSnapshot.data() as Map<String, List<String>>;
-      List<String> itemIds = wishlistData['$collection}Ids'] ?? [];
+      String fieldToCheck =
+          '${collection}Ids'; // Construct field name dynamically
+      List<String> itemIds =
+          wishlistSnapshot.get(fieldToCheck)?.cast<String>() ?? [];
       return itemIds.contains(itemId);
     } else {
       return false; // No wishlist or item not present

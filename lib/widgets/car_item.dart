@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/car_details.dart';
 
@@ -13,6 +15,24 @@ class CarItem extends StatefulWidget {
 }
 
 class _CarItemState extends State<CarItem> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if car is already favorited on initial load
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String carId = widget.car.id;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(carId, "car");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.car.images;
@@ -65,12 +85,18 @@ class _CarItemState extends State<CarItem> {
                       top: 5,
                       right: 5,
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.favorite_border,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          // Handle heart button click
+                        icon: HeartIcon(isFavorited: _isFavorited),
+                        onPressed: () async {
+                          setState(() {
+                            _isFavorited = !_isFavorited;
+                          });
+                          if (_isFavorited) {
+                            await FirestoreService()
+                                .addToWishlist(widget.car.id, "car");
+                          } else {
+                            await FirestoreService()
+                                .removeFromWishlist(widget.car.id, "car");
+                          }
                         },
                       ),
                     ),
