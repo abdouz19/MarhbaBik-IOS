@@ -4,12 +4,12 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String _apiUrlCommission =
-      'https://prodapi.slick-pay.com/api/v2/users/transfers/commission';
+      'https://devapi.slick-pay.com/api/v2/users/transfers/commission';
 
   static const String _apiUrlTransfer =
-      'https://prodapi.slick-pay.com/api/v2/users/transfers';
+      'https://devapi.slick-pay.com/api/v2/users/transfers';
   static const String _authToken =
-      '4369|G2oAPkJEOE7rozz6loHDUL1lu69FOyD5Fd6HIaNr';
+      '1130|wKJymsDNwSpp6zebXH7KeYfVnmPREXuLUk0r6bvdbe059959';
 
   Future<Map<String, dynamic>> calculateCommission(int amount) async {
     try {
@@ -45,6 +45,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> createTransfer(
       double amount, String contact, String url) async {
+    print('Contact value before transfer: $contact');
     try {
       final body = jsonEncode({
         'amount': amount,
@@ -63,7 +64,9 @@ class ApiService {
         headers: headers,
         body: body,
       );
-
+      if (contact.isEmpty) {
+        throw Exception('Please select a valid contact');
+      }
       // Log detailed request and response information
       print('Request Headers: $headers');
       print('Request Body: $body');
@@ -92,4 +95,6 @@ class ApiService {
       throw Exception('Failed to create transfer: $e');
     }
   }
+
+  
 }

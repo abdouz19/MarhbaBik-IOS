@@ -16,7 +16,17 @@ class _CarItemState extends State<CarItem> {
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.car.images;
-    //String title = widget.trip.title;
+    String title =
+        "${widget.car.wilaya}, ${widget.car.brand} ${widget.car.model}";
+    int maxLength = 33; // Adjust this value as needed
+
+    String displayedTitle;
+    if (title.length > maxLength) {
+      displayedTitle =
+          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
+    } else {
+      displayedTitle = title; // No truncation needed
+    }
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -70,11 +80,11 @@ class _CarItemState extends State<CarItem> {
               const SizedBox(
                 height: 5,
               ),
-              const Text(
-                'Toyota Corolla, Algiers',
+              Text(
+                displayedTitle,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff001939),
                   fontWeight: FontWeight.w700,
                   fontFamily: 'KastelovAxiforma',

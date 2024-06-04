@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/trip_details.dart';
 
 class TripItem extends StatefulWidget {
-  const TripItem({Key? key, required this.trip}) : super(key: key);
+  const TripItem({super.key, required this.trip});
 
   final Trip trip;
 
@@ -13,10 +15,37 @@ class TripItem extends StatefulWidget {
 }
 
 class _TripItemState extends State<TripItem> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if trip is already favorited on initial load
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String tripId = widget.trip.id;
+    bool isFavorited = await FirestoreService().isItemFavorited(tripId, "trip");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
-    //String title = widget.trip.title;
+    String title = "${widget.trip.wilaya}, ${widget.trip.title}";
+    int maxLength = 33; // Adjust this value as needed
+
+    String displayedTitle;
+    if (title.length > maxLength) {
+      displayedTitle =
+          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
+    } else {
+      displayedTitle = title; // No truncation needed
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -46,7 +75,8 @@ class _TripItemState extends State<TripItem> {
                         height: 200,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         },
                       ),
                     ),
@@ -54,12 +84,18 @@ class _TripItemState extends State<TripItem> {
                       top: 5,
                       right: 5,
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.favorite_border,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          // Handle heart button click
+                        icon: HeartIcon(isFavorited: _isFavorited),
+                        onPressed: () async {
+                          setState(() {
+                            _isFavorited = !_isFavorited;
+                          });
+                          if (_isFavorited) {
+                            await FirestoreService()
+                                .addToWishlist(widget.trip.id, "trip");
+                          } else {
+                            await FirestoreService()
+                                .removeFromWishlist(widget.trip.id, "trip");
+                          }
                         },
                       ),
                     ),
@@ -69,15 +105,16 @@ class _TripItemState extends State<TripItem> {
               const SizedBox(
                 height: 5,
               ),
-              const Text(
-                'Memory de martyr, Algiers',
+              Text(
+                displayedTitle,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                maxLines: 1,
+                style: const TextStyle(
                   color: Color(0xff001939),
                   fontWeight: FontWeight.w700,
                   fontFamily: 'KastelovAxiforma',
-                  fontSize: 15,
+                  fontSize: 13,
                 ),
               ),
               const SizedBox(

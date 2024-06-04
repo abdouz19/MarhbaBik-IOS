@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/models/house.dart';
@@ -497,5 +498,77 @@ class FirestoreService {
       // Handle error
       print('Error canceling booking: $e');
     }
+  }
+
+  Future<void> addToWishlist(String itemId, String collection) async {
+    // Get the current user ID
+    String currentUserId = await getCurrentUserId();
+
+    // Check if wishlist document exists for the user
+    DocumentReference wishlistRef =
+        FirebaseFirestore.instance.collection('wishlists').doc(currentUserId);
+    DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
+
+    if (wishlistSnapshot.exists) {
+      // Wishlist document exists, update the appropriate field
+      Map<String, List<String>> wishlistData =
+          wishlistSnapshot.data() as Map<String, List<String>>;
+      wishlistData.putIfAbsent('${collection}Ids', () => []).add(itemId);
+      await wishlistRef.update(wishlistData);
+    } else {
+      // Create a new wishlist document for the user
+      await wishlistRef.set({
+        'tripIds': [], // Initialize empty arrays for all collections
+        'houseIds': [],
+        'carIds': [], // Add more collections as needed
+        'wilayaIds': [], // Add more collections as needed
+        'destinationIds': [], // Add more collections as needed
+        'userId': currentUserId, // Add the user ID field
+      });
+    }
+  }
+
+  Future<void> removeFromWishlist(String itemId, String collection) async {
+    // Get the current user ID
+    String currentUserId = await getCurrentUserId();
+
+    // Check if wishlist document exists for the user
+    DocumentReference wishlistRef =
+        FirebaseFirestore.instance.collection('wishlists').doc(currentUserId);
+    DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
+
+    if (wishlistSnapshot.exists) {
+      // Wishlist document exists, update the appropriate field
+      Map<String, List<String>> wishlistData =
+          wishlistSnapshot.data() as Map<String, List<String>>;
+      List<String> itemIds = wishlistData['$collection}Ids'] ?? [];
+      if (itemIds.contains(itemId)) {
+        itemIds.remove(itemId);
+        await wishlistRef.update(wishlistData);
+      }
+    } else {
+      // No wishlist document, nothing to remove
+    }
+  }
+
+  Future<bool> isItemFavorited(String itemId, String collection) async {
+    String currentUserId = await getCurrentUserId();
+    DocumentReference wishlistRef =
+        FirebaseFirestore.instance.collection('wishlists').doc(currentUserId);
+    DocumentSnapshot wishlistSnapshot = await wishlistRef.get();
+
+    if (wishlistSnapshot.exists) {
+      Map<String, List<String>> wishlistData =
+          wishlistSnapshot.data() as Map<String, List<String>>;
+      List<String> itemIds = wishlistData['$collection}Ids'] ?? [];
+      return itemIds.contains(itemId);
+    } else {
+      return false; // No wishlist or item not present
+    }
+  }
+
+  // Implement this function to retrieve the current user ID (e.g., from Firebase Authentication)
+  Future<String> getCurrentUserId() async {
+    return FirebaseAuth.instance.currentUser!.uid;
   }
 }
