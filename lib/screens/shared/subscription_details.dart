@@ -89,7 +89,7 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
           // Parse created_at and calculate expiration date
           final createdAt =
               DateTime.parse(transferDetails['data']['created_at']);
-          final expirationDate = createdAt.add(Duration(days: 30));
+          final expirationDate = createdAt.add(const Duration(days: 30));
 
           // Save subscription to Firestore
           final subscriptionData = {
