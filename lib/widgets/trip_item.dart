@@ -6,9 +6,12 @@ import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/trip_details.dart';
 
 class TripItem extends StatefulWidget {
-  const TripItem({super.key, required this.trip});
+  const TripItem({super.key, required this.trip,this.imageHeight,
+    this.imageWidth,});
 
   final Trip trip;
+  final double? imageHeight;
+  final double? imageWidth;
 
   @override
   State<TripItem> createState() => _TripItemState();
@@ -46,6 +49,9 @@ class _TripItemState extends State<TripItem> {
       displayedTitle = title; // No truncation needed
     }
 
+    double imageHeight = widget.imageHeight ?? 200;
+    double imageWidth = widget.imageWidth ?? 250;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -64,15 +70,15 @@ class _TripItemState extends State<TripItem> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              Flexible(
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: CachedNetworkImage(
                         imageUrl: images[0],
-                        width: 250,
-                        height: 200,
+                        width: imageWidth,
+                        height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
                           return const Center(

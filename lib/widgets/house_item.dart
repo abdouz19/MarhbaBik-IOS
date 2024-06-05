@@ -6,9 +6,12 @@ import 'package:marhba_bik/models/house.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/house_details.dart';
 
 class HouseItem extends StatefulWidget {
-  const HouseItem({super.key, required this.house});
+  const HouseItem({super.key, required this.house,this.imageHeight,
+    this.imageWidth,});
 
   final House house;
+  final double? imageHeight;
+  final double? imageWidth;
 
   @override
   State<HouseItem> createState() => _HouseItemState();
@@ -46,6 +49,8 @@ class _HouseItemState extends State<HouseItem> {
     } else {
       displayedTitle = title; // No truncation needed
     }
+    double imageHeight = widget.imageHeight ?? 200;
+    double imageWidth = widget.imageWidth ?? 250;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -64,15 +69,15 @@ class _HouseItemState extends State<HouseItem> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              Flexible(
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: CachedNetworkImage(
                         imageUrl: images[0],
-                        width: 250,
-                        height: 200,
+                        width: imageWidth,
+                        height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
                           return const Center(

@@ -6,10 +6,12 @@ import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/car_details.dart';
 
 class CarItem extends StatefulWidget {
-  const CarItem({Key? key, required this.car}) : super(key: key);
+  const CarItem({super.key, required this.car,this.imageHeight,
+    this.imageWidth,});
 
   final Car car;
-
+  final double? imageHeight;
+  final double? imageWidth;
   @override
   State<CarItem> createState() => _CarItemState();
 }
@@ -26,15 +28,16 @@ class _CarItemState extends State<CarItem> {
 
   Future<void> _checkIfFavorited() async {
     String carId = widget.car.id;
-    bool isFavorited =
-        await FirestoreService().isItemFavorited(carId, "car");
+    bool isFavorited = await FirestoreService().isItemFavorited(carId, "car");
     setState(() {
       _isFavorited = isFavorited;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
+    double imageHeight = widget.imageHeight ?? 200;
+    double imageWidth = widget.imageWidth ?? 250;
     List<String> images = widget.car.images;
     String title =
         "${widget.car.wilaya}, ${widget.car.brand} ${widget.car.model}";
@@ -65,15 +68,15 @@ class _CarItemState extends State<CarItem> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
+              Flexible(
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: CachedNetworkImage(
                         imageUrl: images[0],
-                        width: 250,
-                        height: 200,
+                        width: imageWidth,
+                        height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
                           return const Center(
