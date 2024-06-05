@@ -79,6 +79,7 @@ class CollectionCard extends StatelessWidget {
               ),
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: ClipRRect(
@@ -86,7 +87,7 @@ class CollectionCard extends StatelessWidget {
                     child: itemIds.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: imageUrl,
-                            width: 150,
+                            width: double.infinity,
                             height: 150.0,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => const Center(
@@ -102,17 +103,30 @@ class CollectionCard extends StatelessWidget {
                           ),
                   ),
                 ),
-                Text(
-                  formattedCollectionName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
+                Padding(
+                  padding: const EdgeInsets.only(left: 7, top: 3),
+                  child: Text(
+                    formattedCollectionName,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xff001939),
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'KastelovAxiforma',
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-                Text(
-                  '${itemIds.length} saved',
-                  style: const TextStyle(
-                    fontSize: 14.0,
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    '${itemIds.length} saved',
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xff8E8B8B),
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'KastelovAxiforma',
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],

@@ -11,46 +11,89 @@ class WishlistTraveler extends StatefulWidget {
 }
 
 class _WishlistTravelerState extends State<WishlistTraveler> {
+  late Future<Map<String, List<String>>> _wishlistData;
+
+  @override
+  void initState() {
+    super.initState();
+    _wishlistData = _fetchWishlistData();
+  }
+
+  Future<Map<String, List<String>>> _fetchWishlistData() async {
+    return await FirestoreService()
+        .getWishlistData(FirebaseAuth.instance.currentUser!.uid);
+  }
+
+  Future<void> _refreshWishlist() async {
+    setState(() {
+      _wishlistData = _fetchWishlistData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My wishlist'),
-      ),
-      body: FutureBuilder<Map<String, List<String>>>(
-        future: FirestoreService()
-            .getWishlistData(FirebaseAuth.instance.currentUser!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final wishlistData = snapshot.data!;
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-              child: SingleChildScrollView(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisSpacing: 20.0,
-                    mainAxisSpacing: 20.0,
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    final collectionName = wishlistData.keys.elementAt(index);
-                    final itemIds = wishlistData[collectionName] ?? [];
-                    return CollectionCard(
-                      collectionName: collectionName,
-                      itemIds: itemIds,
-                    );
-                  },
-                  itemCount: wishlistData.length,
-                  shrinkWrap: true,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 10, top: 20),
+              child: Text(
+                'Wishlists',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: Color(0xff001939),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'KastelovAxiforma',
+                  fontSize: 32,
                 ),
               ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
+            ),
+            const SizedBox(
+              height: 7,
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshWishlist,
+                child: FutureBuilder<Map<String, List<String>>>(
+                  future: _wishlistData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final wishlistData = snapshot.data!;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10),
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 20.0,
+                            mainAxisSpacing: 20.0,
+                            crossAxisCount: 2,
+                          ),
+                          itemBuilder: (context, index) {
+                            final collectionName =
+                                wishlistData.keys.elementAt(index);
+                            final itemIds = wishlistData[collectionName] ?? [];
+                            return CollectionCard(
+                              collectionName: collectionName,
+                              itemIds: itemIds,
+                            );
+                          },
+                          itemCount: wishlistData.length,
+                          shrinkWrap: true,
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
