@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/wilaya_listview.dart';
 
 class ExploreTraveler extends StatefulWidget {
@@ -122,7 +124,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                       ),
                       const SizedBox(height: 20.0),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 60),
                         child: MaterialButtonAuth(
                           onPressed: () {},
                           label: 'Pick a region',
@@ -179,8 +181,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
           ),
           if (_isSearching)
             Positioned(
-              top:
-                  160.0, // Adjust the top position to be under the search field
+              top: 160.0,
               left: 20.0,
               right: 20.0,
               child: Material(
@@ -198,7 +199,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.close),
+                            icon: const Icon(Icons.close),
                             onPressed: _closeSearch,
                           ),
                         ],
@@ -215,7 +216,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                             : Center(
                                 child: Text(
                                   'No results found for "${_searchController.text}"',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 16,
                                   ),
@@ -256,12 +257,20 @@ class WilayaTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(wilaya.imageUrl),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => WilayaScreen(wilaya: wilaya)),
+        );
+      },
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: CachedNetworkImageProvider(wilaya.imageUrl),
+        ),
+        title: Text(wilaya.name),
+        subtitle: Text(wilaya.description),
       ),
-      title: Text(wilaya.name),
-      subtitle: Text(wilaya.description),
     );
   }
 }

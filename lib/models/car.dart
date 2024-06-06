@@ -54,13 +54,13 @@ class Car {
   }
 
   Future<List<Car>> fetchCars() async {
-  try {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('cars').get();
-    return querySnapshot.docs.map((doc) => Car.fromDocument(doc)).toList();
-  } catch (e) {
-    print("Error fetching cars: $e");
-    return [];
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('cars').get();
+      return querySnapshot.docs.map((doc) => Car.fromDocument(doc)).toList();
+    } catch (e) {
+      print("Error fetching cars: $e");
+      return [];
+    }
   }
-}
 
 }
