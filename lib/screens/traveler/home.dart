@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/screens/traveler/activities_traveler.dart';
+import 'package:marhba_bik/screens/traveler/explore_traveler.dart';
 import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
 import 'package:marhba_bik/screens/traveler/messages_treveler.dart';
 import 'package:marhba_bik/screens/traveler/profile_traveler.dart';
@@ -21,7 +21,7 @@ class _TravelerHomeScreenState extends State<TravelerHomeScreen> {
 
   final screens = [
     const HousesTraveler(),
-    const SearchTraveler(),
+    const ExploreTraveler(),
     const WishlistTraveler(),
     const MessagesTraveler(),
     const ProfileTraveler(),
