@@ -51,8 +51,13 @@ class FirestoreService {
   Future<List<Wilaya>> fetchWilayas() async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('wilayas').get();
-      return querySnapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
+          await FirebaseFirestore.instance.collection('wilaya').get();
+      final wilayas = querySnapshot.docs.map((doc) {
+        print('Document data: ${doc.data()}');
+        return Wilaya.fromDocument(doc);
+      }).toList();
+      print('Fetched ${wilayas.length} wilayas');
+      return wilayas;
     } catch (e) {
       print("Error fetching wilayas: $e");
       return [];
@@ -153,7 +158,7 @@ class FirestoreService {
       if (docSnapshot.exists) {
         return Car.fromDocument(docSnapshot);
       } else {
-        return null; 
+        return null;
       }
     } catch (e) {
       print("Error fetching car by ID: $e");
@@ -163,13 +168,14 @@ class FirestoreService {
 
   Future<House?> getHouseModelById(String houseId) async {
     try {
-      final docRef = FirebaseFirestore.instance.collection('houses').doc(houseId);
+      final docRef =
+          FirebaseFirestore.instance.collection('houses').doc(houseId);
       final docSnapshot = await docRef.get();
 
       if (docSnapshot.exists) {
         return House.fromDocument(docSnapshot);
       } else {
-        return null; 
+        return null;
       }
     } catch (e) {
       print("Error fetching house by ID: $e");
@@ -185,7 +191,7 @@ class FirestoreService {
       if (docSnapshot.exists) {
         return Trip.fromDocument(docSnapshot);
       } else {
-        return null; 
+        return null;
       }
     } catch (e) {
       print("Error fetching trip by ID: $e");
