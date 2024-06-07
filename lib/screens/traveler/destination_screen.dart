@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
-import 'package:marhba_bik/models/wilaya.dart';
-import 'package:marhba_bik/widgets/cars_listview.dart';
+import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
-import 'package:marhba_bik/widgets/houses_listview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class WilayaScreen extends StatelessWidget {
-  final Wilaya wilaya;
+class DestinationScreen extends StatefulWidget {
+  const DestinationScreen({super.key, required this.destination});
 
-  const WilayaScreen({super.key, required this.wilaya});
+  final Destination destination;
 
   @override
+  State<DestinationScreen> createState() => _DestinationScreenState();
+}
+
+class _DestinationScreenState extends State<DestinationScreen> {
+  @override
   Widget build(BuildContext context) {
-    List<String> images = [wilaya.imageUrl];
-    String name = wilaya.name;
-    String title = wilaya.title;
-    String description = wilaya.description;
-    List<String> regions = wilaya.regions;
+    List<String> images = widget.destination.otherPicturesUrls;
+    String name = widget.destination.name;
+    String title = widget.destination.title;
+    String description = widget.destination.description;
+    String category = widget.destination.category;
+    String region = widget.destination.region;
+    String wilaya = widget.destination.wilaya;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,12 +135,27 @@ class WilayaScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: RatingBar.builder(
+                      initialRating:
+                          calculateAverageRating(widget.destination.ratings),
+                      minRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemSize: 20,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {},
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      regions.isEmpty
-                          ? 'Située en Algérie'
-                          : regions.length == 1
-                              ? 'Située dans la région de ${regions[0]}'
-                              : 'Située entre ${regions.sublist(0, regions.length - 1).join(', ')} et ${regions[regions.length - 1]}',
+                      '$category au coeur de la $region, $wilaya.',
                       style: GoogleFonts.poppins(
                         color: const Color(0xff8E8E8E),
                         fontSize: 15,
@@ -157,11 +178,11 @@ class WilayaScreen extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      'À la découverte de la beauté de ${wilaya.name}',
-                      style: const TextStyle(
+                      'Des paysages à couper le souffle ',
+                      style: TextStyle(
                         color: Color(0xff001939),
                         fontWeight: FontWeight.bold,
                         fontFamily: 'KastelovAxiforma',
@@ -183,53 +204,12 @@ class WilayaScreen extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Explorez notre large sélection de voitures',
-                      style: TextStyle(
-                        color: Color(0xff001939),
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'KastelovAxiforma',
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    height: 200,
-                    child: const CarsListScreen(),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Trouvez votre bien idéal',
-                      style: TextStyle(
-                        color: Color(0xff001939),
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'KastelovAxiforma',
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    height: 200,
-                    child: const HousesListScreen(),
-                  ),
-                  const SizedBox(
-                    height: 80,
-                  ),
                   /*MaterialButtonAuth(
-                    label: 'Explore More',
+                    label: 'See more',
                     onPressed: () {
-                      // Handle the button press for exploring more
+                      
                     },
-                  ),
-                  */
+                  ),*/
                 ],
               ),
             ),
@@ -238,4 +218,10 @@ class WilayaScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+double calculateAverageRating(List<int> ratings) {
+  final totalRatings = ratings.fold(0, (sum, rating) => sum + rating);
+  final averageRating = totalRatings / ratings.length;
+  return averageRating;
 }

@@ -151,7 +151,10 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                           fontSize: 22,
                         ),
                       ),
-                      const DestinationsList(),
+                      DestinationsList(
+                        future: FirestoreService().fetchSpecialDestinations(),
+                        type: 'vertical',
+                      ),
                       const Text(
                         'Destinations travelers love',
                         style: TextStyle(
@@ -270,7 +273,13 @@ class WilayaTile extends StatelessWidget {
           backgroundImage: CachedNetworkImageProvider(wilaya.imageUrl),
         ),
         title: Text(wilaya.name),
-        subtitle: Text(wilaya.description),
+        subtitle: Text(
+          wilaya.regions.isEmpty
+              ? 'Située en Algérie'
+              : wilaya.regions.length == 1
+                  ? 'Située dans la région de ${wilaya.regions[0]}'
+                  : 'Située entre ${wilaya.regions.sublist(0, wilaya.regions.length - 1).join(', ')} et ${wilaya.regions[wilaya.regions.length - 1]}',
+        ),
       ),
     );
   }

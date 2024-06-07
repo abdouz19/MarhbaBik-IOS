@@ -67,7 +67,7 @@ class FirestoreService {
   Future<List<Wilaya>> fetchSpecialWilayas() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('wilayas')
-        .where(FieldPath.documentId, whereIn: ['35', '06', '18']).get();
+        .where(FieldPath.documentId, whereIn: ['35', '06', '10']).get();
 
     return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
   }
