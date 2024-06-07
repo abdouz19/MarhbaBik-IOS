@@ -72,6 +72,15 @@ class FirestoreService {
     return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
   }
 
+  Future<List<Destination>> fetchSpecialDestinations() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('destinations')
+        .where(FieldPath.documentId,
+            whereIn: ['Yema gouraya', 'Lac vert', 'Ouacif']).get();
+
+    return snapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
+  }
+
   Future<List<Destination>> fetchDestinations() async {
     try {
       QuerySnapshot querySnapshot =

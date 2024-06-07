@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/screens/traveler/detailed_wishlist.dart';
-import 'package:shimmer/shimmer.dart'; // Import your detailed wishlist screen
+import 'package:shimmer/shimmer.dart';
 
 class CollectionCard extends StatelessWidget {
   final String collectionName;
@@ -146,20 +146,58 @@ class CollectionCard extends StatelessWidget {
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error fetching item'));
         }
-        return Center(
-          child: Center(
-            child: Shimmer.fromColors(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Shimmer.fromColors(
               baseColor: Colors.grey[300]!,
               highlightColor: Colors.grey[100]!,
               child: Container(
-                height: 120,
+                height: 110,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
             ),
-          ),
+            const SizedBox(
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 10,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 3,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 8,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
