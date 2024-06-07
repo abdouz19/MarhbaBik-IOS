@@ -4,10 +4,15 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/house.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/house_details.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HouseItem extends StatefulWidget {
-  const HouseItem({super.key, required this.house,this.imageHeight,
-    this.imageWidth,});
+  const HouseItem({
+    super.key,
+    required this.house,
+    this.imageHeight,
+    this.imageWidth,
+  });
 
   final House house;
   final double? imageHeight;
@@ -23,7 +28,6 @@ class _HouseItemState extends State<HouseItem> {
   @override
   void initState() {
     super.initState();
-    // Check if house is already favorited on initial load
     _checkIfFavorited();
   }
 
@@ -40,17 +44,15 @@ class _HouseItemState extends State<HouseItem> {
   Widget build(BuildContext context) {
     List<String> images = widget.house.images;
     String title = "${widget.house.wilaya}, ${widget.house.placeType}";
-    int maxLength = 33; // Adjust this value as needed
+    int maxLength = 33;
 
-    String displayedTitle;
-    if (title.length > maxLength) {
-      displayedTitle =
-          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
-    } else {
-      displayedTitle = title; // No truncation needed
-    }
+    String displayedTitle = title.length > maxLength
+        ? "${title.substring(0, maxLength - 3)}..."
+        : title;
+
     double imageHeight = widget.imageHeight ?? 200;
     double imageWidth = widget.imageWidth ?? 250;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -80,9 +82,18 @@ class _HouseItemState extends State<HouseItem> {
                         height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: imageWidth,
+                              height: imageHeight,
+                              color: Colors.white,
+                            ),
+                          );
                         },
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                     Positioned(
@@ -107,9 +118,7 @@ class _HouseItemState extends State<HouseItem> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Text(
                 displayedTitle,
                 textAlign: TextAlign.start,
@@ -121,9 +130,7 @@ class _HouseItemState extends State<HouseItem> {
                   fontSize: 15,
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               const Text(
                 'Cultural',
                 textAlign: TextAlign.start,
@@ -134,7 +141,7 @@ class _HouseItemState extends State<HouseItem> {
                   fontFamily: 'KastelovAxiforma',
                   fontSize: 13,
                 ),
-              )
+              ),
             ],
           ),
         ),

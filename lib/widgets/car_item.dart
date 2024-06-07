@@ -4,14 +4,20 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/car_details.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CarItem extends StatefulWidget {
-  const CarItem({super.key, required this.car,this.imageHeight,
-    this.imageWidth,});
+  const CarItem({
+    super.key, 
+    required this.car,
+    this.imageHeight,
+    this.imageWidth,
+  });
 
   final Car car;
   final double? imageHeight;
   final double? imageWidth;
+
   @override
   State<CarItem> createState() => _CarItemState();
 }
@@ -22,7 +28,6 @@ class _CarItemState extends State<CarItem> {
   @override
   void initState() {
     super.initState();
-    // Check if car is already favorited on initial load
     _checkIfFavorited();
   }
 
@@ -41,15 +46,12 @@ class _CarItemState extends State<CarItem> {
     List<String> images = widget.car.images;
     String title =
         "${widget.car.wilaya}, ${widget.car.brand} ${widget.car.model}";
-    int maxLength = 33; // Adjust this value as needed
+    int maxLength = 33;
 
-    String displayedTitle;
-    if (title.length > maxLength) {
-      displayedTitle =
-          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
-    } else {
-      displayedTitle = title; // No truncation needed
-    }
+    String displayedTitle = title.length > maxLength
+        ? "${title.substring(0, maxLength - 3)}..."
+        : title;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -79,9 +81,17 @@ class _CarItemState extends State<CarItem> {
                         height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: imageWidth,
+                              height: imageHeight,
+                              color: Colors.white,
+                            ),
+                          );
                         },
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                       ),
                     ),
                     Positioned(
@@ -94,11 +104,9 @@ class _CarItemState extends State<CarItem> {
                             _isFavorited = !_isFavorited;
                           });
                           if (_isFavorited) {
-                            await FirestoreService()
-                                .addToWishlist(widget.car.id, "car");
+                            await FirestoreService().addToWishlist(widget.car.id, "car");
                           } else {
-                            await FirestoreService()
-                                .removeFromWishlist(widget.car.id, "car");
+                            await FirestoreService().removeFromWishlist(widget.car.id, "car");
                           }
                         },
                       ),
@@ -106,9 +114,7 @@ class _CarItemState extends State<CarItem> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Text(
                 displayedTitle,
                 textAlign: TextAlign.start,
@@ -120,9 +126,7 @@ class _CarItemState extends State<CarItem> {
                   fontSize: 15,
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               const Text(
                 'Cultural',
                 textAlign: TextAlign.start,
@@ -133,7 +137,7 @@ class _CarItemState extends State<CarItem> {
                   fontFamily: 'KastelovAxiforma',
                   fontSize: 13,
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/widgets/trip_item.dart';
-import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/models/trip.dart';
+import 'package:marhba_bik/widgets/trip_item.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TripsListScreen extends StatefulWidget {
   const TripsListScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _TripsListScreenState extends State<TripsListScreen> {
       future: _tripsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return _buildShimmerList();
         } else if (snapshot.hasError) {
           return const Center(child: Text("Error fetching trips"));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -44,6 +45,30 @@ class _TripsListScreenState extends State<TripsListScreen> {
             },
           );
         }
+      },
+    );
+  }
+
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: 250,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        );
       },
     );
   }

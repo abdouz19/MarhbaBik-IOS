@@ -51,7 +51,7 @@ class FirestoreService {
   Future<List<Wilaya>> fetchWilayas() async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('wilaya').get();
+          await FirebaseFirestore.instance.collection('wilayas').get();
       final wilayas = querySnapshot.docs.map((doc) {
         print('Document data: ${doc.data()}');
         return Wilaya.fromDocument(doc);
@@ -62,6 +62,14 @@ class FirestoreService {
       print("Error fetching wilayas: $e");
       return [];
     }
+  }
+
+  Future<List<Wilaya>> fetchSpecialWilayas() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('wilayas')
+        .where(FieldPath.documentId, whereIn: ['35', '06', '18']).get();
+
+    return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
   }
 
   Future<List<Destination>> fetchDestinations() async {
