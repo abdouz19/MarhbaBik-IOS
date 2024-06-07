@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
-import 'package:marhba_bik/screens/traveler/detailed_wishlist.dart'; // Import your detailed wishlist screen
+import 'package:marhba_bik/screens/traveler/detailed_wishlist.dart';
+import 'package:shimmer/shimmer.dart'; // Import your detailed wishlist screen
 
 class CollectionCard extends StatelessWidget {
   final String collectionName;
@@ -90,8 +91,18 @@ class CollectionCard extends StatelessWidget {
                             width: double.infinity,
                             height: 150.0,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator(),
+                            placeholder: (context, url) => Center(
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
                             ),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
@@ -135,7 +146,21 @@ class CollectionCard extends StatelessWidget {
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error fetching item'));
         }
-        return const Center(child: CircularProgressIndicator());
+        return Center(
+          child: Center(
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+            ),
+          ),
+        );
       },
     );
   }

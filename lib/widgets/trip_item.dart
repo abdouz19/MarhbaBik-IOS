@@ -4,10 +4,15 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/screens/traveler/detailed_screens/trip_details.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TripItem extends StatefulWidget {
-  const TripItem({super.key, required this.trip,this.imageHeight,
-    this.imageWidth,});
+  const TripItem({
+    super.key,
+    required this.trip,
+    this.imageHeight,
+    this.imageWidth,
+  });
 
   final Trip trip;
   final double? imageHeight;
@@ -23,7 +28,6 @@ class _TripItemState extends State<TripItem> {
   @override
   void initState() {
     super.initState();
-    // Check if trip is already favorited on initial load
     _checkIfFavorited();
   }
 
@@ -39,15 +43,11 @@ class _TripItemState extends State<TripItem> {
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
     String title = "${widget.trip.wilaya}, ${widget.trip.title}";
-    int maxLength = 33; // Adjust this value as needed
+    int maxLength = 33;
 
-    String displayedTitle;
-    if (title.length > maxLength) {
-      displayedTitle =
-          title.substring(0, maxLength - 3) + "..."; // Truncate with ellipsis
-    } else {
-      displayedTitle = title; // No truncation needed
-    }
+    String displayedTitle = title.length > maxLength
+        ? "${title.substring(0, maxLength - 3)}..."
+        : title;
 
     double imageHeight = widget.imageHeight ?? 200;
     double imageWidth = widget.imageWidth ?? 250;
@@ -81,9 +81,18 @@ class _TripItemState extends State<TripItem> {
                         height: imageHeight,
                         fit: BoxFit.cover,
                         placeholder: (context, url) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: imageWidth,
+                              height: imageHeight,
+                              color: Colors.white,
+                            ),
+                          );
                         },
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                     Positioned(
@@ -108,9 +117,7 @@ class _TripItemState extends State<TripItem> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Text(
                 displayedTitle,
                 textAlign: TextAlign.start,
@@ -123,9 +130,7 @@ class _TripItemState extends State<TripItem> {
                   fontSize: 13,
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               const Text(
                 'Cultural',
                 textAlign: TextAlign.start,

@@ -53,7 +53,7 @@ class WilayaScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              // Additional details or content about the Wilaya can be added here
+            
             ],
           ),
         ),

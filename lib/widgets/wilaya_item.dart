@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class WilayaItem extends StatelessWidget {
   final Wilaya wilaya;
@@ -30,7 +31,15 @@ class WilayaItem extends StatelessWidget {
                 height: 120,
                 fit: BoxFit.cover,
                 placeholder: (context, url) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      width: 160,
+                      height: 120,
+                      color: Colors.white,
+                    ),
+                  );
                 },
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
@@ -52,7 +61,7 @@ class WilayaItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  wilaya.description,
+                  'Region of ${wilaya.regions[0]}',
                   style: const TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w400,
