@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/widgets/destination_item.dart';
+import 'package:marhba_bik/widgets/destinationitem.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DestinationsList extends StatelessWidget {
-  const DestinationsList({super.key});
+  const DestinationsList({Key? key, required this.future, required this.type})
+      : super(key: key);
+
+  final Future<List<Destination>>? future;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
+    return type == 'vertical' ? _buildVerticalList() : _buildHorizontalList();
+  }
+
+  Widget _buildVerticalList() {
     return FutureBuilder<List<Destination>>(
-      future: FirestoreService().fetchSpecialDestinations(),
+      future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerList();
@@ -28,6 +36,39 @@ class DestinationsList extends StatelessWidget {
           itemCount: destinations.length,
           itemBuilder: (context, index) {
             return DestinationItem(destination: destinations[index]);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildHorizontalList() {
+    return FutureBuilder<List<Destination>>(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildShimmerHorizontalList();
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error loading destinations'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No destinations available'));
+        }
+
+        final destinations = snapshot.data!;
+
+        return ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: destinations.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SecondDestinationItem(
+                destination: destinations[index],
+                imageHeight: 280,
+                imageWidth: 280,
+              ),
+            );
           },
         );
       },
@@ -84,6 +125,47 @@ class DestinationsList extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShimmerHorizontalList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 160,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 15.0,
+                  width: 150.0,
+                  color: Colors.white,
                 ),
               ),
             ],

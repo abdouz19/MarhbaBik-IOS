@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Destination {
   final String category;
   final String name;
+  final String title;
   final List<String> otherPicturesUrls;
   final String region;
   final String thumbnailUrl;
@@ -13,6 +14,7 @@ class Destination {
   Destination({
     this.ratings = const [0],
     required this.category,
+    required this.title,
     required this.description,
     required this.name,
     required this.otherPicturesUrls,
@@ -34,6 +36,7 @@ class Destination {
     }
 
     return Destination(
+      title: data['title'],
       ratings: ratings,
       description: data['description'],
       category: data['category'],
@@ -43,5 +46,9 @@ class Destination {
       thumbnailUrl: data['thumbnailUrl'],
       wilaya: data['wilaya'],
     );
+  }
+  
+  static List<Destination> getDestinationsByWilaya(List<Destination> destinations, String wilayaName) {
+    return destinations.where((destination) => destination.wilaya == wilayaName).toList();
   }
 }
