@@ -46,7 +46,7 @@ class _TripsListScreenState extends State<TripsListScreen> {
                 child: TripItem(
                   trip: trip,
                   imageHeight: widget.type == 'vertical' ? 280 : 280,
-                  imageWidth: widget.type == 'vertical' ? double.infinity : 250,
+                  imageWidth: widget.type == 'vertical' ? double.infinity : 280,
                 ),
               );
             },
@@ -68,7 +68,7 @@ class _TripsListScreenState extends State<TripsListScreen> {
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: Container(
-              width: widget.type == 'vertical' ? double.infinity : 250,
+              width: widget.type == 'vertical' ? double.infinity : 280,
               height: widget.type == 'vertical' ? 280 : 280,
               decoration: BoxDecoration(
                 color: Colors.white,

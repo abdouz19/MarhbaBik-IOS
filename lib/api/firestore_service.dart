@@ -65,34 +65,34 @@ class FirestoreService {
   }
 
   Future<List<Wilaya>> fetchSpecialWilayas(List<String> wilayaIds) async {
-  try {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('wilayas')
-        .where(FieldPath.documentId, whereIn: wilayaIds)
-        .get();
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('wilayas')
+          .where(FieldPath.documentId, whereIn: wilayaIds)
+          .get();
 
-    return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
-  } catch (e) {
-    print("Error fetching wilayas: $e");
-    return [];
+      return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
+    } catch (e) {
+      print("Error fetching wilayas: $e");
+      return [];
+    }
   }
-}
 
-  
+  Future<List<Destination>> fetchSpecialDestinations(
+      List<String> destinationNames) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('destinations')
+          .where(FieldPath.documentId, whereIn: destinationNames)
+          .get();
 
-Future<List<Destination>> fetchSpecialDestinations(List<String> destinationNames) async {
-  try {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('destinations')
-        .where(FieldPath.documentId, whereIn: destinationNames)
-        .get();
-
-    return snapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
-  } catch (e) {
-    print("Error fetching destinations: $e");
-    return [];
+      return snapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
+    } catch (e) {
+      print("Error fetching destinations: $e");
+      return [];
+    }
   }
-}
+
   Future<List<Destination>> fetchDestinations() async {
     try {
       QuerySnapshot querySnapshot =
@@ -122,23 +122,23 @@ Future<List<Destination>> fetchSpecialDestinations(List<String> destinationNames
   }
 
   Future<Wilaya?> fetchSpecialWilaya(String wilayaId) async {
-  try {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('wilayas')
-        .where('wilayaID', isEqualTo: wilayaId)
-        .get();
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('wilayas')
+          .where('wilayaID', isEqualTo: wilayaId)
+          .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      return Wilaya.fromDocument(querySnapshot.docs.first);
-    } else {
-      print("No Wilaya found with the given ID");
+      if (querySnapshot.docs.isNotEmpty) {
+        return Wilaya.fromDocument(querySnapshot.docs.first);
+      } else {
+        print("No Wilaya found with the given ID");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching Wilaya: $e");
       return null;
     }
-  } catch (e) {
-    print("Error fetching Wilaya: $e");
-    return null;
   }
-}
 
   Future<Map<String, dynamic>?> getCarById(String carId) async {
     try {
@@ -536,6 +536,23 @@ Future<List<Destination>> fetchSpecialDestinations(List<String> destinationNames
     } catch (e) {
       print("Error fetching car data: $e");
       return null;
+    }
+  }
+
+  Future<Wilaya> fetchWilayaByName(String wilayaName) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('wilayas')
+          .where('name', isEqualTo: wilayaName)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return Wilaya.fromDocument(querySnapshot.docs.first);
+      } else {
+        throw Exception("Wilaya not found");
+      }
+    } catch (e) {
+      print("Error fetching wilaya: $e");
+      throw e;
     }
   }
 

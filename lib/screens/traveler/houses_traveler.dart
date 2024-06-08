@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/cars_listview.dart';
 import 'package:marhba_bik/widgets/houses_listview.dart';
 import 'package:marhba_bik/widgets/trips_listview.dart';
 import 'package:outlined_text/outlined_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class HousesTraveler extends StatelessWidget {
+class HousesTraveler extends StatefulWidget {
   const HousesTraveler({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _HousesTravelerScreenState();
+}
+
+class _HousesTravelerScreenState extends State<HousesTraveler> {
+  late Future<Wilaya?> _wilayaJijel;
+  late Future<Wilaya?> _wilayaOran;
+
+  @override
+  void initState() {
+    super.initState();
+    _wilayaJijel = FirestoreService().fetchWilayaByName('Jijel');
+    _wilayaOran = FirestoreService().fetchWilayaByName('Oran');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +111,10 @@ class HousesTraveler extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: SizedBox(
-                  height: 210,
-                  child: TripsListScreen(),
-                ),
+              Container(
+                padding: const EdgeInsets.only(left: 15),
+                height: 280,
+                child: const TripsListScreen(),
               ),
               const SizedBox(
                 height: 25,
@@ -199,12 +215,10 @@ class HousesTraveler extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: SizedBox(
-                  height: 210,
-                  child: CarsListScreen(),
-                ),
+              Container(
+                padding: const EdgeInsets.only(left: 15),
+                height: 280,
+                child: const CarsListScreen(),
               ),
               const SizedBox(
                 height: 25,
@@ -272,7 +286,19 @@ class HousesTraveler extends StatelessWidget {
                             height: 5,
                           ),
                           ElevatedButton(
-                              onPressed: () {}, child: const Text('See more'))
+                              onPressed: () async {
+                                Wilaya? wilaya = await _wilayaOran;
+                                if (wilaya != null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          WilayaScreen(wilaya: wilaya),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('See more'))
                         ]),
                   ),
                 ],
@@ -309,7 +335,18 @@ class HousesTraveler extends StatelessWidget {
                       height: 15,
                     ),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Wilaya? wilaya = await _wilayaJijel;
+                        if (wilaya != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  WilayaScreen(wilaya: wilaya),
+                            ),
+                          );
+                        }
+                      },
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
@@ -359,12 +396,10 @@ class HousesTraveler extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: SizedBox(
-                  height: 210,
-                  child: HousesListScreen(),
-                ),
+              Container(
+                padding: const EdgeInsets.only(left: 15),
+                height: 280,
+                child: const HousesListScreen(),
               ),
               const SizedBox(
                 height: 25,

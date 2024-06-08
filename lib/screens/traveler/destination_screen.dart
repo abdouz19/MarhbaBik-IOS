@@ -5,6 +5,8 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/destination.dart';
+import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -18,10 +20,18 @@ class DestinationScreen extends StatefulWidget {
 }
 
 class _DestinationScreenState extends State<DestinationScreen> {
+  late Future<Wilaya?> _wilayaFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _wilayaFuture =
+        FirestoreService().fetchWilayaByName(widget.destination.wilaya);
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.destination.otherPicturesUrls;
-    String name = widget.destination.name;
     String title = widget.destination.title;
     String description = widget.destination.description;
     String category = widget.destination.category;
@@ -194,19 +204,28 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   Container(
                     padding: const EdgeInsets.only(left: 15),
                     child: DestinationsList(
-                      future: FirestoreService().fetchSpecialDestinations(
-                          ['Yema gouraya', 'Lac vert', "Makam al shahid"]),
+                      future:
+                          FirestoreService().fetchDestinationsByWilaya(wilaya),
                       type: 'vertical',
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: MaterialButtonAuth(
-                      label: 'Explore more',
-                      onPressed: () {},
-                    ),
-                  ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      child: MaterialButtonAuth(
+                          label: 'Explore more',
+                          onPressed: () async {
+                            Wilaya? wilaya = await _wilayaFuture;
+                            if (wilaya != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      WilayaScreen(wilaya: wilaya),
+                                ),
+                              );
+                            }
+                          })),
                 ],
               ),
             ),

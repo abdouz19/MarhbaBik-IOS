@@ -68,7 +68,7 @@ class _CarsListScreenState extends State<CarsListScreen> {
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: Container(
-              width: widget.type == 'vertical' ? double.infinity : 250,
+              width: widget.type == 'vertical' ? double.infinity : 280,
               height: widget.type == 'vertical' ? 280 : 280,
               decoration: BoxDecoration(
                 color: Colors.white,
