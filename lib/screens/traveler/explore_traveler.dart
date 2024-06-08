@@ -6,6 +6,7 @@ import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
 import 'package:marhba_bik/widgets/wilaya_listview.dart';
+import 'package:marhba_bik/widgets/wilayaitem.dart';
 
 class ExploreTraveler extends StatefulWidget {
   const ExploreTraveler({super.key});
@@ -19,10 +20,13 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
   Future<List<Wilaya>>? _futureWilayas;
   List<Wilaya> _filteredWilayas = [];
   bool _isSearching = false;
+  late Future<List<Wilaya>> futureSpecialWilayas;
 
   @override
   void initState() {
     super.initState();
+    futureSpecialWilayas =
+        FirestoreService().fetchSpecialWilayas(['10', '06', '31', '19']);
     _futureWilayas = FirestoreService().fetchWilayas();
     _futureWilayas?.then((wilayas) {
       setState(() {
@@ -168,18 +172,38 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                           fontSize: 22,
                         ),
                       ),
-                      GridView.count(
-                        crossAxisCount: 2,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        children: const [
-                          GridItem(color: Colors.red),
-                          GridItem(color: Colors.blue),
-                          GridItem(color: Colors.green),
-                          GridItem(color: Colors.yellow),
-                        ],
+                      FutureBuilder<List<Wilaya>>(
+                        future: futureSpecialWilayas,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                                child: Text('Error loading wilayas'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No wilayas found'));
+                          } else {
+                            final wilayas = snapshot.data!;
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemCount: wilayas.length,
+                              itemBuilder: (context, index) {
+                                return SecondWilayaItem(wilaya: wilayas[index]);
+                              },
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
