@@ -5,7 +5,9 @@ import 'package:marhba_bik/widgets/car_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CarsListScreen extends StatefulWidget {
-  const CarsListScreen({Key? key}) : super(key: key);
+  final String type;
+
+  const CarsListScreen({super.key, this.type = 'horizontal'});
 
   @override
   State<CarsListScreen> createState() => _CarsListScreenState();
@@ -34,13 +36,18 @@ class _CarsListScreenState extends State<CarsListScreen> {
         } else {
           List<Car> cars = snapshot.data!;
           return ListView.builder(
-            scrollDirection: Axis.horizontal,
+            scrollDirection:
+                widget.type == 'vertical' ? Axis.vertical : Axis.horizontal,
             itemCount: cars.length,
             itemBuilder: (context, index) {
               Car car = cars[index];
               return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CarItem(car: car),
+                padding: const EdgeInsets.all(8),
+                child: CarItem(
+                  car: car,
+                  imageHeight: widget.type == 'vertical' ? 280 : 280,
+                  imageWidth: widget.type == 'vertical' ? double.infinity : 280,
+                ),
               );
             },
           );
@@ -48,28 +55,29 @@ class _CarsListScreenState extends State<CarsListScreen> {
       },
     );
   }
-}
 
-Widget _buildShimmerList() {
-  return ListView.builder(
-    scrollDirection: Axis.horizontal,
-    itemCount: 6,
-    itemBuilder: (context, index) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
-          child: Container(
-            width: 250,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      scrollDirection:
+          widget.type == 'vertical' ? Axis.vertical : Axis.horizontal,
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: widget.type == 'vertical' ? double.infinity : 250,
+              height: widget.type == 'vertical' ? 280 : 280,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
             ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }
