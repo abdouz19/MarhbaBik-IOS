@@ -141,7 +141,10 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                           fontSize: 22,
                         ),
                       ),
-                      const WilayaList(),
+                      WilayaList(
+                        future: FirestoreService()
+                            .fetchSpecialWilayas(['06', '10', '35']),
+                      ),
                       const Text(
                         'Attraction nearby',
                         style: TextStyle(
@@ -152,7 +155,8 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                         ),
                       ),
                       DestinationsList(
-                        future: FirestoreService().fetchSpecialDestinations(),
+                        future: FirestoreService().fetchSpecialDestinations(
+                            ['Yema gouraya', 'Lac vert', "Makam al shahid"]),
                         type: 'vertical',
                       ),
                       const Text(

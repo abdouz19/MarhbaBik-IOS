@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
+import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -181,7 +182,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      'Des paysages à couper le souffle ',
+                      'Des paysages à couper le souffle',
                       style: TextStyle(
                         color: Color(0xff001939),
                         fontWeight: FontWeight.bold,
@@ -190,26 +191,22 @@ class _DestinationScreenState extends State<DestinationScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
                   Container(
                     padding: const EdgeInsets.only(left: 15),
-                    height: 280,
                     child: DestinationsList(
-                      future: FirestoreService().fetchDestinations(),
-                      type: 'horizontal',
+                      future: FirestoreService().fetchSpecialDestinations(
+                          ['Yema gouraya', 'Lac vert', "Makam al shahid"]),
+                      type: 'vertical',
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: MaterialButtonAuth(
+                      label: 'Explore more',
+                      onPressed: () {},
+                    ),
                   ),
-                  /*MaterialButtonAuth(
-                    label: 'See more',
-                    onPressed: () {
-                      
-                    },
-                  ),*/
                 ],
               ),
             ),

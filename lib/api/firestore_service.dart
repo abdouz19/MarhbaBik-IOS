@@ -64,23 +64,35 @@ class FirestoreService {
     }
   }
 
-  Future<List<Wilaya>> fetchSpecialWilayas() async {
+  Future<List<Wilaya>> fetchSpecialWilayas(List<String> wilayaIds) async {
+  try {
     final snapshot = await FirebaseFirestore.instance
         .collection('wilayas')
-        .where(FieldPath.documentId, whereIn: ['35', '06', '10']).get();
+        .where(FieldPath.documentId, whereIn: wilayaIds)
+        .get();
 
     return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
+  } catch (e) {
+    print("Error fetching wilayas: $e");
+    return [];
   }
+}
 
-  Future<List<Destination>> fetchSpecialDestinations() async {
+  
+
+Future<List<Destination>> fetchSpecialDestinations(List<String> destinationNames) async {
+  try {
     final snapshot = await FirebaseFirestore.instance
         .collection('destinations')
-        .where(FieldPath.documentId,
-            whereIn: ['Yema gouraya', 'Lac vert', 'Ouacif']).get();
+        .where(FieldPath.documentId, whereIn: destinationNames)
+        .get();
 
     return snapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
+  } catch (e) {
+    print("Error fetching destinations: $e");
+    return [];
   }
-
+}
   Future<List<Destination>> fetchDestinations() async {
     try {
       QuerySnapshot querySnapshot =
@@ -93,6 +105,40 @@ class FirestoreService {
       return [];
     }
   }
+
+  Future<List<Destination>> fetchDestinationsByWilaya(String wilayaName) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('destinations')
+          .where('wilaya', isEqualTo: wilayaName)
+          .get();
+      return querySnapshot.docs
+          .map((doc) => Destination.fromDocument(doc))
+          .toList();
+    } catch (e) {
+      print("Error fetching destinations: $e");
+      return [];
+    }
+  }
+
+  Future<Wilaya?> fetchSpecialWilaya(String wilayaId) async {
+  try {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('wilayas')
+        .where('wilayaID', isEqualTo: wilayaId)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return Wilaya.fromDocument(querySnapshot.docs.first);
+    } else {
+      print("No Wilaya found with the given ID");
+      return null;
+    }
+  } catch (e) {
+    print("Error fetching Wilaya: $e");
+    return null;
+  }
+}
 
   Future<Map<String, dynamic>?> getCarById(String carId) async {
     try {
