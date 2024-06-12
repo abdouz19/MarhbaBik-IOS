@@ -45,7 +45,7 @@ class SecondWilayaItem extends StatelessWidget {
             width: 160,
             height: 160,
             decoration: BoxDecoration(
-              color: Colors.black38,
+              color: Colors.black26,
               borderRadius: BorderRadius.circular(10.0),
             ),
             alignment: Alignment.center,
@@ -58,7 +58,7 @@ class SecondWilayaItem extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'KastelovAxiforma',
-                fontSize: 18,
+                fontSize: 22,
               ),
             ),
           ),

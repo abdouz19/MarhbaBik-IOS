@@ -5,8 +5,7 @@ import 'package:marhba_bik/widgets/destinationitem.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DestinationsList extends StatelessWidget {
-  const DestinationsList({Key? key, required this.future, required this.type})
-      : super(key: key);
+  const DestinationsList({super.key, required this.future, required this.type});
 
   final Future<List<Destination>>? future;
   final String type;

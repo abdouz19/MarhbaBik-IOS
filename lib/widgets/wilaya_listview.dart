@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/widgets/wilaya_item.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'wilaya_item.dart';
 
 class WilayaList extends StatelessWidget {
   const WilayaList({super.key, required this.future});
 
   final Future<List<Wilaya>>? future;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Wilaya>>(

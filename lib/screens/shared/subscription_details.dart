@@ -5,9 +5,12 @@ import 'package:marhba_bik/api/e_paiment.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
-import 'package:marhba_bik/launchers/url_launcher.dart';
+import 'package:marhba_bik/launchers/webview.dart';
+import 'package:marhba_bik/screens/car_owner/car_owner_home.dart';
+import 'package:marhba_bik/screens/home_owner/home_owner_home.dart';
 import 'package:marhba_bik/screens/shared/subscription_card.dart';
 import 'package:marhba_bik/screens/shared/subscription_header.dart';
+import 'package:marhba_bik/screens/traveling_agency/travelling_agency_home.dart';
 
 class SubscriptionDetailsScreen extends StatefulWidget {
   const SubscriptionDetailsScreen(
@@ -37,6 +40,7 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
   double commission = 0;
   bool isLoading = false;
   double totalPrice = 0;
+  bool isCheckingTransfer = false; // Flag to control transfer checking
 
   ApiService apiService = ApiService();
 
@@ -46,20 +50,26 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     });
     try {
       final commissionData = await apiService.calculateCommission(widget.price);
-      setState(() {
-        commission = commissionData['commission'];
-        totalPrice = widget.price + commission;
-      });
+      if (mounted) {
+        setState(() {
+          commission = commissionData['commission'];
+          totalPrice = widget.price + commission;
+        });
+      }
     } catch (e) {
       print('Error: $e');
-      setState(() {
-        commission = 0;
-        totalPrice = widget.price as double;
-      });
+      if (mounted) {
+        setState(() {
+          commission = 0;
+          totalPrice = widget.price as double;
+        });
+      }
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -67,25 +77,45 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     setState(() {
       isLoading = true;
+      isCheckingTransfer = true; // Start checking transfer
     });
     try {
-      final result = await apiService.createTransfer(
-          totalPrice, uid, 'https://www.google.com/');
+      final result = await apiService.createTransfer(totalPrice, uid);
       print(result);
+
       if (result['success']) {
         final String url = result['url'];
         final String transferId = result['id'].toString();
 
-        // Open URL in scaffold
-        bool launched = await UrlHandler.open(url);
-        if (!launched) {
-          throw 'Could not launch $url';
+        // Navigate to WebViewScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WebViewScreen(url: url),
+          ),
+        );
+
+        // Declare transferDetails outside the loop
+        Map<String, dynamic>? transferDetails;
+
+        // Continuously check transfer details until completed
+        bool completed = false;
+        while (!completed && isCheckingTransfer) {
+          // Check if still allowed to run
+          transferDetails = await apiService.getTransferDetails(transferId);
+          print(
+              '------------------------------------------------------Transfer details: $transferDetails');
+
+          // Check if transfer is completed
+          completed = transferDetails['completed'];
+
+          if (!completed) {
+            // Wait for 3 seconds before checking again
+            await Future.delayed(const Duration(seconds: 3));
+          }
         }
 
-        // Check transfer details
-        final transferDetails = await apiService.getTransferDetails(transferId);
-        print('Transfer details: $transferDetails');
-        if (transferDetails['completed']) {
+        if (completed && transferDetails != null) {
           // Parse created_at and calculate expiration date
           final createdAt =
               DateTime.parse(transferDetails['data']['created_at']);
@@ -109,20 +139,70 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
           await FirestoreService().saveSubscription(uid, subscriptionData);
 
           // Handle completed transfer
-          print('Transfer completed successfully and subscription saved.');
+          print(
+              '------------------------------------------------------Transfer completed successfully and subscription saved.');
+
+          // Navigate to OffersCarOwnerScreen
+          if (mounted) {
+            String? userRole = await FirestoreService()
+                .getUserRole(FirebaseAuth.instance.currentUser!.uid);
+            if (userRole != null) {
+              switch (userRole) {
+                case 'car owner':
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CarOwnerHomeScreen(),
+                    ),
+                  );
+                  break;
+                case 'home owner':
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeOwnerHomeScreen(),
+                    ),
+                  );
+                  break;
+                case 'travelling agency':
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TravelingAgencyHomeScreen(),
+                    ),
+                  );
+                  break;
+                default:
+                  // Handle other roles or unexpected values
+                  break;
+              }
+            } else {
+              // Handle null user role
+              // Maybe show an error message or redirect to a default screen
+            }
+          }
         } else {
           // Handle incomplete transfer
-          print('Transfer not completed.');
+          if (!completed) {
+            print(
+                '-------------------------------------------------------Transfer not completed.');
+          }
         }
       } else {
-        throw Exception(result['message']);
+        throw Exception(
+            '----------------------------------------------------------${result['message']}');
       }
     } catch (e) {
-      print('Error: $e');
+      // Error handling
+      print(
+          '-------------------------------------------------------------------Error: $e');
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          isCheckingTransfer = false; // Stop checking transfer
+        });
+      }
     }
   }
 
@@ -130,6 +210,13 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
   void initState() {
     super.initState();
     calculateTotalPrice();
+  }
+
+  @override
+  void dispose() {
+    isCheckingTransfer =
+        false; // Stop checking transfer when widget is disposed
+    super.dispose();
   }
 
   @override
@@ -273,6 +360,10 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
             left: 10,
             child: IconButton(
               onPressed: () {
+                setState(() {
+                  isCheckingTransfer =
+                      false; // Stop checking transfer on back navigation
+                });
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.arrow_back, color: Colors.white),

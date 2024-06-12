@@ -8,18 +8,39 @@ import 'package:marhba_bik/widgets/destination_listview.dart';
 import 'package:marhba_bik/widgets/houses_listview.dart';
 import 'package:marhba_bik/widgets/trips_listview.dart';
 
-class WilayaScreen extends StatelessWidget {
+class WilayaScreen extends StatefulWidget {
   final Wilaya wilaya;
 
   const WilayaScreen({super.key, required this.wilaya});
 
   @override
+  _WilayaScreenState createState() => _WilayaScreenState();
+}
+
+class _WilayaScreenState extends State<WilayaScreen> {
+  List<String> images = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchImages();
+  }
+
+  void _fetchImages() async {
+    FirestoreService firestoreService = FirestoreService();
+    List<String> fetchedImages =
+        await firestoreService.getDestinationImagesByWilaya(widget.wilaya.name);
+    setState(() {
+      images = [widget.wilaya.imageUrl, ...fetchedImages];
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<String> images = [wilaya.imageUrl];
-    String name = wilaya.name;
-    String title = wilaya.title;
-    String description = wilaya.description;
-    List<String> regions = wilaya.regions;
+    String name = widget.wilaya.name;
+    String title = widget.wilaya.title;
+    String description = widget.wilaya.description;
+    List<String> regions = widget.wilaya.regions;
 
     return DefaultTabController(
       length: 4,
@@ -124,7 +145,7 @@ class WilayaScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              'À la découverte de la beauté de ${wilaya.name}',
+                              'À la découverte de la beauté de ${widget.wilaya.name}',
                               style: const TextStyle(
                                 color: Color(0xff001939),
                                 fontWeight: FontWeight.bold,

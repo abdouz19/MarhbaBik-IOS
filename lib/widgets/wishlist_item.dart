@@ -67,7 +67,23 @@ class CollectionCard extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final itemData = snapshot.data!;
-          final imageUrl = itemData['images']?[0];
+          late final String imageUrl;
+
+          switch (collectionName) {
+            case 'carIds':
+            case 'tripIds':
+            case 'houseIds':
+              imageUrl = itemData['images']?[0] ?? '';
+              break;
+            case 'destinationIds':
+              imageUrl = itemData['thumbnailUrl'] ?? '';
+              break;
+            case 'wilayaIds':
+              imageUrl = itemData['imageUrl'] ?? '';
+              break;
+            default:
+              imageUrl = '';
+          }
 
           return GestureDetector(
             onTap: () => Navigator.push(
@@ -85,7 +101,7 @@ class CollectionCard extends StatelessWidget {
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
-                    child: itemIds.isNotEmpty
+                    child: itemIds.isNotEmpty && imageUrl.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: imageUrl,
                             width: double.infinity,

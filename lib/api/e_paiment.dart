@@ -44,13 +44,12 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> createTransfer(
-      double amount, String contact, String url) async {
+      double amount, String contact) async {
     print('Contact value before transfer: $contact');
     try {
       final body = jsonEncode({
         'amount': amount,
         'contacte': contact,
-        'url': url,
       });
 
       final headers = {
@@ -117,7 +116,8 @@ class ApiService {
           'data': data['data'],
         };
       } else {
-        throw Exception('Failed to fetch transfer details: ${response.reasonPhrase}');
+        throw Exception(
+            'Failed to fetch transfer details: ${response.reasonPhrase}');
       }
     } catch (e) {
       throw Exception('Failed to fetch transfer details: $e');

@@ -15,111 +15,86 @@ class FirestoreService {
 
   FirestoreService._internal();
 
-  Future<List<Trip>> fetchTrips() async {
+  // helper functions
+  Future<List<T>> _fetchData<T>(
+    String collectionName,
+    T Function(DocumentSnapshot<Object?> doc) fromDocument,
+  ) async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('trips').get();
-      return querySnapshot.docs.map((doc) => Trip.fromDocument(doc)).toList();
+          await FirebaseFirestore.instance.collection(collectionName).get();
+      return querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
     } catch (e) {
-      print("Error fetching trips: $e");
+      print("Error fetching $collectionName: $e");
       return [];
     }
+  }
+
+  Future<List<T>> _fetchDatas<T>(
+    String collectionName,
+    T Function(DocumentSnapshot<Object?> doc) fromDocument, {
+    String? where,
+    dynamic isEqualTo,
+    List<String>? whereIn,
+  }) async {
+    try {
+      Query query = FirebaseFirestore.instance.collection(collectionName);
+      if (where != null && isEqualTo != null) {
+        query = query.where(where, isEqualTo: isEqualTo);
+      }
+      if (whereIn != null) {
+        query = query.where(FieldPath.documentId, whereIn: whereIn);
+      }
+      QuerySnapshot querySnapshot = await query.get();
+      return querySnapshot.docs.map((doc) => fromDocument(doc)).toList();
+    } catch (e) {
+      print("Error fetching $collectionName: $e");
+      return [];
+    }
+  }
+
+  //---------------------------------------------------------------//
+
+  Future<List<Trip>> fetchTrips() async {
+    return _fetchData<Trip>('trips', (doc) => Trip.fromDocument(doc));
   }
 
   Future<List<Car>> fetchCars() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('cars').get();
-      return querySnapshot.docs.map((doc) => Car.fromDocument(doc)).toList();
-    } catch (e) {
-      print("Error fetching cars: $e");
-      return [];
-    }
+    return _fetchData<Car>('cars', (doc) => Car.fromDocument(doc));
   }
 
   Future<List<House>> fetchHouses() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('houses').get();
-      return querySnapshot.docs.map((doc) => House.fromDocument(doc)).toList();
-    } catch (e) {
-      print("Error fetching houses: $e");
-      return [];
-    }
+    return _fetchData<House>('houses', (doc) => House.fromDocument(doc));
   }
 
   Future<List<Wilaya>> fetchWilayas() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('wilayas').get();
-      final wilayas = querySnapshot.docs.map((doc) {
-        print('Document data: ${doc.data()}');
-        return Wilaya.fromDocument(doc);
-      }).toList();
-      print('Fetched ${wilayas.length} wilayas');
-      return wilayas;
-    } catch (e) {
-      print("Error fetching wilayas: $e");
-      return [];
-    }
+    return _fetchData<Wilaya>('wilayas', (doc) => Wilaya.fromDocument(doc));
+  }
+
+  Future<List<Destination>> fetchDestinations() async {
+    return _fetchDatas<Destination>(
+        'destinations', (doc) => Destination.fromDocument(doc));
   }
 
   Future<List<Wilaya>> fetchSpecialWilayas(List<String> wilayaIds) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('wilayas')
-          .where(FieldPath.documentId, whereIn: wilayaIds)
-          .get();
-
-      return snapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
-    } catch (e) {
-      print("Error fetching wilayas: $e");
-      return [];
-    }
+    return _fetchDatas<Wilaya>('wilayas', (doc) => Wilaya.fromDocument(doc),
+        whereIn: wilayaIds);
   }
 
   Future<List<Destination>> fetchSpecialDestinations(
       List<String> destinationNames) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('destinations')
-          .where(FieldPath.documentId, whereIn: destinationNames)
-          .get();
-
-      return snapshot.docs.map((doc) => Destination.fromDocument(doc)).toList();
-    } catch (e) {
-      print("Error fetching destinations: $e");
-      return [];
-    }
-  }
-
-  Future<List<Destination>> fetchDestinations() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('destinations').get();
-      return querySnapshot.docs
-          .map((doc) => Destination.fromDocument(doc))
-          .toList();
-    } catch (e) {
-      print("Error fetching destinations: $e");
-      return [];
-    }
+    return _fetchDatas<Destination>(
+        'destinations', (doc) => Destination.fromDocument(doc),
+        whereIn: destinationNames);
   }
 
   Future<List<Destination>> fetchDestinationsByWilaya(String wilayaName) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('destinations')
-          .where('wilaya', isEqualTo: wilayaName)
-          .get();
-      return querySnapshot.docs
-          .map((doc) => Destination.fromDocument(doc))
-          .toList();
-    } catch (e) {
-      print("Error fetching destinations: $e");
-      return [];
-    }
+    return _fetchDatas<Destination>(
+        'destinations', (doc) => Destination.fromDocument(doc),
+        where: 'wilaya', isEqualTo: wilayaName);
   }
+
+  //---------------------------------------------------------------//
 
   Future<Wilaya?> fetchSpecialWilaya(String wilayaId) async {
     try {
@@ -140,127 +115,116 @@ class FirestoreService {
     }
   }
 
-  Future<Map<String, dynamic>?> getCarById(String carId) async {
+  Future<List<int>> loadRatingsForDestination(String destinationName) async {
     try {
-      DocumentSnapshot carSnapshot =
-          await FirebaseFirestore.instance.collection('cars').doc(carId).get();
+      final reviewsDoc = await FirebaseFirestore.instance
+          .collection('DestinationsReviews')
+          .doc(destinationName)
+          .get();
+      if (reviewsDoc.exists) {
+        final reviewsData = reviewsDoc.data() as Map<String, dynamic>;
+        if (reviewsData.containsKey('ratings')) {
+          final ratingsData = reviewsData['ratings'];
+          if (ratingsData is List<dynamic>) {
+            return List<int>.from(ratingsData.cast<int>());
+          }
+        }
+      }
+      return [0]; // Default rating if no ratings are found
+    } catch (e) {
+      print("Error fetching ratings for destination $destinationName: $e");
+      return [0]; // Default rating in case of error
+    }
+  }
 
-      if (carSnapshot.exists) {
-        Map<String, dynamic> carData =
-            carSnapshot.data() as Map<String, dynamic>;
-        return carData;
+  Future<String?> getUserRole(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userSnapshot.exists) {
+        return userSnapshot['role'];
       } else {
-        print("Car with ID $carId not found");
         return null;
       }
     } catch (e) {
-      print("Error fetching car data: $e");
+      print('Error fetching user role: $e');
       return null;
     }
+  }
+
+  Future<Map<String, dynamic>?> getDocumentById(
+      String collection, String docId) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection(collection)
+          .doc(docId)
+          .get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> docData =
+            docSnapshot.data() as Map<String, dynamic>;
+        return docData;
+      } else {
+        print("$collection document with ID $docId not found");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching $collection data: $e");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCarById(String carId) async {
+    return getDocumentById('cars', carId);
   }
 
   Future<Map<String, dynamic>?> getTripById(String tripId) async {
-    try {
-      DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
-          .collection('trips')
-          .doc(tripId)
-          .get();
-
-      if (tripSnapshot.exists) {
-        Map<String, dynamic> tripData =
-            tripSnapshot.data() as Map<String, dynamic>;
-        return tripData;
-      } else {
-        print("Trip with ID $tripId not found");
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching car data: $e");
-      return null;
-    }
+    return getDocumentById('trips', tripId);
   }
 
   Future<Map<String, dynamic>?> getHouseById(String houseId) async {
-    try {
-      DocumentSnapshot houseSnapshot = await FirebaseFirestore.instance
-          .collection('houses')
-          .doc(houseId)
-          .get();
-
-      if (houseSnapshot.exists) {
-        Map<String, dynamic> houseData =
-            houseSnapshot.data() as Map<String, dynamic>;
-        return houseData;
-      } else {
-        print("House with ID $houseId not found");
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching car data: $e");
-      return null;
-    }
+    return getDocumentById('houses', houseId);
   }
 
-  Future<List<T>> fetchAllData<T>(
-      String collectionName, T Function(DocumentSnapshot) fromDocument) async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection(collectionName).get();
-      return querySnapshot.docs.map(fromDocument).toList();
-    } catch (e) {
-      print("Error fetching $collectionName: $e");
-      return [];
-    }
-  }
-
-  Future<Car?> getCarModelById(String carId) async {
-    try {
-      final docRef = FirebaseFirestore.instance.collection('cars').doc(carId);
-      final docSnapshot = await docRef.get();
-
-      if (docSnapshot.exists) {
-        return Car.fromDocument(docSnapshot);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching car by ID: $e");
-      return null;
-    }
-  }
-
-  Future<House?> getHouseModelById(String houseId) async {
+  Future<T?> getModelById<T>(
+    String collection,
+    String docId,
+    T Function(DocumentSnapshot) fromDocument,
+  ) async {
     try {
       final docRef =
-          FirebaseFirestore.instance.collection('houses').doc(houseId);
+          FirebaseFirestore.instance.collection(collection).doc(docId);
       final docSnapshot = await docRef.get();
 
       if (docSnapshot.exists) {
-        return House.fromDocument(docSnapshot);
+        return fromDocument(docSnapshot);
       } else {
         return null;
       }
     } catch (e) {
-      print("Error fetching house by ID: $e");
+      print("Error fetching $collection by ID: $e");
       return null;
     }
   }
 
-  Future<Trip?> getTripModelById(String tripId) async {
-    try {
-      final docRef = FirebaseFirestore.instance.collection('trips').doc(tripId);
-      final docSnapshot = await docRef.get();
+  Future<Car?> getCarModelById(String carId) async =>
+      getModelById<Car>('cars', carId, Car.fromDocument);
 
-      if (docSnapshot.exists) {
-        return Trip.fromDocument(docSnapshot);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching trip by ID: $e");
-      return null;
-    }
-  }
+  Future<House?> getHouseModelById(String houseId) async =>
+      getModelById<House>('houses', houseId, House.fromDocument);
+
+  Future<Trip?> getTripModelById(String tripId) async =>
+      getModelById<Trip>('trips', tripId, Trip.fromDocument);
+
+  Future<Wilaya?> getWilayaModelById(String wilayaId) async =>
+      getModelById<Wilaya>('wilayas', wilayaId, Wilaya.fromDocument);
+
+  Future<Destination?> getDestinationModelById(String destinationId) async =>
+      getModelById<Destination>(
+          'destinations', destinationId, Destination.fromDocument);
 
   Future<String> uploadBookingCars({
     required String carID,
@@ -377,11 +341,12 @@ class FirestoreService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchBookingCars(String userID) async {
+  Future<List<Map<String, dynamic>>> fetchBookingByTarget(
+      String userID, String targetType, String collectionName) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('bookings')
-          .where('targetType', isEqualTo: 'cars')
+          .where('targetType', isEqualTo: targetType)
           .where('targetID', isEqualTo: userID)
           .where('bookingStatus', isEqualTo: 'pending')
           .orderBy('createdAt', descending: true)
@@ -391,152 +356,68 @@ class FirestoreService {
 
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String carID = bookingData['id'];
+        String targetID = bookingData['id'];
 
-        DocumentSnapshot Snapshot = await FirebaseFirestore.instance
-            .collection('cars')
-            .doc(carID)
+        DocumentSnapshot targetSnapshot = await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(targetID)
             .get();
 
-        if (Snapshot.exists) {
+        if (targetSnapshot.exists) {
           bookings.add(bookingData);
         }
       }
 
       return bookings;
     } catch (e) {
-      print("Error fetching car bookings: $e");
+      print("Error fetching $targetType bookings: $e");
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchBookingCars(String userID) async {
+    return fetchBookingByTarget(userID, 'cars', 'cars');
   }
 
   Future<List<Map<String, dynamic>>> fetchBookingHouses(String userID) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('targetType', isEqualTo: 'houses')
-          .where('targetID', isEqualTo: userID)
-          .where('bookingStatus', isEqualTo: 'pending')
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      List<Map<String, dynamic>> bookings = [];
-
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String houseID = bookingData['id'];
-
-        DocumentSnapshot houseSnapshot = await FirebaseFirestore.instance
-            .collection('houses')
-            .doc(houseID)
-            .get();
-
-        if (houseSnapshot.exists) {
-          bookings.add(bookingData);
-        }
-      }
-
-      return bookings;
-    } catch (e) {
-      print("Error fetching house bookings: $e");
-      return [];
-    }
+    return fetchBookingByTarget(userID, 'houses', 'houses');
   }
 
   Future<List<Map<String, dynamic>>> fetchBookingTrips(String userID) async {
+    return fetchBookingByTarget(userID, 'trips', 'trips');
+  }
+
+  // Helper function to fetch document by ID
+  Future<Map<String, dynamic>?> _getDocumentById(
+      String collectionName, String docId) async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('targetType', isEqualTo: 'trips')
-          .where('targetID', isEqualTo: userID)
-          .where('bookingStatus', isEqualTo: 'pending')
-          .orderBy('createdAt', descending: true)
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(docId)
           .get();
 
-      List<Map<String, dynamic>> bookings = [];
-
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String tripID = bookingData['id'];
-
-        DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
-            .collection('trips')
-            .doc(tripID)
-            .get();
-
-        if (tripSnapshot.exists) {
-          bookings.add(bookingData);
-        }
+      if (docSnapshot.exists) {
+        return docSnapshot.data() as Map<String, dynamic>;
+      } else {
+        print("$collectionName document with ID $docId not found");
+        return null;
       }
-
-      return bookings;
     } catch (e) {
-      print("Error fetching trip bookings: $e");
-      return [];
+      print("Error fetching $collectionName data: $e");
+      return null;
     }
   }
 
   Future<Map<String, dynamic>?> getUserDataById(String userID) async {
-    try {
-      DocumentSnapshot<Map<String, dynamic>> userDataSnapshot =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userID)
-              .get();
-
-      if (userDataSnapshot.exists) {
-        return userDataSnapshot.data();
-      } else {
-        print("User with ID $userID not found");
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching user data: $e");
-      return null;
-    }
+    return _getDocumentById('users', userID);
   }
 
-  Future<Map<String, dynamic>?> getDestinationById(
-      String destinationdId) async {
-    try {
-      DocumentSnapshot destinationSnapshot = await FirebaseFirestore.instance
-          .collection('destinations')
-          .doc(destinationdId)
-          .get();
-
-      if (destinationSnapshot.exists) {
-        Map<String, dynamic> destinationData =
-            destinationSnapshot.data() as Map<String, dynamic>;
-        return destinationData;
-      } else {
-        print("Destination with ID $destinationdId not found");
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching car data: $e");
-      return null;
-    }
+  Future<Map<String, dynamic>?> getDestinationById(String destinationId) async {
+    return _getDocumentById('destinations', destinationId);
   }
 
   Future<Map<String, dynamic>?> getWilayaById(String wilayaId) async {
-    try {
-      DocumentSnapshot wilayaSnapshot = await FirebaseFirestore.instance
-          .collection('wilayas')
-          .doc(wilayaId)
-          .get();
-
-      if (wilayaSnapshot.exists) {
-        Map<String, dynamic> wilayaData =
-            wilayaSnapshot.data() as Map<String, dynamic>;
-        return wilayaData;
-      } else {
-        print("Wilaya with ID $wilayaId not found");
-        return null;
-      }
-    } catch (e) {
-      print("Error fetching car data: $e");
-      return null;
-    }
+    return _getDocumentById('wilayas', wilayaId);
   }
 
   Future<Wilaya> fetchWilayaByName(String wilayaName) async {
@@ -556,6 +437,26 @@ class FirestoreService {
     }
   }
 
+  Future<List<String>> getDestinationImagesByWilaya(String wilayaName) async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('destinations')
+          .where('wilaya', isEqualTo: wilayaName)
+          .get();
+
+      List<String> imageUrls = [];
+      for (var doc in snapshot.docs) {
+        List<dynamic> urls = doc['otherPicturesUrls'];
+        imageUrls.addAll(urls.cast<String>());
+      }
+
+      return imageUrls;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   Future<void> updateBookingStatus(String bookingID, String status) async {
     try {
       await FirebaseFirestore.instance
@@ -570,14 +471,13 @@ class FirestoreService {
     }
   }
 
-  // New methods for fetching bookings by travelerID
-  Future<List<Map<String, dynamic>>> fetchCarBookingsByTravelerID(
-      String travelerID) async {
+  Future<List<Map<String, dynamic>>> fetchBookingsByTravelerID(
+      String travelerID, String targetType, String collectionName) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('bookings')
           .where('travelerID', isEqualTo: travelerID)
-          .where('targetType', isEqualTo: 'cars')
+          .where('targetType', isEqualTo: targetType)
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -585,89 +485,38 @@ class FirestoreService {
 
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String carID = bookingData['id'];
+        String targetID = bookingData['id'];
 
-        DocumentSnapshot Snapshot = await FirebaseFirestore.instance
-            .collection('cars')
-            .doc(carID)
+        DocumentSnapshot targetSnapshot = await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(targetID)
             .get();
 
-        if (Snapshot.exists) {
+        if (targetSnapshot.exists) {
           bookings.add(bookingData);
         }
       }
 
       return bookings;
     } catch (e) {
-      print("Error fetching car bookings: $e");
+      print("Error fetching $targetType bookings: $e");
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchCarBookingsByTravelerID(
+      String travelerID) async {
+    return fetchBookingsByTravelerID(travelerID, 'cars', 'cars');
   }
 
   Future<List<Map<String, dynamic>>> fetchHouseBookingsByTravelerID(
       String travelerID) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('travelerID', isEqualTo: travelerID)
-          .where('targetType', isEqualTo: 'houses')
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      List<Map<String, dynamic>> bookings = [];
-
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String houseID = bookingData['id'];
-
-        DocumentSnapshot houseSnapshot = await FirebaseFirestore.instance
-            .collection('houses')
-            .doc(houseID)
-            .get();
-
-        if (houseSnapshot.exists) {
-          bookings.add(bookingData);
-        }
-      }
-
-      return bookings;
-    } catch (e) {
-      print("Error fetching house bookings: $e");
-      return [];
-    }
+    return fetchBookingsByTravelerID(travelerID, 'houses', 'houses');
   }
 
   Future<List<Map<String, dynamic>>> fetchTripBookingsByTravelerID(
       String travelerID) async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('travelerID', isEqualTo: travelerID)
-          .where('targetType', isEqualTo: 'trips')
-          .orderBy('createdAt', descending: true)
-          .get();
-
-      List<Map<String, dynamic>> bookings = [];
-
-      for (var doc in querySnapshot.docs) {
-        Map<String, dynamic> bookingData = doc.data() as Map<String, dynamic>;
-        String tripID = bookingData['id'];
-
-        DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
-            .collection('trips')
-            .doc(tripID)
-            .get();
-
-        if (tripSnapshot.exists) {
-          bookings.add(bookingData);
-        }
-      }
-
-      return bookings;
-    } catch (e) {
-      print("Error fetching trip bookings: $e");
-      return [];
-    }
+    return fetchBookingsByTravelerID(travelerID, 'trips', 'trips');
   }
 
   Future<void> deleteBooking(String bookingID) async {
@@ -763,21 +612,8 @@ class FirestoreService {
     }
   }
 
-  // Implement this function to retrieve the current user ID (e.g., from Firebase Authentication)
   Future<String> getCurrentUserId() async {
     return FirebaseAuth.instance.currentUser!.uid;
-  }
-
-  Future<void> saveSubscription(
-      String userId, Map<String, dynamic> data) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('subscriptions')
-          .doc(userId)
-          .set(data);
-    } catch (e) {
-      throw Exception('Failed to save subscription: $e');
-    }
   }
 
   Future<Map<String, List<String>>> getWishlistData(String userId) async {
@@ -801,5 +637,70 @@ class FirestoreService {
     });
 
     return formattedData;
+  }
+
+  Future<void> saveSubscription(
+      String userId, Map<String, dynamic> data) async {
+    try {
+      // Check if the document exists
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('subscriptions')
+          .doc(userId)
+          .get();
+
+      if (docSnapshot.exists) {
+        // Update the existing document with new data
+        await FirebaseFirestore.instance
+            .collection('subscriptions')
+            .doc(userId)
+            .update(data);
+      } else {
+        // If the document doesn't exist, create a new one
+        await FirebaseFirestore.instance
+            .collection('subscriptions')
+            .doc(userId)
+            .set(data);
+      }
+    } catch (e) {
+      throw Exception('Failed to save subscription: $e');
+    }
+  }
+
+  Future<bool> checkSubscriptionPayment(String userId) async {
+    try {
+      QuerySnapshot subscriptionSnapshot = await FirebaseFirestore.instance
+          .collection('subscriptions')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      if (subscriptionSnapshot.docs.isNotEmpty) {
+        var subscriptionData = subscriptionSnapshot.docs.first.data();
+
+        // Cast subscriptionData to Map<String, dynamic>
+        Map<String, dynamic>? dataMap =
+            subscriptionData as Map<String, dynamic>?;
+
+        if (dataMap != null && dataMap.containsKey('expiration_date')) {
+          String? expirationDateString = dataMap['expiration_date'];
+
+          if (expirationDateString != null) {
+            DateTime expirationDate = DateTime.parse(expirationDateString);
+            DateTime currentDate = DateTime.now();
+
+            if (currentDate.isBefore(expirationDate) ||
+                currentDate.isAtSameMomentAs(expirationDate)) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+      // User has no subscription or expiration date is missing
+      return false;
+    } catch (e) {
+      print('Error checking subscription payment: $e');
+      return false;
+    }
   }
 }

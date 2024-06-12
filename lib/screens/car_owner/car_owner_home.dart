@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/screens/car_owner/messages_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/offers_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/profile_car_owner.dart';
-import 'package:marhba_bik/screens/shared/subscription.dart';
 
 class CarOwnerHomeScreen extends StatefulWidget {
   const CarOwnerHomeScreen({super.key});
@@ -20,7 +19,7 @@ class _CarOwnerHomeScreenState extends State<CarOwnerHomeScreen> {
 
   final screens = [
     const CarOwnerMessages(),
-    const SubscriptionScreen(),
+    const CarOwnerOffers(),
     const CarOwnerProfile()
   ];
 

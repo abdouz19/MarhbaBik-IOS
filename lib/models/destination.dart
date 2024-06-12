@@ -25,19 +25,10 @@ class Destination {
 
   factory Destination.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    final ratingsData = data['ratings'];
-
-    List<int> ratings;
-    if (ratingsData is List<dynamic>) {
-      ratings = List<int>.from(ratingsData.cast<int>());
-    } else {
-      // If 'ratings' field is missing or not an array, assign default value
-      ratings = [0];
-    }
 
     return Destination(
       title: data['title'],
-      ratings: ratings,
+      ratings: [0],
       description: data['description'],
       category: data['category'],
       name: data['name'],
@@ -46,9 +37,5 @@ class Destination {
       thumbnailUrl: data['thumbnailUrl'],
       wilaya: data['wilaya'],
     );
-  }
-  
-  static List<Destination> getDestinationsByWilaya(List<Destination> destinations, String wilayaName) {
-    return destinations.where((destination) => destination.wilaya == wilayaName).toList();
   }
 }

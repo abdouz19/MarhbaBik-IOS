@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/auth/getstarted.dart';
 import 'package:marhba_bik/auth/login.dart';
 import 'package:marhba_bik/auth/signup.dart';
+import 'package:marhba_bik/loading_screen.dart';
 import 'package:marhba_bik/screens/car_owner/car_owner_home.dart';
 import 'package:marhba_bik/screens/car_owner/car_owner_info_form.dart';
 import 'package:marhba_bik/screens/home_owner/home_owner_home.dart';
 import 'package:marhba_bik/screens/home_owner/home_owner_info_form.dart';
+import 'package:marhba_bik/screens/shared/subscription.dart';
 import 'package:marhba_bik/screens/traveler/home.dart';
 import 'package:marhba_bik/screens/traveler/traveler_info_form.dart';
 import 'package:marhba_bik/screens/traveling_agency/travelling_agency_home.dart';
@@ -52,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       future: determineInitialRoute(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Show loading indicator while determining initial route
+          return const CustomLoadingScreen(); // Show loading indicator while determining initial route
         }
         final initialRoute = snapshot.data ?? '/getstarted';
         return MaterialApp(
@@ -77,6 +79,7 @@ class _MyAppState extends State<MyApp> {
             '/car_owner_info_form': (context) => const CarOwnerInfoFormScreen(),
             '/travelling_agency_info_form': (context) =>
                 const TravelingAgencyInfoFormScreen(),
+            '/subscription_screen': (context) => const SubscriptionScreen(),
           },
         );
       },
