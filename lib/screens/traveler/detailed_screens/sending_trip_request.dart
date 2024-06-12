@@ -7,7 +7,7 @@ import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/trip.dart';
-import 'package:marhba_bik/screens/traveler/houses_traveler.dart';
+import 'package:marhba_bik/screens/traveler/home.dart';
 import 'package:marhba_bik/api/e_paiment.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 
@@ -33,7 +33,6 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
   @override
   void initState() {
     super.initState();
-    // Calculate commission when the screen initializes
     calculateTotalPrice();
   }
 
@@ -90,7 +89,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HousesTraveler()));
+                        builder: (context) => const TravelerHomeScreen()));
                 }
               },
               child: const Text('OK'),

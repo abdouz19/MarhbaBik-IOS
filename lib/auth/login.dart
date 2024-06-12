@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/api/user_services.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/textfield.dart';
-import 'package:marhba_bik/api/user_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -175,28 +176,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                   final userRole = userData['role'];
                                   final personalDataProvided =
                                       userData['personalDataProvided'] ?? false;
-                                  
 
-                                   await _userService.storeUserToken();
+                                  await _userService.storeUserToken();
+
                                   // Check if personal data is provided
                                   if (personalDataProvided) {
-                                    // Navigate based on user role
-                                    switch (userRole) {
-                                      case 'traveler':
-                                        onPushScreen('/traveler_home');
-                                        break;
-                                      case 'home owner':
-                                        onPushScreen('/home_owner_home');
-                                        break;
-                                      case 'car owner':
-                                        onPushScreen('/car_owner_home');
-                                        break;
-                                      case 'travelling agency':
-                                        onPushScreen('/travelling_agency_home');
-                                        break;
-                                      default:
-                                        presentDialog('Unknown User Role',
-                                            'User role not recognized.');
+                                    // Check if subscription is paid
+                                    final isSubscriptionPaid =
+                                        await FirestoreService()
+                                            .checkSubscriptionPayment(
+                                                credential.user!.uid);
+
+                                    // Navigate based on user role and subscription payment
+                                    if (isSubscriptionPaid) {
+                                      switch (userRole) {
+                                        case 'traveler':
+                                          onPushScreen('/traveler_home');
+                                          break;
+                                        case 'home owner':
+                                          onPushScreen('/home_owner_home');
+                                          break;
+                                        case 'car owner':
+                                          onPushScreen('/car_owner_home');
+                                          break;
+                                        case 'travelling agency':
+                                          onPushScreen(
+                                              '/travelling_agency_home');
+                                          break;
+                                        default:
+                                          presentDialog('Unknown User Role',
+                                              'User role not recognized.');
+                                      }
+                                    } else {
+                                      // Redirect to SubscriptionScreen
+                                      onPushScreen('/subscription_screen');
                                     }
                                   } else {
                                     // Redirect to info form based on user role

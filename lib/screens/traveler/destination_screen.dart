@@ -146,20 +146,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: RatingBar.builder(
-                      initialRating:
+                    child: RatingBarIndicator(
+                      rating:
                           calculateAverageRating(widget.destination.ratings),
-                      minRating: 0,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemSize: 20,
-                      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
                       itemBuilder: (context, _) => const Icon(
                         Icons.star,
                         color: Colors.amber,
                       ),
-                      onRatingUpdate: (rating) {},
+                      itemCount: 5,
+                      itemSize: 20,
+                      direction: Axis.horizontal,
                     ),
                   ),
                   const SizedBox(height: 10),

@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_checkbox.dart';
 import 'package:marhba_bik/components/dropdown_form_field.dart';
 import 'package:marhba_bik/components/image_picker.dart';
@@ -116,7 +117,16 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
         'personalDataProvided': true,
       });
 
-      Navigator.pushReplacementNamed(context, '/home_owner_home');
+      // Check if the user has paid their subscription fees
+      final isSubscriptionPaid = await FirestoreService().checkSubscriptionPayment(userId);
+
+      // Redirect based on subscription payment status
+      if (isSubscriptionPaid) {
+        Navigator.pushReplacementNamed(context, '/home_owner_home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/subscription_screen');
+      }
+
     } catch (e) {
       // Close the circular progress indicator dialog
       Navigator.pop(context);
