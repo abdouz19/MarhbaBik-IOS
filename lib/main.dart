@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/auth/getstarted.dart';
 import 'package:marhba_bik/auth/login.dart';
 import 'package:marhba_bik/auth/signup.dart';
@@ -20,7 +21,11 @@ var kColorScheme = ColorScheme.fromSeed(seedColor: const Color(0xff3F75BB));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Set French locale for message formatting using await
+  String locale = await Intl.getCurrentLocale();
+  Intl.defaultLocale = locale; // Set the default locale
+    try {
     await Firebase.initializeApp();
   } catch (e) {
     print('Error initializing Firebase: $e');

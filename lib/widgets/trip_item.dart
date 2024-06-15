@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/trip.dart';
@@ -33,6 +35,7 @@ class _TripItemState extends State<TripItem> {
 
   Future<void> _checkIfFavorited() async {
     String tripId = widget.trip.id;
+
     bool isFavorited = await FirestoreService().isItemFavorited(tripId, "trip");
     setState(() {
       _isFavorited = isFavorited;
@@ -42,7 +45,7 @@ class _TripItemState extends State<TripItem> {
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
-    String title = "${widget.trip.wilaya}, ${widget.trip.title}";
+    String title = "Trip to ${widget.trip.wilaya}";
     int maxLength = 33;
 
     String displayedTitle = title.length > maxLength
@@ -51,6 +54,19 @@ class _TripItemState extends State<TripItem> {
 
     double imageHeight = widget.imageHeight ?? 200;
     double imageWidth = widget.imageWidth ?? 250;
+    Timestamp startDate = widget.trip.startDate;
+    Timestamp endDate = widget.trip.endDate;
+
+    // Convert Timestamp to DateTime
+    DateTime startDateTime = startDate.toDate();
+    DateTime endDateTime = endDate.toDate();
+
+    // Format the dates
+    String formattedStartDate = DateFormat('d MMM').format(startDateTime);
+    String formattedEndDate = DateFormat('d MMM').format(endDateTime);
+
+    // Combined date range string
+    String dateRange = '$formattedStartDate - $formattedEndDate';
 
     return GestureDetector(
       onTap: () {
@@ -122,20 +138,19 @@ class _TripItemState extends State<TripItem> {
                 displayedTitle,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 1,
                 style: const TextStyle(
                   color: Color(0xff001939),
                   fontWeight: FontWeight.w700,
                   fontFamily: 'KastelovAxiforma',
-                  fontSize: 13,
+                  fontSize: 15,
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
-                'Cultural',
+              Text(
+                dateRange,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff666666),
                   fontWeight: FontWeight.w300,
                   fontFamily: 'KastelovAxiforma',
