@@ -1,68 +1,150 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/components/favorite_icon.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SecondWilayaItem extends StatelessWidget {
-  final Wilaya wilaya;
+class SecondWilayaItem extends StatefulWidget {
+  const SecondWilayaItem({
+    super.key,
+    required this.wilaya,
+    this.imageHeight,
+    this.imageWidth,
+  });
 
-  const SecondWilayaItem({super.key, required this.wilaya});
+  final Wilaya wilaya;
+  final double? imageHeight;
+  final double? imageWidth;
+
+  @override
+  State<SecondWilayaItem> createState() => _WilayaItemState();
+}
+
+class _WilayaItemState extends State<SecondWilayaItem> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String wilayaId = widget.wilaya.name;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(wilayaId, "wilaya");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    double imageHeight = widget.imageHeight ?? 200;
+    double imageWidth = widget.imageWidth ?? 250;
+    String image= widget.wilaya.imageUrl;
+    String title = "${widget.wilaya.name}, ${widget.wilaya.regions[0]}";
+    int maxLength = 33;
+
+    String displayedTitle = title.length > maxLength
+        ? "${title.substring(0, maxLength - 3)}..."
+        : title;
+
+    return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => WilayaScreen(wilaya: wilaya)),
+          MaterialPageRoute(
+            builder: (context) =>
+                WilayaScreen(wilaya: widget.wilaya),
+          ),
         );
       },
-      child: Stack(
-        children: [
-          ClipRRect(
+      child: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
-            child: CachedNetworkImage(
-              imageUrl: wilaya.imageUrl,
-              width: 160,
-              height: 160,
-              fit: BoxFit.cover,
-              placeholder: (context, url) {
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    width: 160,
-                    height: 160,
-                    color: Colors.white,
-                  ),
-                );
-              },
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
           ),
-          Container(
-            width: 160,
-            height: 160,
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              wilaya.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'KastelovAxiforma',
-                fontSize: 22,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CachedNetworkImage(
+                        imageUrl: image,
+                        width: imageWidth,
+                        height: imageHeight,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: imageWidth,
+                              height: imageHeight,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    ),
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: IconButton(
+                        icon: HeartIcon(isFavorited: _isFavorited),
+                        onPressed: () async {
+                          setState(() {
+                            _isFavorited = !_isFavorited;
+                          });
+                          if (_isFavorited) {
+                            await FirestoreService().addToWishlist(
+                                widget.wilaya.name, "wilaya");
+                          } else {
+                            await FirestoreService().removeFromWishlist(
+                                widget.wilaya.name, "wilaya");
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              const SizedBox(height: 5),
+              Text(
+                displayedTitle,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xff001939),
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'KastelovAxiforma',
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                widget.wilaya.regions[0],
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xff666666),
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'KastelovAxiforma',
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

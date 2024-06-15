@@ -5,8 +5,8 @@ import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
+import 'package:marhba_bik/widgets/region_item.dart';
 import 'package:marhba_bik/widgets/wilaya_listview.dart';
-import 'package:marhba_bik/widgets/wilayaitem.dart';
 
 class ExploreTraveler extends StatefulWidget {
   const ExploreTraveler({super.key});
@@ -83,16 +83,23 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                       _buildSearchBar(),
                       const SizedBox(height: 20.0),
                       _buildPickRegionButton(),
-                      const SizedBox(height: 20.0),
-                      _buildSectionTitle('Summer gateways'),
+                      const SizedBox(height: 40.0),
+                      _buildSectionTitle('Partez à la découverte'),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       WilayaList(
+                        type: 'vertical',
                         future: FirestoreService()
                             .fetchSpecialWilayas(['06', '10', '35']),
                       ),
                       _buildSeeAllButton(
                         onPressed: () {},
                       ),
-                      _buildSectionTitle('Attraction nearby'),
+                      _buildSectionTitle('Escapades à proximité'),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       DestinationsList(
                         future: FirestoreService().fetchSpecialDestinations(
                             ['Yema gouraya', 'Lac vert', "Makam al shahid"]),
@@ -101,7 +108,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                       _buildSeeAllButton(
                         onPressed: () {},
                       ),
-                      _buildSectionTitle('Destinations travelers love'),
+                      _buildSectionTitle('Régions à ne pas manquer'),
                       _buildSpecialWilayasGrid(),
                     ],
                   ),
@@ -178,32 +185,35 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
   }
 
   Widget _buildSpecialWilayasGrid() {
-    return FutureBuilder<List<Wilaya>>(
-      future: futureSpecialWilayas,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return const Center(child: Text('Error loading wilayas'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No wilayas found'));
-        } else {
-          return GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return SecondWilayaItem(wilaya: snapshot.data![index]);
-            },
-          );
-        }
-      },
-    );
+    Map<String, String> regions = {
+      'aures':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Faures.jpg?alt=media&token=a5ee441e-8bfa-4e85-8e4c-473be608cd0d0',
+      'center':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fcenter.jpg?alt=media&token=545ba711-7bc2-4b49-9dd5-2e6fd152ef1a',
+      'east':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Feast.jpg?alt=media&token=69dcfb64-822c-4d65-8d33-295010e9fa13',
+      'kabylie':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fkabylie.jpg?alt=media&token=1eb4f611-8d8f-4705-83d8-a416fcafca25',
+      'sahara':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fsahara.jpg?alt=media&token=c3e5bbf4-7569-4268-bcc0-036d9b7feb12',
+      'west':
+          'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fwest.jpg?alt=media&token=fe065a6e-d0bb-4e23-b3f9-520079d12f20'
+    };
+
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: regions.length,
+        itemBuilder: (context, index) {
+          String regionName = regions.keys.elementAt(index);
+          String? imageUrl = regions[regionName];
+          return RegionItem(name: regionName, imageUrl: imageUrl!);
+        });
   }
 
   Widget _buildSearchResults() {
@@ -256,14 +266,19 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
 }
 
 Widget _buildSeeAllButton({required VoidCallback onPressed}) {
-  return TextButton(
-    onPressed: onPressed,
-    child: Text(
-      'See All',
-      style: TextStyle(
-        color: Colors.blue,
-        fontSize: 16.0,
-        fontWeight: FontWeight.bold,
+  return InkWell(
+    onTap: onPressed,
+    child: const Padding(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Text(
+        'See All',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Color(0xff3F75BB),
+          fontSize: 18.0,
+          fontFamily: 'KastelovAxiforma',
+          fontWeight: FontWeight.bold,
+        ),
       ),
     ),
   );

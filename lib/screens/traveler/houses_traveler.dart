@@ -5,6 +5,7 @@ import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/cars_listview.dart';
 import 'package:marhba_bik/widgets/houses_listview.dart';
 import 'package:marhba_bik/widgets/trips_listview.dart';
+import 'package:marhba_bik/widgets/wilaya_listview.dart';
 import 'package:outlined_text/outlined_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -18,12 +19,14 @@ class HousesTraveler extends StatefulWidget {
 class _HousesTravelerScreenState extends State<HousesTraveler> {
   late Future<Wilaya?> _wilayaJijel;
   late Future<Wilaya?> _wilayaOran;
+  Future<List<Wilaya>>? _futureWilayas;
 
   @override
   void initState() {
     super.initState();
     _wilayaJijel = FirestoreService().fetchWilayaByName('Jijel');
     _wilayaOran = FirestoreService().fetchWilayaByName('Oran');
+    _futureWilayas = FirestoreService().fetchWilayas();
   }
 
   @override
@@ -88,7 +91,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Grab your beloved ones and hit the beach',
+                  'Wilayas Title',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -101,7 +104,45 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Grab your loved ones and hit the beach',
+                  'Wilayas subtitle',
+                  style: TextStyle(
+                    color: Color(0xff001939),
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'KastelovAxiforma',
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.only(left: 15),
+                height: 280,
+                child: WilayaList(
+                  type: 'horizontal',
+                  future: FirestoreService()
+                      .fetchSpecialWilayas(['06', '10', '35']),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Trips Title',
+                  style: TextStyle(
+                    color: Color(0xff001939),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'KastelovAxiforma',
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Trips subtitle',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -192,7 +233,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'You might like these',
+                  'Cars Title',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -205,7 +246,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'More things to visit Algeria',
+                  'Cars subTitle',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -373,7 +414,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Lace up those boots',
+                  'Houses Title',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -386,7 +427,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'More things to visit in Algiers',
+                  'Houses subTitle',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,

@@ -33,6 +33,7 @@ class DestinationsList extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: destinations.length,
+          padding: EdgeInsets.zero,
           itemBuilder: (context, index) {
             return DestinationItem(destination: destinations[index]);
           },
