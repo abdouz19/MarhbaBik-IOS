@@ -23,9 +23,9 @@ class WilayaList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerList();
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading wilayas'));
+          return const Center(child: Text('Error loading wilayas'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No wilayas available'));
+          return const Center(child: Text('No wilayas available'));
         }
 
         final wilayas = snapshot.data!;
@@ -131,18 +131,16 @@ class WilayaList extends StatelessWidget {
       },
     );
   }
-}
 
-Widget _buildShimmerHorizontalList() {
-  return Container(
-    height: 280,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: 6,
-      itemBuilder: (context, index) {
-        return SizedBox(
-          width: 350, // Fixed width for each shimmer item
-          child: Padding(
+  Widget _buildShimmerHorizontalList() {
+    return SizedBox(
+      height: 200, // Set a fixed height to ensure it displays properly
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 6,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,8 +149,8 @@ Widget _buildShimmerHorizontalList() {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    width: 280,
-                    height: 200,
+                    width: 140,
+                    height: 140,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10.0),
@@ -164,7 +162,7 @@ Widget _buildShimmerHorizontalList() {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    height: 20.0,
+                    height: 10.0,
                     width: 100.0,
                     color: Colors.white,
                   ),
@@ -174,16 +172,16 @@ Widget _buildShimmerHorizontalList() {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    height: 15.0,
-                    width: 150.0,
+                    height: 10.0,
+                    width: 60.0,
                     color: Colors.white,
                   ),
                 ),
               ],
             ),
-          ),
-        );
-      },
-    ),
-  );
+          );
+        },
+      ),
+    );
+  }
 }

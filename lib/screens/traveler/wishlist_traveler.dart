@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/widgets/empty_list.dart';
 import 'package:marhba_bik/widgets/wishlist_item.dart';
 
 class WishlistTraveler extends StatefulWidget {
@@ -59,35 +60,40 @@ class _WishlistTravelerState extends State<WishlistTraveler> {
                 child: FutureBuilder<Map<String, List<String>>>(
                   future: _wishlistData,
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final wishlistData = snapshot.data!;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10),
-                        child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisSpacing: 20.0,
-                            mainAxisSpacing: 20.0,
-                            crossAxisCount: 2,
-                          ),
-                          itemBuilder: (context, index) {
-                            final collectionName =
-                                wishlistData.keys.elementAt(index);
-                            final itemIds = wishlistData[collectionName] ?? [];
-                            return CollectionCard(
-                              collectionName: collectionName,
-                              itemIds: itemIds,
-                            );
-                          },
-                          itemCount: wishlistData.length,
-                          shrinkWrap: true,
-                        ),
-                      );
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const EmptyList(
+                        type: 'wishlist',
+                      );
                     }
-                    return const Center(child: CircularProgressIndicator());
+
+                    final wishlistData = snapshot.data!;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10),
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 20.0,
+                          mainAxisSpacing: 20.0,
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (context, index) {
+                          final collectionName =
+                              wishlistData.keys.elementAt(index);
+                          final itemIds = wishlistData[collectionName] ?? [];
+                          return CollectionCard(
+                            collectionName: collectionName,
+                            itemIds: itemIds,
+                          );
+                        },
+                        itemCount: wishlistData.length,
+                        shrinkWrap: true,
+                      ),
+                    );
                   },
                 ),
               ),

@@ -184,7 +184,10 @@ class _WilayaScreenState extends State<WilayaScreen> {
                           Container(
                             padding: const EdgeInsets.only(left: 15),
                             height: 280,
-                            child: const CarsListScreen(),
+                            child: CarsListScreen(
+                              carsFuture:
+                                  FirestoreService().fetchCarsByWilaya(name),
+                            ),
                           ),
                           const SizedBox(
                             height: 40,
@@ -204,7 +207,10 @@ class _WilayaScreenState extends State<WilayaScreen> {
                           Container(
                             padding: const EdgeInsets.only(left: 15),
                             height: 280,
-                            child: const HousesListScreen(),
+                            child: HousesListScreen(
+                              housesFuture:
+                                  FirestoreService().fetchHousesByWilaya(name),
+                            ),
                           ),
                           const SizedBox(
                             height: 80,
@@ -215,16 +221,19 @@ class _WilayaScreenState extends State<WilayaScreen> {
                   ),
                 ],
               ),
-              const Center(
+              Center(
                   child: HousesListScreen(
+                housesFuture: FirestoreService().fetchHousesByWilaya(name),
                 type: 'vertical',
               )),
-              const Center(
+              Center(
                   child: CarsListScreen(
+                carsFuture: FirestoreService().fetchCarsByWilaya(name),
                 type: 'vertical',
               )),
-              const Center(
+              Center(
                   child: TripsListScreen(
+                tripsFuture: FirestoreService().fetchTripsByWilaya(name),
                 type: 'vertical',
               )),
             ],

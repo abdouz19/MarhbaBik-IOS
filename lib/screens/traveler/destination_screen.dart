@@ -21,12 +21,35 @@ class DestinationScreen extends StatefulWidget {
 
 class _DestinationScreenState extends State<DestinationScreen> {
   late Future<Wilaya?> _wilayaFuture;
+  bool _isFavorited = false;
 
   @override
   void initState() {
     super.initState();
     _wilayaFuture =
         FirestoreService().fetchWilayaByName(widget.destination.wilaya);
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String destinationId = widget.destination.name;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(destinationId, "destination");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    String destinationId = widget.destination.name;
+    if (_isFavorited) {
+      await FirestoreService().addToWishlist(destinationId, "destination");
+    } else {
+      await FirestoreService().removeFromWishlist(destinationId, "destination");
+    }
   }
 
   @override
@@ -113,11 +136,11 @@ class _DestinationScreenState extends State<DestinationScreen> {
                       child: IconButton(
                         icon: Icon(
                           MdiIcons.heart,
-                          color: const Color.fromARGB(255, 168, 168, 168),
+                          color: _isFavorited
+                              ? Colors.red
+                              : const Color.fromARGB(255, 168, 168, 168),
                         ),
-                        onPressed: () {
-                          // Heart button action
-                        },
+                        onPressed: _toggleFavoriteStatus,
                       ),
                     ),
                   ),

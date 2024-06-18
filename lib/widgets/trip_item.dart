@@ -45,7 +45,7 @@ class _TripItemState extends State<TripItem> {
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
-    String title = "Trip to ${widget.trip.wilaya}";
+    String title = "Aventure à ${widget.trip.wilaya}";
     int maxLength = 33;
 
     String displayedTitle = title.length > maxLength

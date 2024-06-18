@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/profile_bar.dart';
@@ -19,6 +20,35 @@ class TripDetailedScreen extends StatefulWidget {
 }
 
 class _TripDetailedScreenState extends State<TripDetailedScreen> {
+
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String tripId = widget.trip.id;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(tripId, "trip");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    String carId = widget.trip.id;
+    if (_isFavorited) {
+      await FirestoreService().addToWishlist(carId, "trip");
+    } else {
+      await FirestoreService().removeFromWishlist(carId, "trip");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
@@ -116,11 +146,11 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                       child: IconButton(
                         icon: Icon(
                           MdiIcons.heart,
-                          color: const Color.fromARGB(255, 168, 168, 168),
+                          color: _isFavorited
+                              ? Colors.red
+                              : const Color.fromARGB(255, 168, 168, 168),
                         ),
-                        onPressed: () {
-                          // Heart button action
-                        },
+                        onPressed: _toggleFavoriteStatus,
                       ),
                     ),
                   ),
@@ -131,7 +161,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -144,11 +174,11 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Text(
                     'From $formattedStartDate To $formattedEndDate in $wilaya.',
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
