@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/profile_bar.dart';
@@ -17,6 +18,35 @@ class HouseDetailedScreen extends StatefulWidget {
 }
 
 class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String houseId = widget.house.id;
+    bool isFavorited =
+        await FirestoreService().isItemFavorited(houseId, "house");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    String houseId = widget.house.id;
+    if (_isFavorited) {
+      await FirestoreService().addToWishlist(houseId, "house");
+    } else {
+      await FirestoreService().removeFromWishlist(houseId, "house");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.house.images;
@@ -106,11 +136,11 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                       child: IconButton(
                         icon: Icon(
                           MdiIcons.heart,
-                          color: const Color.fromARGB(255, 168, 168, 168),
+                          color: _isFavorited
+                              ? Colors.red
+                              : const Color.fromARGB(255, 168, 168, 168),
                         ),
-                        onPressed: () {
-                          // Heart button action
-                        },
+                        onPressed: _toggleFavoriteStatus,
                       ),
                     ),
                   ),
@@ -121,7 +151,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -134,12 +164,12 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Text(
                     '$placeType in $address, $wilaya.',
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -235,8 +265,9 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              SendingHouseRequestScreen(house: widget.house,)));
+                          builder: (context) => SendingHouseRequestScreen(
+                                house: widget.house,
+                              )));
                 },
               ),
             ),

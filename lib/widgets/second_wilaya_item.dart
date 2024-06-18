@@ -45,7 +45,7 @@ class _WilayaItemState extends State<SecondWilayaItem> {
     double imageHeight = widget.imageHeight ?? 200;
     double imageWidth = widget.imageWidth ?? 250;
     String imageUrl = widget.wilaya.imageUrl;
-    String title = widget.wilaya.title;
+    String title = widget.wilaya.name;
     int maxLength = 33;
 
     String displayedTitle = title.length > maxLength
@@ -63,6 +63,7 @@ class _WilayaItemState extends State<SecondWilayaItem> {
       },
       child: SizedBox(
         child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -129,7 +130,7 @@ class _WilayaItemState extends State<SecondWilayaItem> {
                   fontSize: 15,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 2),
               Text(
                 widget.wilaya.regions[0],
                 textAlign: TextAlign.start,

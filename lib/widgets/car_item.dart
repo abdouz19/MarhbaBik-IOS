@@ -8,7 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 class CarItem extends StatefulWidget {
   const CarItem({
-    super.key, 
+    super.key,
     required this.car,
     this.imageHeight,
     this.imageWidth,
@@ -91,7 +91,8 @@ class _CarItemState extends State<CarItem> {
                             ),
                           );
                         },
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                     Positioned(
@@ -104,9 +105,11 @@ class _CarItemState extends State<CarItem> {
                             _isFavorited = !_isFavorited;
                           });
                           if (_isFavorited) {
-                            await FirestoreService().addToWishlist(widget.car.id, "car");
+                            await FirestoreService()
+                                .addToWishlist(widget.car.id, "car");
                           } else {
-                            await FirestoreService().removeFromWishlist(widget.car.id, "car");
+                            await FirestoreService()
+                                .removeFromWishlist(widget.car.id, "car");
                           }
                         },
                       ),
@@ -127,11 +130,11 @@ class _CarItemState extends State<CarItem> {
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
-                'Cultural',
+              Text(
+                '${widget.car.price} DZD/day',
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff666666),
                   fontWeight: FontWeight.w300,
                   fontFamily: 'KastelovAxiforma',

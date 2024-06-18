@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/trip.dart';
+import 'package:marhba_bik/widgets/empty_list.dart';
 import 'package:marhba_bik/widgets/trip_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TripsListScreen extends StatefulWidget {
   final String type;
+  final Future<List<Trip>> tripsFuture;
 
-  const TripsListScreen({Key? key, this.type = 'horizontal'}) : super(key: key);
+  const TripsListScreen({
+    super.key,
+    this.type = 'horizontal',
+    required this.tripsFuture,
+  });
 
   @override
   State<TripsListScreen> createState() => _TripsListScreenState();
@@ -19,7 +24,7 @@ class _TripsListScreenState extends State<TripsListScreen> {
   @override
   void initState() {
     super.initState();
-    _tripsFuture = FirestoreService().fetchTrips();
+    _tripsFuture = widget.tripsFuture;
   }
 
   @override
@@ -32,7 +37,9 @@ class _TripsListScreenState extends State<TripsListScreen> {
         } else if (snapshot.hasError) {
           return const Center(child: Text("Error fetching trips"));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No trips available"));
+          return const EmptyList(
+            type: 'trip',
+          );
         } else {
           List<Trip> trips = snapshot.data!;
           return ListView.builder(

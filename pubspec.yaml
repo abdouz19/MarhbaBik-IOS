@@ -71,6 +71,10 @@ flutter:
     - assets/icons/house_icon.png
     - assets/icons/building.png
     - assets/icons/rocket.png
+    - assets/images/car_illustration.png
+    - assets/images/house_illustration.png
+    - assets/images/trip_illustration.png
+    - assets/images/wishlist_illustration.png
   fonts:
     - family: KastelovAxiforma
       fonts:

@@ -478,6 +478,32 @@ class FirestoreService {
   }
 }
 
+// Function to fetch houses by wilaya
+  Future<List<House>> fetchHousesByWilaya(String wilaya) async {
+    return _fetchDatas<House>(
+      'houses',
+      (doc) => House.fromDocument(doc),
+      where: 'wilaya',
+      isEqualTo: wilaya,
+    );
+  }
+  Future<List<Trip>> fetchTripsByWilaya(String wilaya) async {
+    return _fetchDatas<Trip>(
+      'trips',
+      (doc) => Trip.fromDocument(doc),
+      where: 'wilaya',
+      isEqualTo: wilaya,
+    );
+  }
+  Future<List<Car>> fetchCarsByWilaya(String wilaya) async {
+    return _fetchDatas<Car>(
+      'cars',
+      (doc) => Car.fromDocument(doc),
+      where: 'wilaya',
+      isEqualTo: wilaya,
+    );
+  }
+
 Future<List<Wilaya>> getWilayasByRegion(String region) async {
   try {
     // Convert the entered region value to lowercase

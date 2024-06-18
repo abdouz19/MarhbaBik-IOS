@@ -96,6 +96,9 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                       _buildSeeAllButton(
                         onPressed: () {},
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       _buildSectionTitle('Escapades à proximité'),
                       const SizedBox(
                         height: 8,
@@ -108,8 +111,17 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                       _buildSeeAllButton(
                         onPressed: () {},
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       _buildSectionTitle('Régions à ne pas manquer'),
+                      const SizedBox(
+                        height: 18,
+                      ),
                       _buildSpecialWilayasGrid(),
+                      const SizedBox(
+                        height: 50,
+                      ),
                     ],
                   ),
                 ),
@@ -136,7 +148,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
           child: TextField(
             controller: _searchController,
             decoration: const InputDecoration(
-              hintText: 'Where to?',
+              hintText: 'Où aller ? ',
               border: InputBorder.none,
               isDense: false,
             ),
@@ -164,10 +176,10 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
 
   Widget _buildPickRegionButton() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 60),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       child: MaterialButtonAuth(
         onPressed: () {},
-        label: 'Pick a region',
+        label: 'Choisissez une région',
       ),
     );
   }
@@ -202,6 +214,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
 
     return GridView.builder(
         shrinkWrap: true,
+        padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

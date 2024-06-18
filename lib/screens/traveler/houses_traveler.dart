@@ -91,7 +91,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Wilayas Title',
+                  'Explorez l\'Algérie',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -104,7 +104,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Wilayas subtitle',
+                  'Découvrez la beauté et la diversité de nos wilayas',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -116,20 +116,19 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.only(left: 15),
-                height: 280,
+                height: 200,
                 child: WilayaList(
                   type: 'horizontal',
-                  future: FirestoreService()
-                      .fetchSpecialWilayas(['06', '10', '35']),
+                  future: FirestoreService().fetchWilayas(),
                 ),
               ),
               const SizedBox(
-                height: 25,
+                height: 40,
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Trips Title',
+                  'Aventures inoubliables en Algérie',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -142,7 +141,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Trips subtitle',
+                  'Vivez des expériences uniques dans nos régions époustouflantes',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -155,10 +154,10 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child: const TripsListScreen(),
+                child:  TripsListScreen(tripsFuture: FirestoreService().fetchTrips(),),
               ),
               const SizedBox(
-                height: 25,
+                height: 40,
               ),
               Stack(
                 children: [
@@ -233,7 +232,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Cars Title',
+                  'Louez votre véhicule idéal en Algérie',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -246,7 +245,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Cars subTitle',
+                  'Explorez l\'Algérie en toute simplicité, trouvez le véhicule idéal pour votre voyage',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -259,10 +258,10 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child: const CarsListScreen(),
+                child:  CarsListScreen(carsFuture: FirestoreService().fetchCars(),),
               ),
               const SizedBox(
-                height: 25,
+                height: 40,
               ),
               Stack(
                 children: [
@@ -276,12 +275,12 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                     top: 100,
                     bottom: 0,
                     left: 50,
-                    right: 80,
+                    right: 60,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Why you',
+                            'Laissez-vous',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -291,7 +290,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             ),
                           ),
                           const Text(
-                            'Should visit',
+                            'charmer par',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -314,7 +313,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 10,
                           ),
                           const Text(
-                            'Explore Oran ak chayef, bla mankatro lhadra',
+                            'Oran, une symphonie de beauté, d\'histoire et de culture',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -339,7 +338,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                                   );
                                 }
                               },
-                              child: const Text('See more'))
+                              child: const Text('Afficher plus'))
                         ]),
                   ),
                 ],
@@ -363,7 +362,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                 child: Column(
                   children: [
                     const Text(
-                      'Discover more in Jijel',
+                      'Révélez les secrets de Jijel',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -399,7 +398,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                         ),
                       ),
                       child: const Text(
-                        'Keep exploring',
+                        'Explorez encore plus',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
@@ -414,7 +413,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Houses Title',
+                  'Trouvez votre location de rêve en Algérie',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w700,
@@ -427,7 +426,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'Houses subTitle',
+                  'Parcourez une variété de maisons pour votre escapade algérienne parfaite',
                   style: TextStyle(
                     color: Color(0xff001939),
                     fontWeight: FontWeight.w300,
@@ -440,10 +439,10 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child: const HousesListScreen(),
+                child: HousesListScreen(housesFuture: FirestoreService().fetchHouses(),),
               ),
               const SizedBox(
-                height: 25,
+                height: 40,
               ),
               Stack(
                 children: [
@@ -457,12 +456,12 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                     top: 100,
                     bottom: 0,
                     left: 50,
-                    right: 80,
+                    right: 40,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Where to go',
+                            'Idées de voyage',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -472,7 +471,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             ),
                           ),
                           const Text(
-                            'in June',
+                            'pour juin',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -485,7 +484,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 10,
                           ),
                           const Text(
-                            'Checkout Our recommendations for this month',
+                            'Découvrez nos suggestions pour ce mois',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -498,7 +497,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 5,
                           ),
                           ElevatedButton(
-                              onPressed: () {}, child: const Text('See more'))
+                              onPressed: () {}, child: const Text('Voir plus'))
                         ]),
                   ),
                 ],

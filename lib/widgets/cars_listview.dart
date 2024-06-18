@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/car.dart';
 import 'package:marhba_bik/widgets/car_item.dart';
+import 'package:marhba_bik/widgets/empty_list.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CarsListScreen extends StatefulWidget {
   final String type;
+  final Future<List<Car>> carsFuture;
 
-  const CarsListScreen({super.key, this.type = 'horizontal'});
+  const CarsListScreen({
+    super.key,
+    this.type = 'horizontal',
+    required this.carsFuture,
+  });
 
   @override
   State<CarsListScreen> createState() => _CarsListScreenState();
@@ -19,7 +24,7 @@ class _CarsListScreenState extends State<CarsListScreen> {
   @override
   void initState() {
     super.initState();
-    _carsFuture = FirestoreService().fetchCars();
+    _carsFuture = widget.carsFuture;
   }
 
   @override
@@ -32,7 +37,9 @@ class _CarsListScreenState extends State<CarsListScreen> {
         } else if (snapshot.hasError) {
           return const Center(child: Text("Error fetching cars"));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No cars available"));
+          return const EmptyList(
+            type: 'car',
+          );
         } else {
           List<Car> cars = snapshot.data!;
           return ListView.builder(

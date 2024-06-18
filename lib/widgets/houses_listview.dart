@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/house.dart';
+import 'package:marhba_bik/widgets/empty_list.dart';
 import 'package:marhba_bik/widgets/house_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HousesListScreen extends StatefulWidget {
   final String type;
+  final Future<List<House>> housesFuture;
 
-  const HousesListScreen({Key? key, this.type = 'horizontal'})
-      : super(key: key);
+  const HousesListScreen({
+    super.key,
+    this.type = 'horizontal',
+    required this.housesFuture,
+  });
 
   @override
   State<HousesListScreen> createState() => _HousesListScreenState();
@@ -20,7 +24,7 @@ class _HousesListScreenState extends State<HousesListScreen> {
   @override
   void initState() {
     super.initState();
-    _housesFuture = FirestoreService().fetchHouses();
+    _housesFuture = widget.housesFuture;
   }
 
   @override
@@ -33,7 +37,9 @@ class _HousesListScreenState extends State<HousesListScreen> {
         } else if (snapshot.hasError) {
           return const Center(child: Text("Error fetching houses"));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No houses available"));
+          return const EmptyList(
+            type: 'house',
+          );
         } else {
           List<House> houses = snapshot.data!;
           return ListView.builder(
@@ -47,7 +53,7 @@ class _HousesListScreenState extends State<HousesListScreen> {
                 child: HouseItem(
                   house: house,
                   imageHeight: widget.type == 'vertical' ? 280 : 280,
-                  imageWidth: widget.type == 'vertical' ? double.infinity : 280,
+                  imageWidth: widget.type == 'vertical' ? double.infinity : 250,
                 ),
               );
             },

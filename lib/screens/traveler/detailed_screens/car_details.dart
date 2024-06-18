@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/profile_bar.dart';
@@ -18,6 +18,33 @@ class CarDetailedScreen extends StatefulWidget {
 }
 
 class _CarDetailedScreenState extends State<CarDetailedScreen> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    String carId = widget.car.id;
+    bool isFavorited = await FirestoreService().isItemFavorited(carId, "car");
+    setState(() {
+      _isFavorited = isFavorited;
+    });
+  }
+
+  Future<void> _toggleFavoriteStatus() async {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    String carId = widget.car.id;
+    if (_isFavorited) {
+      await FirestoreService().addToWishlist(carId, "car");
+    } else {
+      await FirestoreService().removeFromWishlist(carId, "car");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +63,41 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250,
-              flexibleSpace: FlexibleSpaceBar(
-                background: CustomPageView(
-                  imageUrls: images,
-                  height: 300.0,
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              background: CustomPageView(
+                imageUrls: images,
+                height: 300.0,
+              ),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipOval(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color.fromARGB(255, 168, 168, 168),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
                 ),
               ),
-              leading: Padding(
+            ),
+            actions: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipOval(
                   child: Container(
@@ -58,125 +110,99 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                     child: Center(
                       child: IconButton(
                         icon: const Icon(
-                          Icons.arrow_back,
+                          Icons.share,
                           color: Color.fromARGB(255, 168, 168, 168),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          // Share button action
                         },
                       ),
                     ),
                   ),
                 ),
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.share,
-                            color: Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Share button action
-                          },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: IconButton(
+                        icon: Icon(
+                          MdiIcons.heart,
+                          color: _isFavorited
+                              ? Colors.red
+                              : const Color.fromARGB(255, 168, 168, 168),
                         ),
+                        onPressed: _toggleFavoriteStatus,
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: IconButton(
-                          icon: Icon(
-                            MdiIcons.heart,
-                            color: const Color.fromARGB(255, 168, 168, 168),
-                          ),
-                          onPressed: () {
-                            // Heart button action
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '$brand $model in $wilaya.',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$capacity guests',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ProfileBar(
-                      firstName: ownerFirstName,
-                      lastName: ownerLastName,
-                      profilePicture: ownerProfilePicture,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: const Color(0xff001939),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
                 ),
               ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '$brand $model in $wilaya.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$capacity guests',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ProfileBar(
+                    firstName: ownerFirstName,
+                    lastName: ownerLastName,
+                    profilePicture: ownerProfilePicture,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    description,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: const Color(0xff001939),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: const BoxDecoration(
@@ -240,7 +266,9 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SendingCarRequestScreen(car: widget.car,)));
+                          builder: (context) => SendingCarRequestScreen(
+                                car: widget.car,
+                              )));
                 },
               ),
             ),

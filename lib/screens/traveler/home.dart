@@ -31,7 +31,9 @@ class _TravelerHomeScreenState extends State<TravelerHomeScreen> {
     return Icon(
       iconData,
       size: iconSize.toDouble(),
-      color: selected ? const Color(0xff3F75BB) : const Color(0xff828181),
+      color: selected
+          ? const Color(0xff3F75BB)
+          : Color.fromARGB(255, 173, 173, 173),
     );
   }
 

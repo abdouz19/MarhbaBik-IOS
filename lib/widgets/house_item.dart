@@ -131,11 +131,11 @@ class _HouseItemState extends State<HouseItem> {
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
-                'Cultural',
+              Text(
+                widget.house.address,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff666666),
                   fontWeight: FontWeight.w300,
                   fontFamily: 'KastelovAxiforma',
