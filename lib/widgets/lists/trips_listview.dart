@@ -1,59 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/models/house.dart';
+import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/widgets/empty_list.dart';
-import 'package:marhba_bik/widgets/house_item.dart';
+import 'package:marhba_bik/widgets/items/trip_item.dart';
 import 'package:shimmer/shimmer.dart';
 
-class HousesListScreen extends StatefulWidget {
+class TripsListScreen extends StatefulWidget {
   final String type;
-  final Future<List<House>> housesFuture;
+  final Future<List<Trip>> tripsFuture;
 
-  const HousesListScreen({
+  const TripsListScreen({
     super.key,
     this.type = 'horizontal',
-    required this.housesFuture,
+    required this.tripsFuture,
   });
 
   @override
-  State<HousesListScreen> createState() => _HousesListScreenState();
+  State<TripsListScreen> createState() => _TripsListScreenState();
 }
 
-class _HousesListScreenState extends State<HousesListScreen> {
-  late Future<List<House>> _housesFuture;
+class _TripsListScreenState extends State<TripsListScreen> {
+  late Future<List<Trip>> _tripsFuture;
 
   @override
   void initState() {
     super.initState();
-    _housesFuture = widget.housesFuture;
+    _tripsFuture = widget.tripsFuture;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<House>>(
-      future: _housesFuture,
+    return FutureBuilder<List<Trip>>(
+      future: _tripsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: _buildShimmerList());
+          return _buildShimmerList();
         } else if (snapshot.hasError) {
-          return const Center(child: Text("Error fetching houses"));
+          return const Center(child: Text("Error fetching trips"));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const EmptyList(
-            type: 'house',
+            type: 'trip',
           );
         } else {
-          List<House> houses = snapshot.data!;
+          List<Trip> trips = snapshot.data!;
           return ListView.builder(
             scrollDirection:
                 widget.type == 'vertical' ? Axis.vertical : Axis.horizontal,
-            itemCount: houses.length,
+            itemCount: trips.length,
             itemBuilder: (context, index) {
-              House house = houses[index];
+              Trip trip = trips[index];
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: HouseItem(
-                  house: house,
+                child: TripItem(
+                  trip: trip,
                   imageHeight: widget.type == 'vertical' ? 280 : 280,
-                  imageWidth: widget.type == 'vertical' ? double.infinity : 250,
+                  imageWidth: widget.type == 'vertical' ? double.infinity : 280,
                 ),
               );
             },
@@ -75,7 +75,7 @@ class _HousesListScreenState extends State<HousesListScreen> {
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
             child: Container(
-              width: widget.type == 'vertical' ? double.infinity : 250,
+              width: widget.type == 'vertical' ? double.infinity : 280,
               height: widget.type == 'vertical' ? 280 : 280,
               decoration: BoxDecoration(
                 color: Colors.white,

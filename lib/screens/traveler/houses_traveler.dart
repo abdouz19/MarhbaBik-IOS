@@ -3,10 +3,10 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
-import 'package:marhba_bik/widgets/cars_listview.dart';
-import 'package:marhba_bik/widgets/houses_listview.dart';
-import 'package:marhba_bik/widgets/trips_listview.dart';
-import 'package:marhba_bik/widgets/wilaya_listview.dart';
+import 'package:marhba_bik/widgets/lists/cars_listview.dart';
+import 'package:marhba_bik/widgets/lists/houses_listview.dart';
+import 'package:marhba_bik/widgets/lists/trips_listview.dart';
+import 'package:marhba_bik/widgets/lists/wilaya_listview.dart';
 import 'package:outlined_text/outlined_text.dart';
 import 'package:transparent_image/transparent_image.dart';
 

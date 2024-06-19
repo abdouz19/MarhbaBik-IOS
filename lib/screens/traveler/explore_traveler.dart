@@ -5,9 +5,9 @@ import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
-import 'package:marhba_bik/widgets/destination_listview.dart';
-import 'package:marhba_bik/widgets/region_item.dart';
-import 'package:marhba_bik/widgets/wilaya_listview.dart';
+import 'package:marhba_bik/widgets/lists/destination_listview.dart';
+import 'package:marhba_bik/widgets/items/region_item.dart';
+import 'package:marhba_bik/widgets/lists/wilaya_listview.dart';
 
 class ExploreTraveler extends StatefulWidget {
   const ExploreTraveler({super.key});

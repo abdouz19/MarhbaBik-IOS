@@ -72,7 +72,7 @@ class _TripItemState extends State<TripItem> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
+          MaterialPageRoute(  
             builder: (context) => TripDetailedScreen(trip: widget.trip),
           ),
         );

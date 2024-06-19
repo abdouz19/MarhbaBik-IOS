@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/widgets/empty_list.dart';
-import 'package:marhba_bik/widgets/wishlist_item.dart';
+import 'package:marhba_bik/widgets/items/wishlist_item.dart';
 
 class WishlistTraveler extends StatefulWidget {
   const WishlistTraveler({super.key});

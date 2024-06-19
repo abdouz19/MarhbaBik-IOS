@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/models/wilaya.dart';
-import 'package:marhba_bik/widgets/second_wilaya_item.dart';
-import 'package:marhba_bik/widgets/wilaya_item.dart';
+import 'package:marhba_bik/models/destination.dart';
+import 'package:marhba_bik/widgets/items/destination_item.dart';
+import 'package:marhba_bik/widgets/items/destinationitem.dart';
 import 'package:shimmer/shimmer.dart';
 
-class WilayaList extends StatelessWidget {
-  const WilayaList({super.key, required this.future, this.type = 'vertical'})
-      ;
+class DestinationsList extends StatelessWidget {
+  const DestinationsList({super.key, required this.future, required this.type});
 
-  final Future<List<Wilaya>>? future;
+  final Future<List<Destination>>? future;
   final String type;
 
   @override
@@ -17,26 +16,26 @@ class WilayaList extends StatelessWidget {
   }
 
   Widget _buildVerticalList() {
-    return FutureBuilder<List<Wilaya>>(
+    return FutureBuilder<List<Destination>>(
       future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerList();
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error loading wilayas'));
+          return const Center(child: Text('Error loading destinations'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No wilayas available'));
+          return const Center(child: Text('No destinations available'));
         }
 
-        final wilayas = snapshot.data!;
+        final destinations = snapshot.data!;
 
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: wilayas.length,
+          itemCount: destinations.length,
           padding: EdgeInsets.zero,
           itemBuilder: (context, index) {
-            return WilayaItem(wilaya: wilayas[index]);
+            return DestinationItem(destination: destinations[index]);
           },
         );
       },
@@ -44,28 +43,31 @@ class WilayaList extends StatelessWidget {
   }
 
   Widget _buildHorizontalList() {
-    return FutureBuilder<List<Wilaya>>(
+    return FutureBuilder<List<Destination>>(
       future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildShimmerHorizontalList();
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error loading wilayas'));
+          return const Center(child: Text('Error loading destinations'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No wilayas available'));
+          return const Center(child: Text('No destinations available'));
         }
 
-        final wilayas = snapshot.data!;
+        final destinations = snapshot.data!;
 
         return ListView.builder(
+          shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: wilayas.length,
-          padding: EdgeInsets.zero,
+          itemCount: destinations.length,
           itemBuilder: (context, index) {
-            return SecondWilayaItem(
-              wilaya: wilayas[index],
-              imageHeight: type == 'vertical' ? 280 : 140,
-              imageWidth: type == 'vertical' ? double.infinity : 140,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SecondDestinationItem(
+                destination: destinations[index],
+                imageHeight: 280,
+                imageWidth: 280,
+              ),
             );
           },
         );
@@ -77,8 +79,7 @@ class WilayaList extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: 3,
-      padding: EdgeInsets.zero,
+      itemCount: 6,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 7.0),
@@ -134,55 +135,43 @@ class WilayaList extends StatelessWidget {
   }
 
   Widget _buildShimmerHorizontalList() {
-    return SizedBox(
-      height: 200, // Set a fixed height to ensure it displays properly
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 6,
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    height: 10.0,
-                    width: 100.0,
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 280,
+                  height: 280,
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    height: 10.0,
-                    width: 60.0,
-                    color: Colors.white,
-                  ),
+              ),
+              const SizedBox(height: 5),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 15.0,
+                  width: 150.0,
+                  color: Colors.white,
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

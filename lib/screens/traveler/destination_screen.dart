@@ -7,7 +7,7 @@ import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
-import 'package:marhba_bik/widgets/destination_listview.dart';
+import 'package:marhba_bik/widgets/lists/destination_listview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DestinationScreen extends StatefulWidget {
