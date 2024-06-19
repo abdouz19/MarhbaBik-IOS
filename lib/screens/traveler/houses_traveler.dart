@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/cars_listview.dart';
 import 'package:marhba_bik/widgets/houses_listview.dart';
@@ -154,7 +155,9 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child:  TripsListScreen(tripsFuture: FirestoreService().fetchTrips(),),
+                child: TripsListScreen(
+                  tripsFuture: FirestoreService().fetchTrips(),
+                ),
               ),
               const SizedBox(
                 height: 40,
@@ -222,7 +225,14 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 5,
                           ),
                           ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegionsScreen(),
+                                    ));
+                              },
                               child: const Text('Pick region'))
                         ]),
                   ),
@@ -258,7 +268,9 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child:  CarsListScreen(carsFuture: FirestoreService().fetchCars(),),
+                child: CarsListScreen(
+                  carsFuture: FirestoreService().fetchCars(),
+                ),
               ),
               const SizedBox(
                 height: 40,
@@ -439,7 +451,9 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
               Container(
                 padding: const EdgeInsets.only(left: 15),
                 height: 280,
-                child: HousesListScreen(housesFuture: FirestoreService().fetchHouses(),),
+                child: HousesListScreen(
+                  housesFuture: FirestoreService().fetchHouses(),
+                ),
               ),
               const SizedBox(
                 height: 40,
