@@ -75,6 +75,7 @@ flutter:
     - assets/images/house_illustration.png
     - assets/images/trip_illustration.png
     - assets/images/wishlist_illustration.png
+    - assets/images/message_illustration.png
   fonts:
     - family: KastelovAxiforma
       fonts:

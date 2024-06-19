@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/screens/car_owner/messages_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/offers_car_owner.dart';
 import 'package:marhba_bik/screens/car_owner/profile_car_owner.dart';
+import 'package:marhba_bik/screens/shared/messages_screen.dart';
 
 class CarOwnerHomeScreen extends StatefulWidget {
   const CarOwnerHomeScreen({super.key});
@@ -18,7 +18,7 @@ class _CarOwnerHomeScreenState extends State<CarOwnerHomeScreen> {
   int index = 1;
 
   final screens = [
-    const CarOwnerMessages(),
+    const MessagesScreen(),
     const CarOwnerOffers(),
     const CarOwnerProfile()
   ];

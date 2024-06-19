@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:marhba_bik/screens/traveling_agency/messages_traveling_agency.dart';
+import 'package:marhba_bik/screens/shared/messages_screen.dart';
 import 'package:marhba_bik/screens/traveling_agency/offers_traveling_agency.dart';
 import 'package:marhba_bik/screens/traveling_agency/profile_traveling_agency.dart';
 
@@ -17,7 +17,7 @@ class _TravelingAgencyHomeScreenState extends State<TravelingAgencyHomeScreen> {
   int index = 1;
 
   final screens = [
-    const TravelingAgencyMessages(),
+    const MessagesScreen(),
     const TravelingAgencyOffers(),
     const TravelingAgencyProfile()
   ];

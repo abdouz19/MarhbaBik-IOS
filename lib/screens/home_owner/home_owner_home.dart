@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:marhba_bik/screens/home_owner/messages_home_owner.dart';
 import 'package:marhba_bik/screens/home_owner/offers_home_owner.dart';
 import 'package:marhba_bik/screens/home_owner/profile_home_owner.dart';
+import 'package:marhba_bik/screens/shared/messages_screen.dart';
 
 class HomeOwnerHomeScreen extends StatefulWidget {
   const HomeOwnerHomeScreen({super.key});
@@ -17,7 +17,7 @@ class _HomeOwnerHomeScreen extends State<HomeOwnerHomeScreen> {
   int index = 1;
 
   final screens = [
-    const HomeOwnerMessages(),
+    const MessagesScreen(),
     const HomeOwnerOffers(),
     const HomeOwnerProfile()
   ];

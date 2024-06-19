@@ -1,16 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:marhba_bik/screens/traveler/region_screen.dart';
+import 'package:marhba_bik/screens/traveler/region_details_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RegionItem extends StatelessWidget {
   final String name;
   final String imageUrl;
+  final double? width;
+  final double? height;
 
-  const RegionItem({super.key, required this.name, required this.imageUrl});
+  const RegionItem({
+    super.key,
+    required this.name,
+    required this.imageUrl,
+    this.width,
+    this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Use provided width and height or default to 160
+    final double itemWidth = width ?? 160;
+    final double itemHeight = height ?? 160;
+
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -27,16 +39,16 @@ class RegionItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
             child: CachedNetworkImage(
               imageUrl: imageUrl,
-              width: 160,
-              height: 160,
+              width: itemWidth,
+              height: itemHeight,
               fit: BoxFit.cover,
               placeholder: (context, url) {
                 return Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    width: 160,
-                    height: 160,
+                    width: itemWidth,
+                    height: itemHeight,
                     color: Colors.white,
                   ),
                 );
@@ -45,8 +57,8 @@ class RegionItem extends StatelessWidget {
             ),
           ),
           Container(
-            width: 160,
-            height: 160,
+            width: itemWidth,
+            height: itemHeight,
             decoration: BoxDecoration(
               color: Colors.black26,
               borderRadius: BorderRadius.circular(10.0),

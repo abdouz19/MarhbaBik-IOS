@@ -57,7 +57,7 @@ class _TravelerInfoFormScreenState extends State<TravelerInfoFormScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               child: const Text('OK'),
             ),

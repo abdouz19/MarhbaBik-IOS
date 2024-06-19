@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/destination_listview.dart';
 import 'package:marhba_bik/widgets/region_item.dart';
@@ -44,7 +45,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
         }).toList();
         _isSearching = query.isNotEmpty;
       });
-    }).catchError((error) => print("Error fetching wilayas: $error"));
+    });
   }
 
   void _closeSearch() {
@@ -178,7 +179,9 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: MaterialButtonAuth(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const RegionsScreen(),));
+        },
         label: 'Choisissez une région',
       ),
     );
