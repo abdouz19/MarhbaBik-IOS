@@ -213,6 +213,28 @@ class _WilayaScreenState extends State<WilayaScreen> {
                             ),
                           ),
                           const SizedBox(
+                            height: 40,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              ' Partir à l\'aventure en $name',
+                              style: const TextStyle(
+                                color: Color(0xff001939),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'KastelovAxiforma',
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Container(
+                              padding: const EdgeInsets.only(left: 15),
+                              height: 280,
+                              child: TripsListScreen(
+                                tripsFuture:
+                                    FirestoreService().fetchTripsByWilaya(name),
+                              )),
+                          const SizedBox(
                             height: 80,
                           ),
                         ],
