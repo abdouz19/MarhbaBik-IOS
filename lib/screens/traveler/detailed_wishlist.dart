@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
-import 'package:marhba_bik/widgets/car_item.dart';
-import 'package:marhba_bik/widgets/destinationitem.dart';
-import 'package:marhba_bik/widgets/house_item.dart';
-import 'package:marhba_bik/widgets/second_wilaya_item.dart';
-import 'package:marhba_bik/widgets/trip_item.dart';
+import 'package:marhba_bik/widgets/items/car_item.dart';
+import 'package:marhba_bik/widgets/items/destinationitem.dart';
+import 'package:marhba_bik/widgets/items/house_item.dart';
+import 'package:marhba_bik/widgets/items/second_wilaya_item.dart';
+import 'package:marhba_bik/widgets/items/trip_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DetailedWishlistScreen extends StatelessWidget {

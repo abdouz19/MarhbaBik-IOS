@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/destination.dart';
 import 'package:marhba_bik/models/wilaya.dart';
-import 'package:marhba_bik/widgets/destination_listview.dart';
-import 'package:marhba_bik/widgets/wilaya_listview.dart';
+import 'package:marhba_bik/widgets/lists/destination_listview.dart';
+import 'package:marhba_bik/widgets/lists/wilaya_listview.dart';
 
 class RegionScreen extends StatefulWidget {
   final String regionName;

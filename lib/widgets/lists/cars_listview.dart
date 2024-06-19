@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/car.dart';
-import 'package:marhba_bik/widgets/car_item.dart';
+import 'package:marhba_bik/widgets/items/car_item.dart';
 import 'package:marhba_bik/widgets/empty_list.dart';
 import 'package:shimmer/shimmer.dart';
 

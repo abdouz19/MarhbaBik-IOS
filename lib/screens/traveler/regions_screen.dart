@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/wilaya.dart';
 import 'package:marhba_bik/screens/traveler/explore_traveler.dart';
-import 'package:marhba_bik/widgets/region_item.dart';
+import 'package:marhba_bik/widgets/items/region_item.dart';
 
 class RegionsScreen extends StatefulWidget {
   const RegionsScreen({super.key});

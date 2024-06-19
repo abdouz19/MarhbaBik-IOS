@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_pageview.dart';
 import 'package:marhba_bik/models/wilaya.dart';
-import 'package:marhba_bik/widgets/cars_listview.dart';
-import 'package:marhba_bik/widgets/destination_listview.dart';
-import 'package:marhba_bik/widgets/houses_listview.dart';
-import 'package:marhba_bik/widgets/trips_listview.dart';
+import 'package:marhba_bik/widgets/lists/cars_listview.dart';
+import 'package:marhba_bik/widgets/lists/destination_listview.dart';
+import 'package:marhba_bik/widgets/lists/houses_listview.dart';
+import 'package:marhba_bik/widgets/lists/trips_listview.dart';
 
 class WilayaScreen extends StatefulWidget {
   final Wilaya wilaya;
