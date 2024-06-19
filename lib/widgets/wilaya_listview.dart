@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/models/wilaya.dart';
-import 'package:marhba_bik/widgets/second_wilaya_item.dart'; // Import the SecondWilayaItem
+import 'package:marhba_bik/widgets/second_wilaya_item.dart';
 import 'package:marhba_bik/widgets/wilaya_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WilayaList extends StatelessWidget {
-  const WilayaList({Key? key, required this.future, this.type = 'vertical'})
-      : super(key: key);
+  const WilayaList({super.key, required this.future, this.type = 'vertical'})
+      ;
 
   final Future<List<Wilaya>>? future;
   final String type;
