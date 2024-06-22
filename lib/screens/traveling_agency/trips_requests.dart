@@ -377,7 +377,7 @@ class _TripsOffersScreenState extends State<TripsOffersScreen> {
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            ), 
                                           ),
                                         ],
                                       ),
