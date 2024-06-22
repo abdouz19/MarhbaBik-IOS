@@ -25,7 +25,7 @@ class _UploadingCarFifthPhaseState extends State<UploadingCarFifthPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Now, set your price',
+            'À présent, on passe au prix !',
             style: GoogleFonts.poppins(
               color: const Color(0xff001939),
               fontSize: 28,
@@ -34,7 +34,7 @@ class _UploadingCarFifthPhaseState extends State<UploadingCarFifthPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'You can change it anytime.',
+            'YoModifiable à tout moment !',
             style: GoogleFonts.lato(
               color: const Color(0xff001939),
               fontSize: 17,
@@ -76,7 +76,7 @@ class _UploadingCarFifthPhaseState extends State<UploadingCarFifthPhase> {
                     ),
                   ),
                   Text(
-                    ' DZD/day',
+                    ' DZD/jour',
                     style: GoogleFonts.lato(
                       color: const Color(0xff001939),
                       fontSize: 33,

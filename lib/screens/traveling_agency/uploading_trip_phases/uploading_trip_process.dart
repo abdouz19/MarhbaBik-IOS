@@ -90,7 +90,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 10),
-            Text('Uploading data...'),
+            Text('Téléchargement en cours...'),
           ],
         ),
       ),
@@ -152,8 +152,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Success'),
-        content: const Text('Your listing has been successfully published!'),
+        title: const Text('Opération réussie !'),
+        content: const Text('C\'est publié ! Votre logement est prêt à accueillir des voyageurs.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -170,7 +170,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
     // Dismiss loading dialog
     Navigator.pop(context);
     // Show error message
-    presentDialog('Error', 'An error occurred while publishing your listing. Please try again later.', 'OK');
+    presentDialog('Erreur',
+          'Une erreur est survenue lors de la publication de votre annonce. Veuillez réessayer plus tard.','OK');
   }
 }
 
@@ -181,7 +182,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
       height: double.infinity,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Create Your Listing'),
+          title: const Text('Rédigez votre annonce',),
           leading: IconButton(
             icon: const Icon(Icons.close, size: 30),
             onPressed: () => Navigator.pop(context),
@@ -195,8 +196,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                 if (_currentStep == 1) {
                   if (!validateSecondPhase()) {
                     presentDialog(
-                      'Fill All Fields',
-                      'Please fill all the fields before proceeding.',
+                      'N\'oubliez pas de remplir tous les champs !',
+                      'Remplis tous les champs avant de passer à la suite !',
                       'OK',
                     );
                     return;
@@ -210,8 +211,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                 if (_currentStep == 2) {
                   if (!validateThirdPhase()) {
                     presentDialog(
-                      'Fill All Fields',
-                      'Please fill all the fields before proceeding.',
+                      'N\'oubliez pas de remplir tous les champs !',
+                      'Remplis tous les champs avant de passer à la suite !',
                       'OK',
                     );
                     return;
@@ -225,8 +226,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                       selectedImages.every((image) => image != null);
                   if (!allPhotosUploaded) {
                     presentDialog(
-                      'Upload Photos',
-                      'Please upload all three photos before proceeding.',
+                      'Téléverser des photos',
+                      'Veuillez télécharger les trois photos avant de continuer.',
                       'OK',
                     );
                     return;
@@ -237,8 +238,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                 if (_currentStep == 4) {
                   if (!validateFifthPhase()) {
                     presentDialog(
-                      'Invalid Price',
-                      'Please enter a valid price before proceeding.',
+                      'Prix invalide',
+                      'Veuillez saisir un prix valide avant de continuer.',
                       'OK',
                     );
                     return;
@@ -270,7 +271,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                         child: TextButton(
                           onPressed: details.onStepCancel,
                           child: Text(
-                            'Back',
+                            'Retour',
                             style: GoogleFonts.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.w400,
@@ -286,8 +287,8 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
                     Expanded(
                       child: MaterialButtonAuth(
                         label: _currentStep == 0
-                            ? 'Get Started'
-                            : (_currentStep == 5 ? 'Publish' : 'Next'),
+                            ? 'C\'est parti !'
+                            : (_currentStep == 5 ? 'Publier' : 'Suivant'),
                         onPressed: _currentStep == 5
                             ? () {
                                 uploadDataToFirebase(context);
@@ -302,13 +303,13 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
           },
           steps: [
             Step(
-              title: const Text('Get Started'),
+              title: const Text('C\'est parti !'),
               content:
                   const SingleChildScrollView(child: UploadingTripFirstPhase()),
               isActive: _currentStep >= 0,
             ),
             Step(
-              title: const Text('Property Details'),
+              title: const Text('Détails du bien'),
               content: SingleChildScrollView(
                 child: UploadingTripSecondPhase(
                   onTripDaysChanged: (value) {
@@ -336,7 +337,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
               isActive: _currentStep >= 1,
             ),
             Step(
-              title: const Text('Describe Your Trip'),
+              title: const Text('Présentez votre voyage'),
               content: SingleChildScrollView(
                 child: UploadingTripThirdPhase(
                   onTitleChanged: (value) {
@@ -354,7 +355,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
               isActive: _currentStep >= 2,
             ),
             Step(
-              title: const Text('Showcase Your Trip'),
+              title: const Text('Donnez vie à votre voyage'),
               content: UploadingTripFourthPhase(
                 selectedImages: selectedImages,
                 onImageSelected: onImageSelected,
@@ -362,7 +363,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
               isActive: _currentStep >= 3,
             ),
             Step(
-              title: const Text('Set Your Price'),
+              title: const Text('Choisissez votre prix !'),
               content: SingleChildScrollView(
                 child: UploadingTripFifthPhase(
                   onPriceChanged: (value) {
@@ -375,7 +376,7 @@ class _UploadingTripProcessState extends State<UploadingTripProcess> {
               isActive: _currentStep >= 4,
             ),
             Step(
-              title: const Text('Review & Confirmation'),
+              title: const Text('Vérifiez et confirmez'),
               content: SingleChildScrollView(
                   child: UploadingTripFinalPhase(
                 dates: _dateTimeRange,

@@ -11,6 +11,7 @@ class WilayaItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final regionText = _getRegionText(wilaya.regions);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -64,9 +65,9 @@ class WilayaItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Region of ${wilaya.regions[0]}',
+                    regionText,
                     style: const TextStyle(
-                      color: Color(0xff001939),
+                      color: Color.fromARGB(255, 65, 65, 65),
                       fontWeight: FontWeight.w400,
                       fontFamily: 'KastelovAxiforma',
                       fontSize: 14,
@@ -79,5 +80,28 @@ class WilayaItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getRegionText(List<String> regions) {
+    if (regions.isEmpty) {
+      return 'Pas de région';
+    }
+    String firstRegion = _addApostropheIfNecessary(regions.first);
+    String lastRegion = _addApostropheIfNecessary(regions.last);
+
+    if (regions.length == 1) {
+      return 'Royaume de $firstRegion';
+    } else {
+      return 'Située entre les régions de $firstRegion et $lastRegion';
+    }
+  }
+
+  String _addApostropheIfNecessary(String regionName) {
+    const vowels = ['a', 'e', 'i', 'o', 'u', 'h'];
+    if (vowels.contains(regionName[0].toLowerCase())) {
+      return "l'$regionName";
+    } else {
+      return regionName;
+    }
   }
 }

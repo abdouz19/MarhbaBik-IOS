@@ -69,9 +69,9 @@ class _UploadingHomeFinalPhaseState extends State<UploadingHomeFinalPhase> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Review your listing',
+          'Prêt à publier ? Vérifiez une dernière fois',
           style: GoogleFonts.poppins(
-            fontSize: 28,
+            fontSize: 21,
             color:const Color(0xff001939),
             fontWeight: FontWeight.w600,
           ),
@@ -92,7 +92,7 @@ class _UploadingHomeFinalPhaseState extends State<UploadingHomeFinalPhase> {
         ),
         const SizedBox(height: 10),
         Text(
-          '${widget.placeType} in ${widget.address}, ${widget.wilaya}.',
+          '${widget.placeType} à ${widget.address}, ${widget.wilaya}.',
           style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -100,7 +100,7 @@ class _UploadingHomeFinalPhaseState extends State<UploadingHomeFinalPhase> {
         ),
         const SizedBox(height: 2),
         Text(
-          '${widget.capacity} guests',
+          '${widget.capacity} person',
           style: GoogleFonts.poppins(
             fontSize: 13,
             color:const Color(0xff001939),

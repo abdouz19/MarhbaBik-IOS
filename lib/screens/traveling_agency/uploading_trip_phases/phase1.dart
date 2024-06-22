@@ -13,18 +13,17 @@ class UploadingTripFirstPhase extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'It’s easy to get started on MarhbaBik',
+            'Commencez facilement votre aventure sur MarhbaBik',
             style: GoogleFonts.poppins(
-              fontSize: 23,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 30),
           const CustomizedStep(
             number: '1',
-            title: 'Tell us about your Trip',
-            description:
-                'Share some basic info, like where it is and how many guests can stay',
+            title: 'Parlez-nous de votre voyage',
+description: 'Partagez quelques informations de base, comme l\'endroit où il se déroule et le nombre d\'invités pouvant y séjourner'
           ),
           Container(
             width: double.infinity,
@@ -34,8 +33,8 @@ class UploadingTripFirstPhase extends StatelessWidget {
           ),
           const CustomizedStep(
             number: '2',
-            title: 'Make it stand out',
-            description: 'Add 5 or more photos plus a title and description',
+            title: 'Faites-le sortir du lot',
+            description: 'Ajoutez au moins 5 photos, un titre et une description attrayante',
           ),
           Container(
             width: double.infinity,
@@ -45,8 +44,9 @@ class UploadingTripFirstPhase extends StatelessWidget {
           ),
           const CustomizedStep(
             number: '3',
-            title: 'Finish up and publish',
-            description: 'Set a starting price and publish your listing',
+            title: 'Publiez et gagnez !',
+            description:
+                'Définissez un prix de départ et publiez votre annonce',
           ),
           const SizedBox(height: 35,),
         ],

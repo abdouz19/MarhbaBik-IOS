@@ -23,7 +23,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment Details'),
+        title: const Text('Détails de paiement'),
       ),
       body: SafeArea(
         child: WebViewWidget(

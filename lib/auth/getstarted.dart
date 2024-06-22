@@ -17,32 +17,27 @@ class GetStartedScreen extends StatefulWidget {
 
 class _GetStartedScreenState extends State<GetStartedScreen> {
   final UserService _userService = UserService();
+
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
-      // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
       if (googleUser == null) {
-        return; // The user canceled the sign-in
+        return;
       }
 
-      // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
           await googleUser.authentication;
 
-      // Create a new credential
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
 
-      // Once signed in, return the UserCredential
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       final User? user = userCredential.user;
 
       if (user != null) {
-        // Add user data to Firestore with additional details
         final userDoc =
             FirebaseFirestore.instance.collection('users').doc(user.uid);
         final docSnapshot = await userDoc.get();
@@ -61,14 +56,90 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
           });
         }
 
-        // Store or update the FCM token
         await _userService.storeUserToken();
-
-        Navigator.of(context).pushNamed('/traveler_home');
+        Navigator.of(context).pushReplacementNamed('/traveler_home');
       }
     } catch (e) {
       print('Error signing in with Google: $e');
     }
+  }
+
+  Widget buildButton({
+    required VoidCallback onPressed,
+    required IconData icon,
+    required Color iconColor,
+    required String text,
+    required Color textColor,
+    required Color buttonColor,
+    bool isOutlined = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+      width: double.infinity,
+      child: SizedBox(
+        height: 45,
+        child: isOutlined
+            ? OutlinedButton(
+                onPressed: onPressed,
+                style: OutlinedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  side: BorderSide(color: iconColor),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      icon,
+                      color: iconColor,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      text,
+                      style: GoogleFonts.poppins(
+                        color: textColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : MaterialButton(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                onPressed: onPressed,
+                color: buttonColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Icon(
+                      icon,
+                      color: iconColor,
+                      size: 21,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      text,
+                      style: GoogleFonts.poppins(
+                        color: textColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
   }
 
   @override
@@ -81,21 +152,18 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
       body: Container(
         color: Colors.white,
         child: SizedBox(
-          height:
-              MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: Stack(
                   children: [
-                    // Blue background behind the first container
                     Container(
                       color: const Color(0xff3F75BB),
                       height: double.infinity,
                       width: double.infinity,
                     ),
-                    // First container with border radius
                     Container(
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -139,7 +207,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Lorem ipsum dolor sit amet consectetur. Arcu sed.',
+                        "Explorez l'Algérie en un seul clic : découvrez, réservez, et voyagez !",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           textStyle: const TextStyle(
@@ -149,129 +217,36 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 30,
+                      const SizedBox(height: 30),
+                      buildButton(
+                        onPressed: () {},
+                        icon: MdiIcons.facebook,
+                        iconColor: Colors.white,
+                        text: 'Continuer avec Facebook',
+                        textColor: Colors.white,
+                        buttonColor: Colors.transparent,
+                        isOutlined: true,
                       ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 5),
-                        width:
-                            double.infinity, // Set button width to full width
-                        child: SizedBox(
-                          height: 45,
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              side: const BorderSide(
-                                  color: Colors
-                                      .white), // Set border color to white
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.apple,
-                                  color: Colors.white, // Color of Email icon
-                                ),
-                                const SizedBox(
-                                    width:
-                                        13), // Add some space between icon and text
-                                Text(
-                                  'Continue with Apple',
-                                  style: GoogleFonts.getFont(
-                                    'Poppins',
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      buildButton(
+                        onPressed: () {
+                          signInWithGoogle(context);
+                        },
+                        icon: MdiIcons.google,
+                        iconColor: const Color(0xff3F75BB),
+                        text: 'Continuer avec Google',
+                        textColor: const Color(0xff3F75BB),
+                        buttonColor: Colors.white,
                       ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 5),
-                        width:
-                            double.infinity, // Set button width to full width
-                        child: SizedBox(
-                          height: 45,
-                          child: MaterialButton(
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            onPressed: () {
-                              signInWithGoogle(context);
-                            },
-                            color: Colors.white,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  MdiIcons.google,
-                                  color: const Color(0xff3F75BB),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Continue with Google',
-                                  style: GoogleFonts.getFont(
-                                    'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    color: const Color(0xff3F75BB),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 5),
-                        width:
-                            double.infinity, // Set button width to full width
-                        child: SizedBox(
-                          height: 45,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              onPushScreen('/login');
-                            },
-                            style: OutlinedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              side: const BorderSide(
-                                  color: Colors
-                                      .white), // Set border color to white
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.email,
-                                  color: Colors.white, // Color of Email icon
-                                ),
-                                const SizedBox(
-                                    width:
-                                        13), // Add some space between icon and text
-                                Text(
-                                  'Continue with E-mail',
-                                  style: GoogleFonts.getFont(
-                                    'Poppins',
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      buildButton(
+                        onPressed: () {
+                          onPushScreen('/login');
+                        },
+                        icon: Icons.email,
+                        iconColor: Colors.white,
+                        text: 'Continuer avec E-mail',
+                        textColor: Colors.white,
+                        buttonColor: Colors.transparent,
+                        isOutlined: true,
                       ),
                     ],
                   ),

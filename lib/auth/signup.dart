@@ -83,13 +83,13 @@ class _SignupScreen extends State<SignupScreen> {
                   children: [
                     const SizedBox(height: 30),
                     Text(
-                      'Join MarhbaBik',
+                      'Rejoignez MarhbaBik',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         textStyle: const TextStyle(
                           color: Color(0xff001939),
                           fontWeight: FontWeight.bold,
-                          fontSize: 35,
+                          fontSize: 26,
                         ),
                       ),
                     ),
@@ -102,7 +102,7 @@ class _SignupScreen extends State<SignupScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              'Are you a ',
+                              'Vous êtes ',
                               textAlign: TextAlign.start,
                               style: GoogleFonts.poppins(
                                 textStyle: const TextStyle(
@@ -117,7 +117,7 @@ class _SignupScreen extends State<SignupScreen> {
                           DropdownButtonFormField<UserTypes>(
                             validator: (v) {
                               if (v == null) {
-                                return "Oops! Don't leave this field empty!";
+                                return "Oups ! Ce champ ne peut pas être vide.";
                               }
                               return null;
                             },
@@ -139,7 +139,7 @@ class _SignupScreen extends State<SignupScreen> {
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: const Color(0xFFFAFAFA),
-                              hintText: 'Select User Type',
+                              hintText: 'Sélectionnez le type d\'utilisateur',
                               hintStyle: const TextStyle(
                                 color: Color(0xFF888888),
                                 fontWeight: FontWeight.w400,
@@ -162,28 +162,28 @@ class _SignupScreen extends State<SignupScreen> {
                       textEditingController: emailController,
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 20),
                     CustomizedTextFormField(
-                      label: 'Password',
+                      label: 'Mot de passe',
                       hintText: '**********',
                       icon: Icons.lock,
                       textEditingController: passwordController,
                       isPassword: true,
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 25),
                     MaterialButtonAuth(
-                      label: 'Signup',
+                      label: 'Inscription',
                       onPressed: () async {
                         // Show circular progress indicator
                         showDialog(
@@ -221,30 +221,31 @@ class _SignupScreen extends State<SignupScreen> {
                             // Close the circular progress indicator dialog
                             Navigator.pop(context);
                             presentDialog(
-                                'Account Created Successfully!',
-                                'Please check your email to verify your account. Once verified, you can log in.',
+                                'Compte créé avec succès !',
+                                'Veuillez vérifier votre e-mail pour valider votre compte. Une fois validé, vous pourrez vous connecter.',
                                 () => onPushScreen('/login'));
                           } on FirebaseAuthException catch (e) {
                             String errorMessage = '';
                             if (e.code == 'weak-password') {
                               errorMessage =
-                                  'The password provided is too weak.';
+                                  'Le mot de passe fourni est trop faible.';
                             } else if (e.code == 'email-already-in-use') {
                               errorMessage =
-                                  'The account already exists for that email.';
+                                  'Un compte existe déjà pour cette adresse e-mail.';
                             } else {
-                              errorMessage = 'An error occurred: ${e.message}';
+                              errorMessage =
+                                  'Une erreur s\'est produite: ${e.message}';
                             }
                             // Close the circular progress indicator dialog
                             Navigator.pop(context);
-                            presentDialog('Registration Error', errorMessage,
+                            presentDialog('Erreur d\'inscription', errorMessage,
                                 () => Navigator.pop(context));
                           } catch (e) {
                             // Close the circular progress indicator dialog
                             Navigator.pop(context);
                             presentDialog(
-                                'Oops! Something Went Wrong',
-                                'An unexpected error occurred: $e. Please try again later or contact support for assistance.',
+                                'Oups ! Quelque chose s\'est mal passé',
+                                'Une erreur inattendue s\'est produite : $e. Veuillez réessayer plus tard ou contacter le support pour obtenir de l\'aide.',
                                 () => Navigator.pop(context));
                           }
                         }
@@ -260,18 +261,18 @@ class _SignupScreen extends State<SignupScreen> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: "Already have an account?",
+                              text: "Vous avez déjà un compte ?",
                               style: GoogleFonts.poppins(
                                 color: const Color(0xff888888),
                                 fontWeight: FontWeight.w400,
-                                fontSize: 16,
+                                fontSize: 15,
                               ),
                             ),
                             TextSpan(
-                              text: " Login",
+                              text: " Connecter",
                               style: GoogleFonts.poppins(
                                 color: const Color(0xff3F75BB),
-                                fontSize: 16,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),

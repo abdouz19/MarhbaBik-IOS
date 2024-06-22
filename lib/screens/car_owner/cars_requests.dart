@@ -77,7 +77,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Car Bookings'),
+        title: const Text('Réservations de voiture'),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -221,7 +221,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Offered By : ',
+                                            'Offert par : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -249,7 +249,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedPickupDate to $formattedReturnDate (${booking['days']} days)',
+                                            '$formattedPickupDate au $formattedReturnDate (${booking['days']} jours)',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,
@@ -261,7 +261,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Total Money : ',
+                                            'Montant total : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -281,7 +281,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Payment method : ',
+                                            'Méthode de paiement : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -324,7 +324,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 12.0),
                                                 child: Text(
-                                                  'Decline',
+                                                  'Décliner',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontFamily:
@@ -359,7 +359,7 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 12.0),
                                                 child: Text(
-                                                  'Accept',
+                                                  'Accepter',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontFamily:
@@ -402,12 +402,16 @@ class _CarsOffersScreenState extends State<CarsOffersScreen> {
             color: Colors.grey[400],
           ),
           const SizedBox(height: 20),
-          Text(
-            "No booking requests yet",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              textAlign: TextAlign.center,
+              "Aucune demande de réservation pour le moment",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
             ),
           ),
         ],

@@ -59,8 +59,8 @@ class _TravelingAgencyEditProfileState
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text('Error picking image: $error'),
+            title: const Text('Erreur'),
+            content: Text('Erreur lors de la sélection de l\'image: $error'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -148,7 +148,7 @@ class _TravelingAgencyEditProfileState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Profile updated successfully'),
+          content: Text('Profil mis à jour avec succès.'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -157,7 +157,7 @@ class _TravelingAgencyEditProfileState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              'An error occurred while updating profile. Please try again later.'),
+              'Une erreur s\'est produite lors de la mise à jour du profil. Veuillez réessayer plus tard.'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -220,12 +220,12 @@ class _TravelingAgencyEditProfileState
                             ),
                             CustomizedTextFormField(
                               initialText: _agencyName,
-                              label: 'Agency name',
-                              hintText: 'Enter your agency name',
+                              label: 'Nom de l\'agence',
+                              hintText: 'Entrez le nom de votre agence',
                               textEditingController: agencyName,
                               validator: (v) {
                                 if (v == "") {
-                                  return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                                 }
                                 return null;
                               },
@@ -235,13 +235,12 @@ class _TravelingAgencyEditProfileState
                             ),
                             CustomizedTextFormField(
                               initialText: _commercialRegisterNumber,
-                              label: 'Commercial Register No.',
-                              hintText: 'Enter your commercial register number',
+                              label: 'Numéro de registre commercial',
+                              hintText: 'Entrez votre numéro de registre commercial',
                               textEditingController: commercialRegisterNumber,
-                              keyboardType: TextInputType.number,
                               validator: (v) {
                                 if (v == "") {
-                                  return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                                 }
                                 return null;
                               },
@@ -252,11 +251,11 @@ class _TravelingAgencyEditProfileState
                             WilayaDropdown(
                               initialText: _wilaya,
                               controller: wilaya,
-                              hintText: 'Select your wilaya',
+                              hintText: 'Veuillez sélectionner une wilaya',
                               labelText: 'Wilaya',
                               validator: (v) {
                                 if (v == "") {
-                                  return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                                 }
                                 return null;
                               },
@@ -271,13 +270,13 @@ class _TravelingAgencyEditProfileState
                             ),
                             CustomizedTextFormField(
                               initialText: _phoneNumber,
-                              label: 'Phone number',
-                              hintText: 'Enter your phone number',
+                              label: 'Numéro de téléphone',
+                              hintText: 'Entrez votre numéro de téléphone',
                               textEditingController: phoneNumber,
                               keyboardType: TextInputType.number,
                               validator: (v) {
                                 if (v == "") {
-                                  return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                                 }
                                 return null;
                               },
@@ -288,7 +287,7 @@ class _TravelingAgencyEditProfileState
                             _updating
                                 ? const CircularProgressIndicator()
                                 : MaterialButtonAuth(
-                                    label: 'Update',
+                                    label: 'Mettre à jour',
                                     onPressed: () {
                                       if (formState.currentState!.validate()) {
                                         updateUserProfile();

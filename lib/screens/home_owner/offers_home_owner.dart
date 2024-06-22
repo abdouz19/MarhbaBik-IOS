@@ -60,7 +60,7 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Your places',
+          'Vos endroits',
           style: GoogleFonts.poppins(
             color:const Color(0xff001939),
             fontSize: 25,
@@ -93,9 +93,9 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('An error occurred while fetching your offers.'));
+                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("You haven't published any offers yet. Click here to add your offers."));
+                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
               } else {
                 List<Map<String, dynamic>> houses = snapshot.data!;
                 return ListView.builder(
@@ -132,7 +132,7 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
                         ),
                         const SizedBox(height: 3,),
                         Text(
-                          '${house['price']} DZD/night',
+                          '${house['price']} DZD/nuit',
                           style: GoogleFonts.poppins(
                             color:const Color(0xff001939),
                             fontSize: 15,

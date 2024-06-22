@@ -79,50 +79,50 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
   }
 
   Future<void> uploadDataToFirebase(BuildContext context) async {
-  try {
-    // Show loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 10),
-            Text('Uploading data...'),
-          ],
+    try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 10),
+              Text('Téléchargement en cours...'),
+            ],
+          ),
         ),
-      ),
-    );
+      );
 
-    // Get current user data
-    User? user = FirebaseAuth.instance.currentUser;
-    String userId = user!.uid;
-    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get();
+      // Get current user data
+      User? user = FirebaseAuth.instance.currentUser;
+      String userId = user!.uid;
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
-    // Upload images to Firebase Storage
-    List<String> imageUrls = [];
-    for (XFile? image in selectedImages) {
-      if (image != null) {
-        String imageName = DateTime.now().millisecondsSinceEpoch.toString();
-        Reference ref = FirebaseStorage.instance
-            .ref()
-            .child('house_images')
-            .child('$userId')
-            .child('$imageName.jpg');
-        await ref.putFile(File(image.path));
-        String imageUrl = await ref.getDownloadURL();
-        imageUrls.add(imageUrl);
+      // Upload images to Firebase Storage
+      List<String> imageUrls = [];
+      for (XFile? image in selectedImages) {
+        if (image != null) {
+          String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+          Reference ref = FirebaseStorage.instance
+              .ref()
+              .child('house_images')
+              .child('$userId')
+              .child('$imageName.jpg');
+          await ref.putFile(File(image.path));
+          String imageUrl = await ref.getDownloadURL();
+          imageUrls.add(imageUrl);
+        }
       }
-    }
-    
 
-    // Upload data to Firestore without 'id' field
-    DocumentReference docRef = await FirebaseFirestore.instance.collection('houses').add({
+      // Upload data to Firestore without 'id' field
+      DocumentReference docRef =
+          await FirebaseFirestore.instance.collection('houses').add({
         'ownerId': userId,
         'ownerFirstName': userSnapshot['firstName'],
         'ownerLastName': userSnapshot['lastName'],
@@ -136,43 +136,46 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
         'placeType': _selectedPlaceType,
         'address': addressValue,
         'uploadedAt': FieldValue.serverTimestamp(),
-    });
+      });
 
-    // Retrieve the document ID
-    String documentId = docRef.id;
+      // Retrieve the document ID
+      String documentId = docRef.id;
 
-    // Update the document with the 'id' field
-    await docRef.update({'id': documentId});
+      // Update the document with the 'id' field
+      await docRef.update({'id': documentId});
 
-    // Dismiss loading dialog
-    Navigator.pop(context);
+      // Dismiss loading dialog
+      Navigator.pop(context);
 
-    // Show success message or navigate to next screen
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Success'),
-        content: const Text('Your listing has been successfully published!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Dismiss success dialog
-              Navigator.pop(context); // Dismiss bottom sheet
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  } catch (error) {
-    print('Error uploading data: $error');
-    // Dismiss loading dialog
-    Navigator.pop(context);
-    // Show error message
-    presentDialog('Error', 'An error occurred while publishing your listing. Please try again later.', 'OK');
+      // Show success message or navigate to next screen
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Opération réussie !'),
+          content: const Text(
+              'C\'est publié ! Votre logement est prêt à accueillir des voyageurs.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Dismiss success dialog
+                Navigator.pop(context); // Dismiss bottom sheet
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (error) {
+      print('Error uploading data: $error');
+      // Dismiss loading dialog
+      Navigator.pop(context);
+      // Show error message
+      presentDialog(
+          'Erreur',
+          'Une erreur est survenue lors de la publication de votre annonce. Veuillez réessayer plus tard.',
+          'OK');
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -180,9 +183,12 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
       height: double.infinity,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Create Your Listing', style: GoogleFonts.lato(
-            color:const Color(0xff001939),
-          ),),
+          title: Text(
+            'Rédigez votre annonce',
+            style: GoogleFonts.lato(
+              color: const Color(0xff001939),
+            ),
+          ),
           leading: IconButton(
             icon: const Icon(Icons.close, size: 30),
             onPressed: () => Navigator.pop(context),
@@ -196,8 +202,8 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                 if (_currentStep == 1) {
                   if (!validateSecondPhase()) {
                     presentDialog(
-                      'Fill All Fields',
-                      'Please fill all the fields before proceeding.',
+                      'N\'oubliez pas de remplir tous les champs !',
+                      'Remplis tous les champs avant de passer à la suite !',
                       'OK',
                     );
                     return;
@@ -211,8 +217,8 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                 if (_currentStep == 2) {
                   if (!validateThirdPhase()) {
                     presentDialog(
-                      'Fill All Fields',
-                      'Please fill all the fields before proceeding.',
+                      'N\'oubliez pas de remplir tous les champs !',
+                      'Remplis tous les champs avant de passer à la suite !',
                       'OK',
                     );
                     return;
@@ -226,8 +232,8 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                       selectedImages.every((image) => image != null);
                   if (!allPhotosUploaded) {
                     presentDialog(
-                      'Upload Photos',
-                      'Please upload all three photos before proceeding.',
+                      'Téléverser des photos',
+                      'Veuillez télécharger les trois photos avant de continuer.',
                       'OK',
                     );
                     return;
@@ -238,8 +244,8 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                 if (_currentStep == 4) {
                   if (!validateFifthPhase()) {
                     presentDialog(
-                      'Invalid Price',
-                      'Please enter a valid price before proceeding.',
+                      'Prix invalide',
+                      'Veuillez saisir un prix valide avant de continuer.',
                       'OK',
                     );
                     return;
@@ -271,9 +277,9 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                         child: TextButton(
                           onPressed: details.onStepCancel,
                           child: Text(
-                            'Back',
+                            'Retour',
                             style: GoogleFonts.poppins(
-                              color:const Color(0xff001939),
+                              color: const Color(0xff001939),
                               fontSize: 20,
                               fontWeight: FontWeight.w400,
                             ),
@@ -288,8 +294,8 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
                     Expanded(
                       child: MaterialButtonAuth(
                         label: _currentStep == 0
-                            ? 'Get Started'
-                            : (_currentStep == 5 ? 'Publish' : 'Next'),
+                            ? 'C\'est parti !'
+                            : (_currentStep == 5 ? 'Publier' : 'Suivant'),
                         onPressed: _currentStep == 5
                             ? () {
                                 uploadDataToFirebase(context);
@@ -304,17 +310,23 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
           },
           steps: [
             Step(
-              title:  Text('Get Started', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'C\'est parti !',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content:
                   const SingleChildScrollView(child: UploadingHomeFirstPhase()),
               isActive: _currentStep >= 0,
             ),
             Step(
-              title:  Text('Property Details', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'Détails du bien',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content: SingleChildScrollView(
                 child: UploadingHomeSecondPhase(
                   onPlaceTypeSelected: (value) {
@@ -342,9 +354,12 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
               isActive: _currentStep >= 1,
             ),
             Step(
-              title:  Text('Describe Your Place', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'Présentez votre logement',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content: SingleChildScrollView(
                 child: UploadingHomeThirdPhase(
                   onTitleChanged: (value) {
@@ -362,9 +377,12 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
               isActive: _currentStep >= 2,
             ),
             Step(
-              title:  Text('Showcase Your Place', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'Donnez vie à votre espace',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content: UploadingHomeFourthPhase(
                 selectedImages: selectedImages,
                 onImageSelected: onImageSelected,
@@ -372,9 +390,12 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
               isActive: _currentStep >= 3,
             ),
             Step(
-              title:  Text('Set Your Price', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'Choisissez votre prix !',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content: SingleChildScrollView(
                 child: UploadingHomeFifthPhase(
                   onPriceChanged: (value) {
@@ -387,9 +408,12 @@ class _UploadingHomeProcessState extends State<UploadingHomeProcess> {
               isActive: _currentStep >= 4,
             ),
             Step(
-              title:  Text('Review & Confirmation', style: GoogleFonts.lato(
-                color:const Color(0xff001939),
-              ),),
+              title: Text(
+                'Vérifiez et confirmez',
+                style: GoogleFonts.lato(
+                  color: const Color(0xff001939),
+                ),
+              ),
               content: SingleChildScrollView(
                   child: UploadingHomeFinalPhase(
                 placeType: _selectedPlaceType ?? '',

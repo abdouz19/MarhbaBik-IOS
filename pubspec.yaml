@@ -59,7 +59,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/marhbabik_new_icon.png
-    - assets/images/ic_launcher.png
     - assets/images/picture.jpg
     - assets/images/me.jpeg
     - assets/images/placeholder.png

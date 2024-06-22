@@ -60,7 +60,7 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Your Trips',
+          'Vos voyages',
           style: GoogleFonts.poppins(
             fontSize: 25,
             fontWeight: FontWeight.w600,
@@ -92,9 +92,9 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('An error occurred while fetching your offers.'));
+                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("You haven't published any offers yet. Click here to add your offers."));
+                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
               } else {
                 List<Map<String, dynamic>> trips = snapshot.data!;
                 return ListView.builder(
@@ -110,11 +110,11 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
                     String dateStatus;
 
                     if (now.isBefore(startDate)) {
-                      dateStatus = "Upcoming";
+                      dateStatus = "À venir";
                     } else if (now.isAfter(endDate)) {
-                      dateStatus = "Expired";
+                      dateStatus = "Expiré";
                     } else {
-                      dateStatus = "Happening Now";
+                      dateStatus = "En cours";
                     }
                     
                     return Column(
@@ -137,7 +137,7 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
                         ),
                         const SizedBox(height: 3,),
                         Text(
-                          '$formattedActivities in ${trip['wilaya']}',
+                          '$formattedActivities à ${trip['wilaya']}',
                           style: GoogleFonts.poppins(
                             fontSize: 17,
                             color: const Color(0xff666666),
@@ -158,9 +158,9 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
-                            color: dateStatus == "Upcoming"
+                            color: dateStatus == "À venir"
                                 ? Colors.green
-                                : dateStatus == "Expired"
+                                : dateStatus == "Expiré"
                                     ? Colors.red
                                     : Colors.orange,
                           ),

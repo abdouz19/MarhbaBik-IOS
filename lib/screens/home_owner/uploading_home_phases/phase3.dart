@@ -38,18 +38,18 @@ class _UploadingHomeThirdPhaseState extends State<UploadingHomeThirdPhase> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Now, let’s give your place a title & description',
+              'Maintenant, donnons un titre et une description',
               style: GoogleFonts.poppins(
-                color:const Color(0xff001939),
-                fontSize: 28,
+                color: const Color(0xff001939),
+                fontSize: 21,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a title for your listing',
+              'Rédigez un titre pour votre annonce',
               style: GoogleFonts.lato(
-                color:const Color(0xff001939),
+                color: const Color(0xff001939),
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
               ),
@@ -58,7 +58,7 @@ class _UploadingHomeThirdPhaseState extends State<UploadingHomeThirdPhase> {
             CustomTextFieldContainer(
               controller: titleController,
               height: 50,
-              hintText: 'Wonderful apartment in great place',
+              hintText: 'Piscine privée pour se détendre',
               onChanged: (value) {
                 setState(() {
                   titleValue = value;
@@ -68,9 +68,9 @@ class _UploadingHomeThirdPhaseState extends State<UploadingHomeThirdPhase> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a small description',
+              'Rédigez une courte description ',
               style: GoogleFonts.lato(
-                color:const Color(0xff001939),
+                color: const Color(0xff001939),
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
               ),
@@ -79,7 +79,7 @@ class _UploadingHomeThirdPhaseState extends State<UploadingHomeThirdPhase> {
             CustomTextFieldContainer(
               controller: descriptionController,
               height: 200,
-              hintText: 'A lovely place ak chayef',
+              hintText: 'Une expérience unique pour des souvenirs mémorables',
               onChanged: (value) {
                 setState(() {
                   descriptionValue = value;

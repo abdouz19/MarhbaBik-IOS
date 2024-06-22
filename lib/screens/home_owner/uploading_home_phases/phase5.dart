@@ -25,16 +25,16 @@ class _UploadingHomeFifthPhaseState extends State<UploadingHomeFifthPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Now, set your price',
+            'À présent, on passe au prix !',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: 21,
               color:const Color(0xff001939),
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'You can change it anytime.',
+            'Modifiable à tout moment !',
             style: GoogleFonts.lato(
               color:const Color(0xff001939),
               fontSize: 17,
@@ -75,7 +75,7 @@ class _UploadingHomeFifthPhaseState extends State<UploadingHomeFifthPhase> {
                     ),
                   ),
                   Text(
-                    ' DZD/night',
+                    ' DZD/nuit',
                     style: GoogleFonts.lato(
                       color:const Color(0xff001939),
                       fontSize: 33,

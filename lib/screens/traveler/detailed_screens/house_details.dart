@@ -166,7 +166,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '$placeType in $address, $wilaya.',
+                    '$placeType à $address, $wilaya.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -174,7 +174,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$capacity guests',
+                    '$capacity personnes',
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: const Color(0xff001939),

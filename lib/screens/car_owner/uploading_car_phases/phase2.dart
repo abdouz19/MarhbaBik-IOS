@@ -51,16 +51,16 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Let’s start with the basic information',
+            'Commençons par les informations essentielles',
             style: GoogleFonts.poppins(
               color: const Color(0xff001939),
-              fontSize: 28,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Please specify the car brand',
+            '"Veuillez spécifier la marque de la voiture',
             style: GoogleFonts.lato(
               color:const Color(0xff001939),
               fontSize: 17,
@@ -71,7 +71,7 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
           CustomTextFieldContainer(
             controller: carBrandController,
             height: 50,
-            hintText: 'Example: Fiat',
+            hintText: 'Exemple: Fiat',
             onChanged: (value) {
               setState(() {
                 carBrandValue = value;
@@ -81,7 +81,7 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Please specify the car model',
+            'Veuillez spécifier le modèle de la voiture',
             style: GoogleFonts.lato(
               color: const Color(0xff001939),
               fontSize: 17,
@@ -92,7 +92,7 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
           CustomTextFieldContainer(
             controller: carModelController,
             height: 50,
-            hintText: 'Example: Tipo 2023',
+            hintText: 'Exemple: Tipo 2023',
             onChanged: (value) {
               setState(() {
                 carModelValue = value;
@@ -102,7 +102,7 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Choose the Wilaya',
+            'Choisissez la Wilaya',
             style: GoogleFonts.lato(
               color: const Color(0xff001939),
               fontSize: 17,
@@ -123,7 +123,7 @@ class _UploadingCarSecondPhaseState extends State<UploadingCarSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Seating Capacity',
+            'Nombre de places',
             style: GoogleFonts.lato(
               color: const Color(0xff001939),
               fontSize: 17,

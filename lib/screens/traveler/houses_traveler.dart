@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/recommanded_screen.dart';
 import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
 import 'package:marhba_bik/widgets/lists/cars_listview.dart';
@@ -20,14 +21,12 @@ class HousesTraveler extends StatefulWidget {
 class _HousesTravelerScreenState extends State<HousesTraveler> {
   late Future<Wilaya?> _wilayaJijel;
   late Future<Wilaya?> _wilayaOran;
-  Future<List<Wilaya>>? _futureWilayas;
 
   @override
   void initState() {
     super.initState();
     _wilayaJijel = FirestoreService().fetchWilayaByName('Jijel');
     _wilayaOran = FirestoreService().fetchWilayaByName('Oran');
-    _futureWilayas = FirestoreService().fetchWilayas();
   }
 
   @override
@@ -47,35 +46,36 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                     fit: BoxFit.cover,
                   ),
                   Positioned(
-                    top: 60,
-                    left: 10,
+                    top: 65,
+                    left: 8,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Explore',
+                        const Text('Visitez',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'KastelovAxiforma',
-                              fontSize: 31,
+                              fontSize: 29,
                             )),
                         OutlinedText(
-                          text: const Text('Algeria',
+                          text: const Text('l\'Algérie',
                               style: TextStyle(
                                 color: Colors.transparent,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'KastelovAxiforma',
-                                fontSize: 33,
+                                fontSize: 29,
                               )),
                           strokes: [
                             OutlinedTextStroke(color: Colors.white, width: 1),
                           ],
                         ),
-                        const Text('With us',
+                        const Text('Avec nous',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'KastelovAxiforma',
-                              fontSize: 31,
+                              fontSize: 29,
                             )),
                       ],
                     ),
@@ -179,7 +179,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Explore',
+                            'Découvrez',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -189,7 +189,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             ),
                           ),
                           const Text(
-                            'Our different',
+                            'Nos diverses',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -199,7 +199,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             ),
                           ),
                           const Text(
-                            'Regions',
+                            'Régions',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -212,7 +212,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 10,
                           ),
                           const Text(
-                            'Explore our diffrent regions ak chayef',
+                            'Découvrez la beauté des paysages variés de l\'Algérie',
                             softWrap: true,
                             style: TextStyle(
                               color: Colors.white,
@@ -233,7 +233,7 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                                           const RegionsScreen(),
                                     ));
                               },
-                              child: const Text('Pick region'))
+                              child: const Text('Partez à l\'aventure'))
                         ]),
                   ),
                 ],
@@ -511,7 +511,17 @@ class _HousesTravelerScreenState extends State<HousesTraveler> {
                             height: 5,
                           ),
                           ElevatedButton(
-                              onPressed: () {}, child: const Text('Voir plus'))
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RecommandedScreen(
+                                        type: 'recommended',
+                                      ),
+                                    ));
+                              },
+                              child: const Text('Voir plus'))
                         ]),
                   ),
                 ],

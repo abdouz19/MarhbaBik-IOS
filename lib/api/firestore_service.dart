@@ -458,25 +458,25 @@ class FirestoreService {
   }
 
   Future<List<Destination>> getDestinationsByRegion(String region) async {
-  try {
-    // Convert the entered region value to lowercase
-    String normalizedRegion = region.toLowerCase();
+    try {
+      // Convert the entered region value to lowercase
+      String normalizedRegion = region.toLowerCase();
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('destinations')
-        .where('region', isEqualTo: normalizedRegion)
-        .get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('destinations')
+          .where('region', isEqualTo: normalizedRegion)
+          .get();
 
-    List<Destination> destinations = querySnapshot.docs
-        .map((doc) => Destination.fromDocument(doc))
-        .toList();
+      List<Destination> destinations = querySnapshot.docs
+          .map((doc) => Destination.fromDocument(doc))
+          .toList();
 
-    return destinations;
-  } catch (e) {
-    print("Error fetching destinations: $e");
-    return [];
+      return destinations;
+    } catch (e) {
+      print("Error fetching destinations: $e");
+      return [];
+    }
   }
-}
 
 // Function to fetch houses by wilaya
   Future<List<House>> fetchHousesByWilaya(String wilaya) async {
@@ -487,6 +487,7 @@ class FirestoreService {
       isEqualTo: wilaya,
     );
   }
+
   Future<List<Trip>> fetchTripsByWilaya(String wilaya) async {
     return _fetchDatas<Trip>(
       'trips',
@@ -495,6 +496,7 @@ class FirestoreService {
       isEqualTo: wilaya,
     );
   }
+
   Future<List<Car>> fetchCarsByWilaya(String wilaya) async {
     return _fetchDatas<Car>(
       'cars',
@@ -504,26 +506,25 @@ class FirestoreService {
     );
   }
 
-Future<List<Wilaya>> getWilayasByRegion(String region) async {
-  try {
-    // Convert the entered region value to lowercase
-    String normalizedRegion = region.toLowerCase();
+  Future<List<Wilaya>> getWilayasByRegion(String region) async {
+    try {
+      // Convert the entered region value to lowercase
+      String normalizedRegion = region.toLowerCase();
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('wilayas')
-        .where('regions', arrayContains: normalizedRegion)
-        .get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('wilayas')
+          .where('regions', arrayContains: normalizedRegion)
+          .get();
 
-    List<Wilaya> wilayas = querySnapshot.docs
-        .map((doc) => Wilaya.fromDocument(doc))
-        .toList();
+      List<Wilaya> wilayas =
+          querySnapshot.docs.map((doc) => Wilaya.fromDocument(doc)).toList();
 
-    return wilayas;
-  } catch (e) {
-    print("Error fetching wilayas: $e");
-    return [];
+      return wilayas;
+    } catch (e) {
+      print("Error fetching wilayas: $e");
+      return [];
+    }
   }
-}
 
   Future<void> updateBookingStatus(String bookingID, String status) async {
     try {

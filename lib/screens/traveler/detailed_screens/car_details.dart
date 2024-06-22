@@ -165,7 +165,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '$brand $model in $wilaya.',
+                    '$brand $model en $wilaya.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -173,7 +173,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$capacity guests',
+                    '$capacity places',
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: const Color(0xff001939),

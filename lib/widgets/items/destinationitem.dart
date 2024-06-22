@@ -132,7 +132,7 @@ class _DestinationItemState extends State<SecondDestinationItem> {
               ),
               const SizedBox(height: 5),
               Text(
-                widget.destination.category,
+                _capitalizeFirstLetter(widget.destination.category),
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -148,4 +148,9 @@ class _DestinationItemState extends State<SecondDestinationItem> {
       ),
     );
   }
+}
+
+String _capitalizeFirstLetter(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
 }

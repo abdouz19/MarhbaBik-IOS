@@ -29,15 +29,15 @@ class _UploadingTripFourthPhaseState extends State<UploadingTripFourthPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'We are almost there, give your trip a look!',
+            'On y est presque ! Faites briller votre voyage avec de belles photos',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Bring your trip to life with 3 captivating images',
+            'Donnez vie à votre voyage avec 3 photos captivantes',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,
@@ -64,7 +64,7 @@ class _UploadingTripFourthPhaseState extends State<UploadingTripFourthPhase> {
             },
             color: Colors.blue[800],
             child: Text(
-              'Upload',
+              'Sélectionner',
               style: GoogleFonts.poppins(color: Colors.white),
             ),
           ),

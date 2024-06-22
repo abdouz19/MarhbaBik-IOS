@@ -9,10 +9,10 @@ class CollectionCard extends StatelessWidget {
   final List<String> itemIds;
 
   static const Map<String, String> collectionNameMapping = {
-    'carIds': 'Cars',
-    'tripIds': 'Trips',
-    'houseIds': 'Houses',
-    'destinationIds': 'Destinations',
+    'carIds': 'Voitures',
+    'tripIds': 'Voyages',
+    'houseIds': 'Maisons',
+    'destinationIds': 'Déstinations',
     'wilayaIds': 'Wilayas',
   };
 
@@ -146,7 +146,7 @@ class CollectionCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    '${itemIds.length} saved',
+                    '${itemIds.length} enregistrés',
                     textAlign: TextAlign.start,
                     style: const TextStyle(
                       color: Color(0xff8E8B8B),

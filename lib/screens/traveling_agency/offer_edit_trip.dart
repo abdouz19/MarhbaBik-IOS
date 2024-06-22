@@ -96,7 +96,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
         descriptionController.text.isEmpty ||
         activities.isEmpty ||
         tripCapacity == 0) {
-      _showDialog('Error', 'Please fill all the fields', () {
+      _showDialog('Erreur', 'N\'oubliez pas de remplir tous les champs !', () {
         Navigator.of(context).pop();
       });
     } else {
@@ -123,14 +123,14 @@ class _EditOfferTripState extends State<EditOfferTrip> {
           'wilaya': selectedWilaya,
           'activities': activities,
           'capacity': tripCapacity,
-          'price': int.parse(priceController.text),
+          'price': priceController.text,
           'description': descriptionController.text,
         });
 
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Success', 'Details updated successfully', () {
+        _showDialog('Succès', 'Vos modifications ont été enregistrées.', () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
         });
@@ -138,7 +138,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Error', 'Failed to update details. Please try again.',(){
+        _showDialog('Erreur', 'La mise à jour de vos détails a échoué. Veuillez réessayer.', () {
           Navigator.of(context).pop();
         });
       }
@@ -157,7 +157,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit your listing'),
+        title: const Text('Modifier votre annonce'),
         leading: IconButton(
           icon: const Icon(
             Icons.close,
@@ -202,7 +202,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 30),
               CustomContainer(
-                title: 'Title',
+                title: 'Titre',
                 content: TextField(
                   controller: titleController,
                   style: GoogleFonts.lato(
@@ -218,7 +218,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Date Range',
+                title: 'Période de dates',
                 content: GestureDetector(
                   onTap: () => _selectDateRange(context),
                   child: Padding(
@@ -271,7 +271,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Activities',
+                title: 'Activités',
                 content: SimpleChipsInput(
                   activities: activities,
                   onChanged: (activitiesList) {
@@ -283,7 +283,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Trip Capacity',
+                title: 'Capacité du voyage',
                 content: Padding(
                   padding: const EdgeInsets.only(bottom: 15, top: 10),
                   child: CapacitySelector(
@@ -298,7 +298,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Price',
+                title: 'Prix',
                 content: TextField(
                   controller: priceController,
                   keyboardType: TextInputType.number,
@@ -331,7 +331,7 @@ class _EditOfferTripState extends State<EditOfferTrip> {
               ),
               const SizedBox(height: 40),
               MaterialButtonAuth(
-                label: 'Update details',
+                label: 'Mettre à jour',
                 onPressed: _updateDetails,
               ),
               const SizedBox(height: 40),

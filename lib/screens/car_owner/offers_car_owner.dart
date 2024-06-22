@@ -60,7 +60,7 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Your cars',
+          'Vos voitures',
           style: GoogleFonts.poppins(
             color:const Color(0xff001939),
             fontSize: 25,
@@ -93,9 +93,9 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('An error occurred while fetching your offers.'));
+                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("You haven't published any offers yet. Click here to add your offers."));
+                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
               } else {
                 List<Map<String, dynamic>> cars = snapshot.data!;
                 return ListView.builder(
@@ -133,7 +133,7 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
                         ),
                         const SizedBox(height: 3,),
                         Text(
-                          '${car['price']} DZD/day',
+                          '${car['price']} DZD/jour',
                           style: GoogleFonts.poppins(
                             color:const Color(0xff001939),
                             fontSize: 15,

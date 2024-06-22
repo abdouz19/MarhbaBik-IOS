@@ -75,9 +75,9 @@ class _UploadingTripFinalPhaseState extends State<UploadingTripFinalPhase> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Review your listing',
+          'Prêt à publier ? Vérifiez une dernière fois',
           style: GoogleFonts.poppins(
-            fontSize: 28,
+            fontSize: 21,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -96,7 +96,7 @@ class _UploadingTripFinalPhaseState extends State<UploadingTripFinalPhase> {
         ),
         const SizedBox(height: 10),
         Text(
-          '$formattedStartDate to $formattedEndDate in ${widget.wilaya}.',
+          '$formattedStartDate au $formattedEndDate à ${widget.wilaya}.',
           style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -104,7 +104,7 @@ class _UploadingTripFinalPhaseState extends State<UploadingTripFinalPhase> {
         ),
         const SizedBox(height: 2),
         Text(
-          '${widget.capacity} seating place',
+          '${widget.capacity} places',
           style: GoogleFonts.poppins(
             fontSize: 13,
             fontWeight: FontWeight.w300,

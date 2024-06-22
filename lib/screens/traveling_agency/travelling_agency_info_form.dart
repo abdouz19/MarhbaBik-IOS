@@ -54,8 +54,8 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
         showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text('Error picking image: $error'),
+          title: const Text('Erreur'),
+          content: Text('Erreur lors de la sélection de l\'image: $error'),
           actions: [
             TextButton(
               onPressed: () {
@@ -132,9 +132,9 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
+          title: const Text('Erreur'),
           content: const Text(
-              'An error occurred while signing up. Please try again later.'),
+              'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -151,7 +151,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Please fill in all required fields.'),
+        content: Text('Veuillez remplir tous les champs obligatoires.'),
         duration: Duration(seconds: 2),
       ),
     );
@@ -186,7 +186,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                   children: [
                     Text(
                       textAlign: TextAlign.center,
-                      'To continue as a Home Owner, please fill in this information',
+                      'Pour continuer en tant que agence de voyage, veuillez remplir ces informations',
                       style: GoogleFonts.poppins(
                         color: const Color(0xff3F75BB),
                         fontSize: 16,
@@ -212,12 +212,12 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       height: 20,
                     ),
                     CustomizedTextFormField(
-                      label: 'Agency name',
+                      label: 'Nom de l\'agence',
                       hintText: 'Ex: MarhbaBik',
                       textEditingController: agencyName,
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -226,13 +226,13 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       height: 10,
                     ),
                     CustomizedTextFormField(
-                      label: 'Commercial Register No.',
+                      label: 'Numéro de registre commercial',
                       hintText: '**********',
                       textEditingController: commercialRegisterNumber,
                       keyboardType: TextInputType.number,
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -246,7 +246,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       labelText: 'Wilaya',
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -262,13 +262,13 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       height: 10,
                     ),
                     CustomizedTextFormField(
-                      label: 'Phone number',
+                      label: 'Numéro de téléphone',
                       hintText: 'Ex: 0562202210',
                       textEditingController: phoneNumber,
                       keyboardType: TextInputType.number,
                       validator: (v) {
                         if (v == "") {
-                          return "Oops! Don't leave this field empty!";
+                                  return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -292,14 +292,14 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                         if (_selectedWilaya == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Please select a wilaya.'),
+                              content: Text('Veuillez sélectionner une wilaya.'),
                               duration: Duration(seconds: 2),
                             ),
                           );
                         } else if (!_checkboxChecked) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Please check the checkbox.'),
+                              content: Text('Veuillez cocher la case.'),
                               duration: Duration(seconds: 2),
                             ),
                           );
@@ -316,7 +316,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                           );
                         }
                       },
-                      label: 'Complete My Signup',
+                      label: 'Terminer mon inscription',
                     )
                   ],
                 ),

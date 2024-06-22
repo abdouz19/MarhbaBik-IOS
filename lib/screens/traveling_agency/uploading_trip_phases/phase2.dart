@@ -67,15 +67,15 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Let’s start with the basic information',
+            'Commençons par les informations essentielles',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Choose the trip days',
+            'Choisissez les jours du voyage',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,
@@ -88,17 +88,17 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.all(10),
-                hintText: 'Select trip days',
+                hintText: 'Sélectionnez les jours du voyage',
               ),
               child: tripDays == null
-                  ? const Text('Select trip days')
+                  ? const Text('Sélectionnez les jours du voyage')
                   : Text(
                       '${DateFormat('yyyy-MM-dd').format(tripDays!.start)} - ${DateFormat('yyyy-MM-dd').format(tripDays!.end)}'),
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Trip Activities',
+            'Activités du voyage',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,
@@ -111,7 +111,7 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
               child: CustomTextFieldContainer(
                 controller: controller,
                 height: 50,
-                hintText: 'Enter an activity',
+                hintText: 'Entrer une activité',
                 onChanged: (value) {
                   setState(() {});
                   widget.onTripActivitiesChanged(tripActivitiesControllers
@@ -128,7 +128,7 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
               });
             },
             child: Text(
-              'Add Activity',
+              'Entrer une activité',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -137,7 +137,7 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Choose the Wilaya',
+            'Choisissez la wilaya',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,
@@ -157,7 +157,7 @@ class _UploadingTripSecondPhaseState extends State<UploadingTripSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Seating Capacity',
+            'Capacité d\'assise',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,

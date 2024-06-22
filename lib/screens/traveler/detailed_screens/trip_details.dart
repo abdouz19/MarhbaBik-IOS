@@ -20,7 +20,6 @@ class TripDetailedScreen extends StatefulWidget {
 }
 
 class _TripDetailedScreenState extends State<TripDetailedScreen> {
-
   bool _isFavorited = false;
 
   @override
@@ -31,8 +30,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
 
   Future<void> _checkIfFavorited() async {
     String tripId = widget.trip.id;
-    bool isFavorited =
-        await FirestoreService().isItemFavorited(tripId, "trip");
+    bool isFavorited = await FirestoreService().isItemFavorited(tripId, "trip");
     setState(() {
       _isFavorited = isFavorited;
     });
@@ -49,6 +47,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
       await FirestoreService().removeFromWishlist(carId, "trip");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     List<String> images = widget.trip.images;
@@ -176,7 +175,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'From $formattedStartDate To $formattedEndDate in $wilaya.',
+                    'Du $formattedStartDate au $formattedEndDate en $wilaya.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -184,7 +183,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$capacity guests',
+                    '$capacity personnes',
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       color: const Color(0xff001939),
@@ -253,7 +252,7 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                   ),
                 ),
                 const Text(
-                  'Available',
+                  'Disponible',
                   textAlign: TextAlign.start,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -268,13 +267,14 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
             const SizedBox(width: 50),
             Expanded(
               child: MaterialButtonAuth(
-                label: 'Reserve',
+                label: 'Réserver',
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              SendingTripRequestScreen(trip: widget.trip,)));
+                          builder: (context) => SendingTripRequestScreen(
+                                trip: widget.trip,
+                              )));
                 },
               ),
             ),
