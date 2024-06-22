@@ -104,7 +104,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
     await firestoreService.cancelBooking(bookingID);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Booking canceled'),
+        content: Text('Réservation annulée'),
         duration: Duration(seconds: 2),
       ),
     );
@@ -118,7 +118,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
     await firestoreService.deleteBooking(bookingID);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Booking canceled'),
+        content: Text('Réservation annulée'),
         duration: Duration(seconds: 2),
       ),
     );
@@ -132,7 +132,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bookings'),
+        title: const Text('Mes Réservations'),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -158,7 +158,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                 ConnectionState.waiting) {
                               return _buildLoadingSkeleton();
                             } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
+                              return Text('Erreur: ${snapshot.error}');
                             } else {
                               Map<String, dynamic>? targetData = snapshot.data;
 
@@ -340,7 +340,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Booking Status : ',
+                                          'État de la réservation : ',
                                           style: TextStyle(
                                             color: Color(0xff001939),
                                             fontWeight: FontWeight.w500,
@@ -380,7 +380,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedPickupDate to $formattedReturnDate (${booking['days']} days)',
+                                            '$formattedPickupDate au $formattedReturnDate (${booking['days']} jours)',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,
@@ -400,7 +400,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedPickupDate to $formattedReturnDate (${booking['nights']} nights)',
+                                            '$formattedPickupDate au $formattedReturnDate (${booking['nights']} nuits)',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,
@@ -412,7 +412,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'People : ',
+                                            'Personnes : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -420,7 +420,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '${booking['people']} people',
+                                            '${booking['people']} person',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,
@@ -433,7 +433,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Total Money : ',
+                                          'Montant total : ',
                                           style: TextStyle(
                                             color: Color(0xff001939),
                                             fontWeight: FontWeight.w500,
@@ -453,7 +453,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                     Row(
                                       children: [
                                         const Text(
-                                          'Payment method : ',
+                                          'Moyen de paiement : ',
                                           style: TextStyle(
                                             color: Color(0xff001939),
                                             fontWeight: FontWeight.w500,
@@ -495,7 +495,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                               padding: EdgeInsets.symmetric(
                                                   vertical: 12.0),
                                               child: Text(
-                                                'Cancel',
+                                                'Annuler',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontFamily:
@@ -561,7 +561,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
                                               padding: EdgeInsets.symmetric(
                                                   vertical: 12.0),
                                               child: Text(
-                                                'Call',
+                                                'Appeler',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontFamily:
@@ -600,7 +600,7 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
           ),
           const SizedBox(height: 20),
           Text(
-            "No booking requests yet",
+            "Pas encore de demandes de réservation.",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

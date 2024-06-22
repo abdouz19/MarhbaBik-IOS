@@ -25,15 +25,15 @@ class _UploadingTripFifthPhaseState extends State<UploadingTripFifthPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Now, set your price',
+            'À présent, on passe au prix !',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'You can change it anytime.',
+            'Modifiable à tout moment !',
             style: GoogleFonts.lato(
               fontSize: 17,
               fontWeight: FontWeight.w500,

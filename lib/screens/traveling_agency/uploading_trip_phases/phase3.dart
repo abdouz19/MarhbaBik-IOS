@@ -38,15 +38,15 @@ class _UploadingTripThirdPhaseState extends State<UploadingTripThirdPhase> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Now, let’s give your trip a title & description',
+              'Maintenant, donnons un titre et une description',
               style: GoogleFonts.poppins(
-                fontSize: 28,
+                fontSize: 21,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a title for your trip',
+              'Rédigez un titre pour votre annonce',
               style: GoogleFonts.lato(
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
@@ -56,7 +56,7 @@ class _UploadingTripThirdPhaseState extends State<UploadingTripThirdPhase> {
             CustomTextFieldContainer(
               controller: titleController,
               height: 50,
-              hintText: 'Wonderful trip today',
+              hintText: 'Explorez une aventure inoubliable',
               onChanged: (value) {
                 setState(() {
                   titleValue = value;
@@ -66,7 +66,7 @@ class _UploadingTripThirdPhaseState extends State<UploadingTripThirdPhase> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a small description',
+              'Rédigez une courte description',
               style: GoogleFonts.lato(
                 fontSize: 17,
                 fontWeight: FontWeight.w500,

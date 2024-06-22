@@ -184,7 +184,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
                 height: 40,
               ),
               Text(
-                "Settings",
+                "Paramètres",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.poppins(
                   color: const Color(0xff001939),
@@ -198,7 +198,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
               CustomizedOutlinedMaterialButton(
                 icon: Icons.person_rounded,
                 color: const Color(0xff3F75BB),
-                label: 'Personal Information',
+                label: 'Données personnelles',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const CarOwnerEditProfile()));
@@ -210,7 +210,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
               CustomizedOutlinedMaterialButton(
                 icon: Icons.car_rental_rounded,
                 color: const Color(0xff3F75BB),
-                label: 'Your offers',
+                label: 'Vos demandes',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => CarsOffersScreen(userID: _userID,)));
@@ -221,7 +221,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
               ),
               CustomizedOutlinedMaterialButton(
                 icon: Icons.security_rounded,
-                label: 'About app',
+                label: 'À propos',
                 color: const Color(0xff3F75BB),
                 onPressed: () {},
               ),
@@ -230,7 +230,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
               ),
               CustomizedOutlinedMaterialButton(
                 icon: Icons.exit_to_app,
-                label: 'Sign out',
+                label: 'Se déconnecter',
                 color: const Color(0xffFF0000),
                 onPressed: () async {
                   GoogleSignIn googleSignIn = GoogleSignIn();

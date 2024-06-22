@@ -38,6 +38,7 @@ class _DestinationItemState extends State<DestinationItem> {
 
   @override
   Widget build(BuildContext context) {
+    final wilayaText = _getWilayaText(_destination.wilaya);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -95,7 +96,7 @@ class _DestinationItemState extends State<DestinationItem> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Wilaya of ${_destination.wilaya}',
+                    wilayaText,
                     style: const TextStyle(
                       color: Color(0xff001939),
                       fontWeight: FontWeight.w400,
@@ -130,4 +131,17 @@ double calculateAverageRating(List<int> ratings) {
   final totalRatings = ratings.fold(0, (sum, rating) => sum + rating);
   final averageRating = totalRatings / ratings.length;
   return averageRating;
+}
+
+String _getWilayaText(String wilayaName) {
+  return "Wilaya de ${_addApostropheIfNecessary(wilayaName)}";
+}
+
+String _addApostropheIfNecessary(String regionName) {
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'h'];
+  if (vowels.contains(regionName[0].toLowerCase())) {
+    return "d'$regionName";
+  } else {
+    return regionName;
+  }
 }

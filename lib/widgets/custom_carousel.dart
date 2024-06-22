@@ -50,8 +50,8 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Edit Offer"),
-          content: const Text("Are you sure you want to edit this offer?"),
+          title: const Text("Modifier l'offre"),
+          content: const Text("Êtes-vous sûr(e) de vouloir modifier cette offre ?"),
           actions: [
             TextButton(
               onPressed: () {
@@ -73,13 +73,13 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                 );
 
               },
-              child: const Text("Yes"),
+              child: const Text("Oui"),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("No"),
+              child: const Text("Non"),
             ),
           ],
         );
@@ -95,21 +95,21 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Delete Offer"),
-          content: const Text("Are you sure you want to delete this offer?"),
+          title: const Text("Supprimer l'offre"),
+          content: const Text("Êtes-vous sûr(e) de vouloir supprimer cette offre ?"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 widget.onDelete!();
               },
-              child: const Text("Yes"),
+              child: const Text("Oui"),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("No"),
+              child: const Text("Non"),
             ),
           ],
         );
@@ -140,7 +140,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                     height: widget.height,
                   )
                 : Image(
-                    image: const AssetImage('assets/images/me.jpeg'),
+                    image: const AssetImage('assets/images/picture.jpg'),
                     fit: BoxFit.cover,
                     height: widget.height,
                   ),

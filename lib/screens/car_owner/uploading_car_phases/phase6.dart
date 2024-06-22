@@ -69,7 +69,7 @@ class _UploadingHomeCarPhaseState extends State<UploadingCarFinalPhase> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Review your listing',
+          'Prêt à publier ? Vérifiez une dernière fois',
           style: GoogleFonts.poppins(
             color:const Color(0xff001939),
             fontSize: 28,
@@ -93,7 +93,7 @@ class _UploadingHomeCarPhaseState extends State<UploadingCarFinalPhase> {
         ),
         const SizedBox(height: 10),
         Text(
-          '${widget.brand} ${widget.model} in ${widget.wilaya}.',
+          '${widget.brand} ${widget.model} à ${widget.wilaya}.',
           style: GoogleFonts.poppins(
             color: const Color(0xff001939),
             fontSize: 15,
@@ -102,7 +102,7 @@ class _UploadingHomeCarPhaseState extends State<UploadingCarFinalPhase> {
         ),
         const SizedBox(height: 2),
         Text(
-          '${widget.capacity} seating place',
+          '${widget.capacity} places',
           style: GoogleFonts.poppins(
             color:const Color(0xff001939),
             fontSize: 13,

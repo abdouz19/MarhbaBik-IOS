@@ -96,21 +96,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         textEditingController: emailController,
                         validator: (v) {
                           if (v == "") {
-                            return "Oops! Don't leave this field empty!";
+                            return "Oups ! Ce champ ne peut pas être vide.";
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 20),
                       CustomizedTextFormField(
-                        label: 'Password',
+                        label: 'Mot de passe',
                         hintText: '**********',
                         icon: Icons.lock,
                         textEditingController: passwordController,
                         isPassword: true,
                         validator: (v) {
                           if (v == "") {
-                            return "Oops! Don't leave this field empty!";
+                            return "Oups ! Ce champ ne peut pas être vide.";
                           }
                           return null;
                         },
@@ -120,22 +120,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () async {
                           if (emailController.text == "") {
                             presentDialog(
-                                'Oops! Looks like you forgot something...',
-                                'Please enter your email address before proceeding to reset your password.');
+                                "Oops ! On dirait que vous avez oublié quelque chose...",
+                                "Veuillez entrer votre adresse e-mail avant de continuer pour réinitialiser votre mot de passe.");
                             return;
                           }
                           try {
                             await FirebaseAuth.instance.sendPasswordResetEmail(
                                 email: emailController.text);
-                            presentDialog('Password Reset Email Sent!',
-                                'We\'ve sent you an email with a link to reset your password. Please check your inbox and follow the instructions provided.');
+                            presentDialog(
+                                'Email de réinitialisation de mot de passe envoyé !',
+                                'Nous vous avons envoyé un e-mail avec un lien pour réinitialiser votre mot de passe. Veuillez vérifier votre boîte de réception et suivre les instructions fournies.');
                           } catch (e) {
-                            presentDialog('Invalid Email',
-                                'Please make sure the entered email address is correct and try again.');
+                            presentDialog('E-mail invalide',
+                                'Veuillez vous assurer que l\'adresse e-mail saisie est correcte et réessayer.');
                           }
                         },
                         child: Text(
-                          'Forgot password?',
+                          'Mot de passe oublié ?',
                           textAlign: TextAlign.end,
                           style: GoogleFonts.poppins(
                             color: const Color(0xff3F75BB),
@@ -146,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 25),
                       MaterialButtonAuth(
-                          label: 'Login',
+                          label: 'Connexion',
                           onPressed: () async {
                             // Show circular progress indicator
                             showDialog(
@@ -233,25 +234,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   }
                                 } else {
-                                  presentDialog('Account Verification Required',
-                                      'Please check your email and click on the provided link to verify your account. Once verified, your account will be activated.');
+                                  presentDialog(
+                                      'Vérification du compte requise',
+                                      'Veuillez vérifier votre e-mail et cliquer sur le lien fourni pour vérifier votre compte. Une fois vérifié, votre compte sera activé.');
                                 }
                               } on FirebaseAuthException catch (e) {
                                 String errorMessage = '';
                                 if (e.code == 'user-not-found') {
-                                  errorMessage =
-                                      'Sorry, we couldn\'t find an account associated with that email address.';
+                                  errorMessage = 'Désolé, nous n'
+                                      'avons pas trouvé de compte associé à cette adresse e-mail';
                                 } else if (e.code == 'wrong-password') {
                                   errorMessage =
-                                      'The password you entered is incorrect. Please try again.';
+                                      'Le mot de passe que vous avez saisi est incorrect. Veuillez réessayer.';
                                 } else {
                                   errorMessage =
-                                      'An error occurred: ${e.message}';
+                                      'Une erreur s\'est produite: ${e.message}';
                                 }
                                 // Close the circular progress indicator dialog
                                 Navigator.pop(context);
                                 presentDialog(
-                                    'Authentication Error', errorMessage);
+                                    'Erreur d\'authentification', errorMessage);
                               }
                             } else {
                               // Close the circular progress indicator dialog
@@ -268,18 +270,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: "Don't have an account?",
+                                text: "Vous n'avez pas de compte ?",
                                 style: GoogleFonts.poppins(
                                   color: const Color(0xff888888),
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                               ),
                               TextSpan(
-                                text: " Signup",
+                                text: " Inscrire",
                                 style: GoogleFonts.poppins(
                                   color: const Color(0xff3F75BB),
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),

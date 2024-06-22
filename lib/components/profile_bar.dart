@@ -41,7 +41,7 @@ class ProfileBar extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Text('Hosted By $firstName $lastName'),
+                child: Text('Hébergé par $firstName $lastName'),
               ),
             ),
           ],

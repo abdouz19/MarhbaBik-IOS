@@ -61,8 +61,8 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: status == 'accepted'
-            ? const Text('Booking accepted')
-            : const Text('Booking declined'),
+            ? const Text('Réservation acceptée')
+            : const Text('Réservation refusée'),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -77,7 +77,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('House Bookings'),
+        title: const Text('Réservations de maison'),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -104,7 +104,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                 ConnectionState.waiting) {
                               return _buildLoadingSkeleton();
                             } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
+                              return Text('Erreur: ${snapshot.error}');
                             } else {
                               final List<dynamic>? data = snapshot.data;
                               if (data != null && data.length == 2) {
@@ -221,7 +221,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Offered By : ',
+                                            'Proposé par : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -249,7 +249,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedPickupDate to $formattedReturnDate (${booking['nights']} nights)',
+                                            '$formattedPickupDate to $formattedReturnDate (${booking['nights']} nuits)',
                                             style: const TextStyle(
                                               color: Color(0xff989898),
                                               fontSize: 15,
@@ -261,7 +261,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Total Money : ',
+                                            'Montant total : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -281,7 +281,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                       Row(
                                         children: [
                                           const Text(
-                                            'Payment method : ',
+                                            'Méthode de paiement : ',
                                             style: TextStyle(
                                               color: Color(0xff001939),
                                               fontWeight: FontWeight.w500,
@@ -324,7 +324,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 12.0),
                                                 child: Text(
-                                                  'Decline',
+                                                  'Décliner',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontFamily:
@@ -359,7 +359,7 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 12.0),
                                                 child: Text(
-                                                  'Accept',
+                                                  'Accepter',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontFamily:
@@ -402,12 +402,16 @@ class _HousesOffersScreenState extends State<HousesOffersScreen> {
             color: Colors.grey[400],
           ),
           const SizedBox(height: 20),
-          Text(
-            "No booking requests yet",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              "Aucune demande de réservation pour l'instant",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
             ),
           ),
         ],

@@ -10,13 +10,13 @@ class ImagePickerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select Profile Image'),
+      title: const Text('Sélectionner une image de profil'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             ListTile(
               leading: const Icon(Icons.photo),
-              title: const Text('Select from Gallery'),
+              title: const Text('Sélectionner depuis la galerie'),
               onTap: () async {
                 Navigator.pop(context); // Close dialog
 
@@ -34,7 +34,7 @@ class ImagePickerDialog extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a Photo'),
+              title: const Text('Prendre une photo'),
               onTap: () async {
                 Navigator.pop(context); // Close dialog
 

@@ -85,7 +85,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
         addressController.text.isEmpty ||
         descriptionController.text.isEmpty ||
         capacity == 0) {
-      _showDialog('Error', 'Please fill all the fields', () {
+      _showDialog('Erreur', 'N\'oubliez pas de remplir tous les champs !', () {
         Navigator.of(context).pop();
       });
     } else {
@@ -111,14 +111,14 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
           'placeType': placeType,
           'wilaya': selectedWilaya,
           'capacity': capacity,
-          'price': int.parse(priceController.text),
+          'price': priceController.text,
           'description': descriptionController.text,
         });
 
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Success', 'Details updated successfully', () {
+        _showDialog('Succès', 'Vos modifications ont été enregistrées.', () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
         });
@@ -126,7 +126,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Error', 'Failed to update details. Please try again.',(){
+        _showDialog('Erreur', 'La mise à jour de vos détails a échoué. Veuillez réessayer.', () {
           Navigator.of(context).pop();
         });
       }
@@ -146,9 +146,12 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit your listing', style: GoogleFonts.lato(
-          color:const Color(0xff001939),
-        ),),
+        title: Text(
+          'Modifier votre annonce',
+          style: GoogleFonts.lato(
+            color: const Color(0xff001939),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.close,
@@ -193,7 +196,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 30),
               CustomContainer(
-                title: 'Title',
+                title: 'Titre',
                 content: TextField(
                   controller: titleController,
                   style: GoogleFonts.lato(
@@ -209,10 +212,11 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Place Type',
+                title: 'Type de logement',
                 content: DropdownButtonFormField<String>(
                   value: placeType,
-                  items: placeTypes.toSet().toList().map((String placeType) { // Ensure unique items
+                  items: placeTypes.toSet().toList().map((String placeType) {
+                    // Ensure unique items
                     return DropdownMenuItem<String>(
                       value: placeType,
                       child: Text(
@@ -267,7 +271,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Exact address',
+                title: 'Adresse exacte',
                 content: TextField(
                   controller: addressController,
                   style: GoogleFonts.lato(
@@ -283,7 +287,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Capacity',
+                title: 'Capacité',
                 content: Padding(
                   padding: const EdgeInsets.only(bottom: 15, top: 10),
                   child: CapacitySelector(
@@ -298,7 +302,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Price',
+                title: 'Prix',
                 content: TextField(
                   controller: priceController,
                   keyboardType: TextInputType.number,
@@ -321,7 +325,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Description',
+                title: 'Déscription',
                 content: DescriptionField(
                   initialValue: description,
                   onChanged: (value) {
@@ -331,7 +335,7 @@ class _EditOfferHouseState extends State<EditOfferHouse> {
               ),
               const SizedBox(height: 40),
               MaterialButtonAuth(
-                label: 'Update details',
+                label: 'Mettre à jour',
                 onPressed: _updateDetails,
               ),
               const SizedBox(height: 40),

@@ -33,7 +33,7 @@ class _TravelerHomeScreenState extends State<TravelerHomeScreen> {
       size: iconSize.toDouble(),
       color: selected
           ? const Color(0xff3F75BB)
-          : Color.fromARGB(255, 173, 173, 173),
+          : const Color.fromARGB(255, 173, 173, 173),
     );
   }
 

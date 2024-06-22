@@ -13,19 +13,19 @@ class UploadingCarFirstPhase extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'It’s easy to get started on MarhbaBik',
+            'Commencez facilement votre aventure sur MarhbaBik.',
             style: GoogleFonts.poppins(
               color: const Color(0xff001939),
-              fontSize: 23,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 30),
           const CustomizedStep(
             number: '1',
-            title: 'Tell us about your Car',
+            title: 'Parlez-nous de votre Voiture',
             description:
-                'Share some basic info, like where it is and how many guests can stay',
+                'Partagez quelques informations de base, comme l\'emplacement et le nombre d\'invités pouvant séjourner',
           ),
           Container(
             width: double.infinity,
@@ -35,8 +35,8 @@ class UploadingCarFirstPhase extends StatelessWidget {
           ),
           const CustomizedStep(
             number: '2',
-            title: 'Make it stand out',
-            description: 'Add 5 or more photos plus a title and description',
+            title: 'Faites-le sortir du lot',
+            description: 'Ajoutez au moins 5 photos, un titre et une description attrayante',
           ),
           Container(
             width: double.infinity,
@@ -46,8 +46,8 @@ class UploadingCarFirstPhase extends StatelessWidget {
           ),
           const CustomizedStep(
             number: '3',
-            title: 'Finish up and publish',
-            description: 'Set a starting price and publish your listing',
+            title: 'Publiez et gagnez !',
+            description: 'Définissez un prix de départ et publiez votre annonce',
           ),
           const SizedBox(height: 35,),
         ],

@@ -38,13 +38,13 @@ class _RegionScreenState extends State<RegionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle('Explore Wilayas'),
+              _buildSectionTitle('Vivez l\'authenticité des Wilayas'),
               WilayaList(
                 type: 'vertical',
                 future: _wilayas,
               ),
               const SizedBox(height: 40),
-              _buildSectionTitle('Uncover Hidden Gems'),
+              _buildSectionTitle('Découvrez des joyaux cachés'),
               DestinationsList(future: _destinations, type: 'vertical'),
             ],
           ),
@@ -59,7 +59,7 @@ class _RegionScreenState extends State<RegionScreen> {
       style: const TextStyle(
         color: Color(0xff001939),
         fontWeight: FontWeight.bold,
-        fontSize: 22,
+        fontSize: 20,
       ),
     );
   }

@@ -38,16 +38,16 @@ class _UploadingCarThirdPhaseState extends State<UploadingCarThirdPhase> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Now, let’s give your listing a title & description',
+              'Maintenant, donnons un titre et une description',
               style: GoogleFonts.poppins(
                 color:const Color(0xff001939),
-                fontSize: 28,
+                fontSize: 21,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a title for your listing',
+              'Rédigez un titre pour votre annonce',
               style: GoogleFonts.lato(
                 color: const Color(0xff001939),
                 fontSize: 17,
@@ -58,7 +58,7 @@ class _UploadingCarThirdPhaseState extends State<UploadingCarThirdPhase> {
             CustomTextFieldContainer(
               controller: titleController,
               height: 50,
-              hintText: 'Wonderful car engine',
+              hintText: 'Exemple : Berline élégante, modèle 2023',
               onChanged: (value) {
                 setState(() {
                   titleValue = value;
@@ -68,7 +68,7 @@ class _UploadingCarThirdPhaseState extends State<UploadingCarThirdPhase> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Write a small description',
+              'Écrivez une petite description',
               style: GoogleFonts.lato(
                 color:const Color(0xff001939),
                 fontSize: 17,
@@ -79,7 +79,7 @@ class _UploadingCarThirdPhaseState extends State<UploadingCarThirdPhase> {
             CustomTextFieldContainer(
               controller: descriptionController,
               height: 200,
-              hintText: 'A lovely car ak chayef',
+              hintText: 'Confortable et économique, cette voiture dispose d''un moteur puissant et est idéale pour les longs trajets en famillef',
               onChanged: (value) {
                 setState(() {
                   descriptionValue = value;

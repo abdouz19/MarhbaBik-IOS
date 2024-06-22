@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/models/wilaya.dart';
+import 'package:marhba_bik/screens/traveler/recommanded_screen.dart';
 import 'package:marhba_bik/screens/traveler/regions_screen.dart';
 import 'package:marhba_bik/screens/traveler/wilaya_screen.dart';
-import 'package:marhba_bik/widgets/lists/destination_listview.dart';
 import 'package:marhba_bik/widgets/items/region_item.dart';
+import 'package:marhba_bik/widgets/lists/destination_listview.dart';
 import 'package:marhba_bik/widgets/lists/wilaya_listview.dart';
 
 class ExploreTraveler extends StatefulWidget {
@@ -95,7 +96,15 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                             .fetchSpecialWilayas(['06', '10', '35']),
                       ),
                       _buildSeeAllButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RecommandedScreen(
+                                  type: 'wilayas',
+                                ),
+                              ));
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -110,7 +119,15 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
                         type: 'vertical',
                       ),
                       _buildSeeAllButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RecommandedScreen(
+                                  type: 'destinations',
+                                ),
+                              ));
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -180,7 +197,11 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: MaterialButtonAuth(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const RegionsScreen(),));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RegionsScreen(),
+              ));
         },
         label: 'Choisissez une région',
       ),
@@ -194,7 +215,7 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
         color: Color(0xff001939),
         fontWeight: FontWeight.bold,
         fontFamily: 'KastelovAxiforma',
-        fontSize: 22,
+        fontSize: 20,
       ),
     );
   }
@@ -203,15 +224,15 @@ class _ExploreTravelerState extends State<ExploreTraveler> {
     Map<String, String> regions = {
       'aures':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Faures.jpg?alt=media&token=a5ee441e-8bfa-4e85-8e4c-473be608cd0d0',
-      'center':
+      'centre':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fcenter.jpg?alt=media&token=545ba711-7bc2-4b49-9dd5-2e6fd152ef1a',
-      'east':
+      'est':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Feast.jpg?alt=media&token=69dcfb64-822c-4d65-8d33-295010e9fa13',
       'kabylie':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fkabylie.jpg?alt=media&token=1eb4f611-8d8f-4705-83d8-a416fcafca25',
       'sahara':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fsahara.jpg?alt=media&token=c3e5bbf4-7569-4268-bcc0-036d9b7feb12',
-      'west':
+      'ouest':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fwest.jpg?alt=media&token=fe065a6e-d0bb-4e23-b3f9-520079d12f20'
     };
 
@@ -287,7 +308,7 @@ Widget _buildSeeAllButton({required VoidCallback onPressed}) {
     child: const Padding(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        'See All',
+        'Voir tout',
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Color(0xff3F75BB),

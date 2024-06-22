@@ -29,16 +29,16 @@ class _UploadingCarFourthPhaseState extends State<UploadingCarFourthPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'We are almost there, give your car a look!',
+            'On y est presque ! Faites briller votre voiture avec de belles photos !',
             style: GoogleFonts.poppins(
               color: const Color(0xff001939),
-              fontSize: 28,
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Bring your car to life with 3 captivating images',
+            'Donnez vie à votre voiture avec 3 photos captivantes',
             style: GoogleFonts.lato(
               color: const Color(0xff001939),
               fontSize: 17,
@@ -66,7 +66,7 @@ class _UploadingCarFourthPhaseState extends State<UploadingCarFourthPhase> {
             },
             color: Colors.blue[800],
             child: Text(
-              'Upload',
+              'Sélectionner',
               style: GoogleFonts.poppins(color: Colors.white),
             ),
           ),

@@ -132,7 +132,7 @@ class _WilayaItemState extends State<SecondWilayaItem> {
               ),
               const SizedBox(height: 5),
               Text(
-                widget.wilaya.regions[0],
+                _capitalizeFirstLetter(widget.wilaya.regions[0]),
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -148,4 +148,8 @@ class _WilayaItemState extends State<SecondWilayaItem> {
       ),
     );
   }
+}
+String _capitalizeFirstLetter(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
 }

@@ -3,17 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:marhba_bik/api/e_paiment.dart';
+import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/capacity_selector.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/white_container_field.dart';
 import 'package:marhba_bik/models/trip.dart';
 import 'package:marhba_bik/screens/traveler/home.dart';
-import 'package:marhba_bik/api/e_paiment.dart';
-import 'package:marhba_bik/api/firestore_service.dart';
 
 class SendingTripRequestScreen extends StatefulWidget {
-  const SendingTripRequestScreen({Key? key, required this.trip})
-      : super(key: key);
+  const SendingTripRequestScreen({super.key, required this.trip});
 
   final Trip trip;
 
@@ -25,7 +24,7 @@ class SendingTripRequestScreen extends StatefulWidget {
 class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
   String? _paymentMethod;
   int selectedCapacity = 1;
-  int commission = 0;
+  double commission = 0.0;
   bool isLoading = false;
 
   final ApiService apiService = ApiService();
@@ -46,24 +45,26 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
     return selectedCapacity;
   }
 
-  Future<int> calculateTotalPrice() async {
+  Future<double> calculateTotalPrice() async {
     setState(() {
       isLoading = true;
     });
 
     int pricePerPerson = int.parse(widget.trip.price);
     int people = getPeople();
-    int totalPrice = (pricePerPerson * people);
+    double totalPrice =
+        (pricePerPerson * people).toDouble(); // Use double for totalPrice
 
     try {
-      final commissionData = await apiService.calculateCommission(totalPrice);
+      final commissionData =
+          await apiService.calculateCommission(totalPrice.toInt());
       setState(() {
-        commission = commissionData['commission'];
+        commission = commissionData['commission'].toDouble();
       });
     } catch (e) {
       print('Error: $e');
       setState(() {
-        commission = 0;
+        commission = 0.0;
       });
     } finally {
       setState(() {
@@ -71,7 +72,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
       });
     }
 
-    return totalPrice;
+    return totalPrice + commission; // Return total price including commission
   }
 
   void presentDialog(bool requestSent, String message) {
@@ -79,17 +80,17 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(requestSent ? 'Request Sent' : 'Error'),
+          title: Text(requestSent ? 'Demande envoyée ' : 'Erreur'),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                if(requestSent){
+                if (requestSent) {
                   Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TravelerHomeScreen()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TravelerHomeScreen()));
                 }
               },
               child: const Text('OK'),
@@ -102,8 +103,8 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
 
   void _requestToBook() async {
     if (_paymentMethod == null) {
-      presentDialog(false,
-          'Please select a payment method before sending the request.');
+      presentDialog(
+          false, 'Veuillez choisir un moyen de paiement avant d\'envoyer la demande.');
       return;
     }
 
@@ -112,9 +113,9 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
     });
 
     int people = getPeople();
-    String paymentMethod = _paymentMethod ?? 'Not selected';
+    String paymentMethod = _paymentMethod ?? 'Non sélectionné';
     int pricePerPerson = int.parse(widget.trip.price);
-    int totalPrice = (pricePerPerson * people) + commission;
+    double totalPrice = (pricePerPerson * people) + commission;
 
     String userId = FirebaseAuth.instance.currentUser!.uid;
     String travelerID = userId;
@@ -129,8 +130,8 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
       targetType: targetType,
       bookingStatus: 'pending',
       price: pricePerPerson * people,
-      commission: commission,
-      totalPrice: totalPrice,
+      commission: commission.toInt(),
+      totalPrice: totalPrice.toInt(),
       people: people,
       paymentMethod: paymentMethod,
     );
@@ -149,7 +150,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
       isLoading = false;
     });
 
-    presentDialog(true, 'Your booking request has been sent successfully.');
+    presentDialog(true, ' Votre demande de réservation a été envoyée avec succès.');
   }
 
   @override
@@ -164,7 +165,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
     // Combined date range string
     String dateRange = '$formattedStartDate - $formattedEndDate';
     int people = getPeople();
-    int totalPrice = (int.parse(widget.trip.price) * people) + commission;
+    double totalPrice = (int.parse(widget.trip.price) * people) + commission;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -172,7 +173,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
         child: AppBar(
           centerTitle: true,
           title: const Text(
-            'Request to book',
+            'Demander à réserver',
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Color(0xff001939),
@@ -250,7 +251,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 height: 20,
               ),
               CustomContainer(
-                title: 'Your Trip',
+                title: 'Votre voyage',
                 content: Column(
                   children: [
                     Row(
@@ -292,7 +293,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'People',
+                          'personnes',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Color(0xff001939),
@@ -327,13 +328,13 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 height: 20,
               ),
               CustomContainer(
-                title: 'Price details',
+                title: 'Tarifs Détaillés',
                 content: Column(
                   children: [
                     Row(
                       children: [
                         Text(
-                          '${widget.trip.price}DZD x $people people',
+                          '${widget.trip.price}DZD x $people person',
                           style: const TextStyle(
                             color: Color(0xff001939),
                             fontWeight: FontWeight.w300,
@@ -343,7 +344,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          '${int.parse(widget.trip.price) * people}DZD',
+                          '${(int.parse(widget.trip.price) * people)}DZD',
                           style: const TextStyle(
                             color: Color(0xff001939),
                             fontWeight: FontWeight.w300,
@@ -371,7 +372,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                         isLoading
                             ? const CircularProgressIndicator()
                             : Text(
-                                '${commission}DZD',
+                                '${commission.toInt()}DZD',
                                 style: const TextStyle(
                                   color: Color(0xff001939),
                                   fontWeight: FontWeight.w300,
@@ -406,7 +407,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                         ),
                         const Spacer(),
                         Text(
-                          isLoading ? 'Loading...' : '${totalPrice}DZD',
+                          isLoading ? 'Loading...' : '${totalPrice.toInt()}DZD',
                           style: const TextStyle(
                             color: Color(0xff001939),
                             fontWeight: FontWeight.w700,
@@ -426,14 +427,14 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 height: 20,
               ),
               CustomContainer(
-                title: 'Pay with',
+                title: 'Payer par',
                 content: Column(
                   children: [
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.credit_card),
                       title: const Text(
-                        'Credit card',
+                        'Carte de crédit',
                         style: TextStyle(
                           color: Color(0xff001939),
                           fontWeight: FontWeight.w600,
@@ -460,7 +461,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.money_rounded),
                       title: const Text(
-                        'Hand to hand',
+                        'En espèces',
                         style: TextStyle(
                           color: Color(0xff001939),
                           fontWeight: FontWeight.w600,
@@ -490,7 +491,7 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 height: 20,
               ),
               const Text(
-                'Your reservation wont\' be confirmed until the host accepts your request (within 24 hours).',
+                'Votre réservation ne sera confirmée que lorsque l\'hôte aura accepté votre demande (sous 24 heures).',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xff001939),
@@ -503,7 +504,9 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
                 height: 20,
               ),
               MaterialButtonAuth(
-                  onPressed: _requestToBook, label: 'Request to book')
+                onPressed: _requestToBook,
+                label: 'Demander à réserver',
+              )
             ],
           ),
         ),

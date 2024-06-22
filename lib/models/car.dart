@@ -36,31 +36,20 @@ class Car {
   factory Car.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Car(
-      brand: data['brand'],
-      capacity: data['capacity'],
-      description: data['description'],
-      id: data['id'],
-      images: List<String>.from(data['images']),
-      model: data['model'],
-      ownerFirstName: data['ownerFirstName'],
-      ownerId: data['ownerId'],
-      ownerLastName: data['ownerLastName'],
-      ownerProfilePicture: data['ownerProfilePicture'],
-      price: data['price'],
-      title: data['title'],
-      uploadedAt: data['uploadedAt'],
-      wilaya: data['wilaya'],
+      brand: data['brand'] ?? '',
+      capacity: data['capacity'] ?? 0,
+      description: data['description'] ?? '',
+      id: data['id'] ?? '',
+      images: data['images'] != null ? List<String>.from(data['images']) : [],
+      model: data['model'] ?? '',
+      ownerFirstName: data['ownerFirstName'] ?? '',
+      ownerId: data['ownerId'] ?? '',
+      ownerLastName: data['ownerLastName'] ?? '',
+      ownerProfilePicture: data['ownerProfilePicture'] ?? '',
+      price: data['price'] ?? '',
+      title: data['title'] ?? '',
+      uploadedAt: data['uploadedAt'] ?? Timestamp.now(),
+      wilaya: data['wilaya'] ?? '',
     );
   }
-
-  Future<List<Car>> fetchCars() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('cars').get();
-      return querySnapshot.docs.map((doc) => Car.fromDocument(doc)).toList();
-    } catch (e) {
-      print("Error fetching cars: $e");
-      return [];
-    }
-  }
-
 }

@@ -59,7 +59,7 @@ class DetailedWishlistScreen extends StatelessWidget {
                   }
 
                   return futureItem == null
-                      ? const Center(child: Text('Collection type not found'))
+                      ? const Center(child: Text('Type de collection introuvable'))
                       : Container(
                           margin: const EdgeInsets.only(top: 20),
                           child: Center(
@@ -122,17 +122,17 @@ class DetailedWishlistScreen extends StatelessWidget {
                                         );
                                       default:
                                         return const Center(
-                                          child: Text('Coming Soon'),
+                                          child: Text('Disponible prochainement'),
                                         );
                                     }
                                   } else {
                                     return const Center(
-                                      child: Text('Item not found'),
+                                      child: Text('Élément introuvable'),
                                     );
                                   }
                                 } else if (snapshot.hasError) {
                                   return const Center(
-                                    child: Text('Error fetching item'),
+                                    child: Text('Une erreur est survenue'),
                                   );
                                 }
                                 return Column(

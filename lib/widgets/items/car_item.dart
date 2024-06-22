@@ -131,7 +131,7 @@ class _CarItemState extends State<CarItem> {
               ),
               const SizedBox(height: 5),
               Text(
-                '${widget.car.price} DZD/day',
+                '${widget.car.price} DZD/jour',
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(

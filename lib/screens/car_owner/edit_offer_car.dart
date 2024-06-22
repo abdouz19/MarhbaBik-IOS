@@ -82,7 +82,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
         brandController.text.isEmpty ||
         descriptionController.text.isEmpty ||
         capacity == 0) {
-      _showDialog('Error', 'Please fill all the fields', () {
+      _showDialog('Erreur', 'Veuillez remplir tous les champs', () {
         Navigator.of(context).pop();
       });
     } else {
@@ -105,14 +105,14 @@ class _EditOfferCarState extends State<EditOfferCar> {
           'brand': brandController.text,
           'wilaya': selectedWilaya,
           'capacity': capacity,
-          'price': int.parse(priceController.text),
+          'price': priceController.text,
           'description': descriptionController.text,
         });
 
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Success', 'Details updated successfully', () {
+        _showDialog('Succès', 'Détails mis à jour avec succès', () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
         });
@@ -120,7 +120,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
         // Close the progress indicator
         Navigator.of(context).pop();
 
-        _showDialog('Error', 'Failed to update details. Please try again.', () {
+        _showDialog('Erreur', 'Échec de la mise à jour des détails. Veuillez réessayer.', () {
           Navigator.of(context).pop();
         });
       }
@@ -141,7 +141,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit your listing', style: GoogleFonts.lato(
+        title: Text('Modifier votre annonce', style: GoogleFonts.lato(
           color: const Color(0xff001939),
         ),),
         leading: IconButton(
@@ -188,7 +188,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 30),
               CustomContainer(
-                title: 'Title',
+                title: 'Titre',
                 content: TextField(
                   controller: titleController,
                   style: GoogleFonts.lato(
@@ -204,7 +204,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Brand',
+                title: 'Marque',
                 content: TextField(
                   controller: brandController,
                   style: GoogleFonts.lato(
@@ -220,7 +220,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Model',
+                title: 'Modèle',
                 content: TextField(
                   controller: modelController,
                   style: GoogleFonts.lato(
@@ -265,7 +265,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Capacity',
+                title: 'Capacité',
                 content: Padding(
                   padding: const EdgeInsets.only(bottom: 15, top: 10),
                   child: CapacitySelector(
@@ -280,7 +280,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 20),
               CustomContainer(
-                title: 'Price',
+                title: 'Prix',
                 content: TextField(
                   controller: priceController,
                   keyboardType: TextInputType.number,
@@ -313,7 +313,7 @@ class _EditOfferCarState extends State<EditOfferCar> {
               ),
               const SizedBox(height: 40),
               MaterialButtonAuth(
-                label: 'Update details',
+                label: 'Mettre à jour les détails',
                 onPressed: _updateDetails,
               ),
               const SizedBox(height: 40),

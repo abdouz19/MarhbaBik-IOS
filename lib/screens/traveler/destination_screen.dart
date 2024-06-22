@@ -185,8 +185,8 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      '$category au coeur de la $region, $wilaya.',
-                      style: GoogleFonts.poppins(
+                        'Place ${category} au coeur de la ${_getRegionDisplayName(region)}, $wilaya.',
+                          style: GoogleFonts.poppins(
                         color: const Color(0xff8E8E8E),
                         fontSize: 15,
                         fontWeight: FontWeight.w300,
@@ -260,3 +260,23 @@ double calculateAverageRating(List<int> ratings) {
   final averageRating = totalRatings / ratings.length;
   return averageRating;
 }
+
+String _getRegionDisplayName(String region) {
+  switch (region) {
+    case 'est':
+      return "l'est";
+    case 'ouest':
+      return "l'ouest";
+    case 'aures':
+      return "les aures";
+    case 'centre':
+      return "le centre";
+    case 'kabylie':
+      return "la kabylie";
+    case 'sahara':
+      return "le sahara";
+    default:
+      return region;
+  }
+}
+

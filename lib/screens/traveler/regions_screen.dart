@@ -68,6 +68,30 @@ class _RegionsScreenState extends State<RegionsScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipOval(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Color.fromARGB(255, 168, 168, 168),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SliverToBoxAdapter(
                 child: Padding(
@@ -183,15 +207,15 @@ class _RegionsScreenState extends State<RegionsScreen> {
     Map<String, String> regions = {
       'aures':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Faures.jpg?alt=media&token=a5ee441e-8bfa-4e85-8e4c-473be608cd0d0',
-      'center':
+      'centre':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fcenter.jpg?alt=media&token=545ba711-7bc2-4b49-9dd5-2e6fd152ef1a',
-      'east':
+      'est':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Feast.jpg?alt=media&token=69dcfb64-822c-4d65-8d33-295010e9fa13',
       'kabylie':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fkabylie.jpg?alt=media&token=1eb4f611-8d8f-4705-83d8-a416fcafca25',
       'sahara':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fsahara.jpg?alt=media&token=c3e5bbf4-7569-4268-bcc0-036d9b7feb12',
-      'west':
+      'ouest':
           'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/regions%2Fwest.jpg?alt=media&token=fe065a6e-d0bb-4e23-b3f9-520079d12f20'
     };
 

@@ -13,43 +13,49 @@ class UploadingHomeFirstPhase extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'It’s easy to get started on MarhbaBik',
+            'Commencez facilement votre aventure sur MarhbaBik.',
             style: GoogleFonts.poppins(
-              color:const Color(0xff001939),
-              fontSize: 23,
+              color: const Color(0xff001939),
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 30),
           const CustomizedStep(
             number: '1',
-            title: 'Tell us about your place',
+            title: 'Parlez-nous de votre logement',
             description:
-                'Share some basic info, like where it is and how many guests can stay',
+                'Partagez quelques informations de base, comme son emplacement et le nombre de voyageurs qu\'il peut accueillir',
           ),
           Container(
             width: double.infinity,
             height: 1, // Adjust height as needed
-            color: const Color(0xff001939).withOpacity(0.1), // Color of the divider
+            color: const Color(0xff001939)
+                .withOpacity(0.1), // Color of the divider
             margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           ),
           const CustomizedStep(
             number: '2',
-            title: 'Make it stand out',
-            description: 'Add 5 or more photos plus a title and description',
+            title: 'Faites-le sortir du lot',
+            description:
+                'Ajoutez au moins 5 photos, un titre et une description attrayante',
           ),
           Container(
             width: double.infinity,
             height: 1, // Adjust height as needed
-            color: const Color(0xff001939).withOpacity(0.1), // Color of the divider
+            color: const Color(0xff001939)
+                .withOpacity(0.1), // Color of the divider
             margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           ),
           const CustomizedStep(
             number: '3',
-            title: 'Finish up and publish',
-            description: 'Set a starting price and publish your listing',
+            title: 'Publiez et gagnez !',
+            description:
+                'Définissez un prix de départ et publiez votre annonce',
           ),
-          const SizedBox(height: 35,),
+          const SizedBox(
+            height: 35,
+          ),
         ],
       ),
     );

@@ -78,10 +78,10 @@ class _WilayaScreenState extends State<WilayaScreen> {
                     labelColor: Color(0xff001939),
                     unselectedLabelColor: Colors.grey,
                     tabs: [
-                      Tab(text: 'Overview'),
-                      Tab(text: 'Houses'),
-                      Tab(text: 'Cars'),
-                      Tab(text: 'Trips'),
+                      Tab(text: 'Aperçu'),
+                      Tab(text: 'Habitat'),
+                      Tab(text: 'Voitures'),
+                      Tab(text: 'Voyages'),
                     ],
                   ),
                 ),
@@ -218,7 +218,7 @@ class _WilayaScreenState extends State<WilayaScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              ' Partir à l\'aventure en $name',
+                              'Partir à l\'aventure en $name',
                               style: const TextStyle(
                                 color: Color(0xff001939),
                                 fontWeight: FontWeight.bold,

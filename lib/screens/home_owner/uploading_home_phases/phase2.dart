@@ -31,7 +31,6 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
   String addressValue = '';
   TextEditingController addressValueController = TextEditingController();
 
-
   bool validateInputs() {
     if (_selectedPlaceType == null ||
         _selectedWilaya == null ||
@@ -49,18 +48,18 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Let’s start with the basic information',
+            'Commençons par les informations essentielles',
             style: GoogleFonts.poppins(
-              color:const Color(0xff001939),
-              fontSize: 28,
+              color: const Color(0xff001939),
+              fontSize: 21,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'Please specify the place type',
+            'Veuillez préciser le type de logement',
             style: GoogleFonts.lato(
-              color:const Color(0xff001939),
+              color: const Color(0xff001939),
               fontSize: 17,
               fontWeight: FontWeight.w500,
             ),
@@ -75,13 +74,13 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
               });
               widget.onPlaceTypeSelected(value);
             },
-            hintText: 'Place type',
+            hintText: 'Type de logement',
           ),
           const SizedBox(height: 20),
           Text(
-            'Choose the Wilaya',
+            'Veuillez choisir votre Wilaya',
             style: GoogleFonts.lato(
-              color:const Color(0xff001939),
+              color: const Color(0xff001939),
               fontSize: 17,
               fontWeight: FontWeight.w500,
             ),
@@ -100,9 +99,9 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'The exact address',
+            'Quelle est l\'adresse exacte ?',
             style: GoogleFonts.lato(
-              color:const Color(0xff001939),
+              color: const Color(0xff001939),
               fontSize: 17,
               fontWeight: FontWeight.w500,
             ),
@@ -111,7 +110,7 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
           CustomTextFieldContainer(
             controller: addressValueController,
             height: 50,
-            hintText: 'Example: Street 18, Ain Bessam, Bouira',
+            hintText: 'Rue 18, Ain Bessam, Bouira, Algérie',
             onChanged: (value) {
               setState(() {
                 addressValue = value;
@@ -121,9 +120,9 @@ class _UploadingHomeSecondPhaseState extends State<UploadingHomeSecondPhase> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Capacity',
+            'Capacité',
             style: GoogleFonts.lato(
-              color:const Color(0xff001939),
+              color: const Color(0xff001939),
               fontSize: 17,
               fontWeight: FontWeight.w500,
             ),

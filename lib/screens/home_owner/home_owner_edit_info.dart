@@ -59,8 +59,8 @@ class _HomeOwnerEditProfileState
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text('Error picking image: $error'),
+            title: const Text('Erreur'),
+            content: Text('Erreur lors de la sélection de l\'image: $error'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -148,7 +148,7 @@ class _HomeOwnerEditProfileState
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Profile updated successfully'),
+          content: Text('Profil mis à jour avec succès.'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -157,7 +157,7 @@ class _HomeOwnerEditProfileState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              'An error occurred while updating profile. Please try again later.'),
+              'Une erreur s\'est produite lors de la mise à jour du profil. Veuillez réessayer plus tard.'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -219,12 +219,12 @@ class _HomeOwnerEditProfileState
                           ),
                           CustomizedTextFormField(
                             initialText: _firstName,
-                            label: 'First name',
-                            hintText: 'Enter your first name',
+                            label: 'Prénom',
+                            hintText: 'Entrez votre prénom',
                             textEditingController: firstName,
                             validator: (v) {
                               if (v == "") {
-                                return "Oops! Don't leave this field empty!";
+                                return "Oups ! Ce champ ne peut pas être vide.";
                               }
                               return null;
                             },
@@ -234,13 +234,12 @@ class _HomeOwnerEditProfileState
                           ),
                           CustomizedTextFormField(
                             initialText: _lastName,
-                            label: 'Last name',
-                            hintText: 'Enter your last name',
+                            label: 'Nom',
+                            hintText: 'Entrez votre nom',
                             textEditingController: lastName,
-                            keyboardType: TextInputType.number,
                             validator: (v) {
                               if (v == "") {
-                                return "Oops! Don't leave this field empty!";
+                                return "Oups ! Ce champ ne peut pas être vide.";
                               }
                               return null;
                             },
@@ -251,11 +250,11 @@ class _HomeOwnerEditProfileState
                           WilayaDropdown(
                             initialText: _wilaya,
                             controller: wilaya,
-                            hintText: 'Select your wilaya',
+                            hintText: 'Veuillez sélectionner une wilaya',
                             labelText: 'Wilaya',
                             validator: (v) {
                               if (v == "") {
-                                return "Oops! Don't leave this field empty!";
+                                return "Oups ! Ce champ ne peut pas être vide.";
                               }
                               return null;
                             },
@@ -270,13 +269,13 @@ class _HomeOwnerEditProfileState
                           ),
                           CustomizedTextFormField(
                             initialText: _phoneNumber,
-                            label: 'Phone number',
-                            hintText: 'Enter your phone number',
+                            label: 'Numéro de téléphone',
+                            hintText: 'Entrez votre numéro de téléphone',
                             textEditingController: phoneNumber,
                             keyboardType: TextInputType.number,
                             validator: (v) {
                               if (v == "") {
-                                return "Oops! Don't leave this field empty!";
+                                return "Oups ! Ce champ ne peut pas être vide.";
                               }
                               return null;
                             },
@@ -287,7 +286,7 @@ class _HomeOwnerEditProfileState
                           _updating
                               ? const CircularProgressIndicator()
                               : MaterialButtonAuth(
-                                  label: 'Update',
+                                  label: 'Mettre à jour',
                                   onPressed: () {
                                     if (formState.currentState!.validate()) {
                                       updateUserProfile();

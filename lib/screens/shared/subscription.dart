@@ -70,21 +70,6 @@ class SubscriptionScreen extends StatelessWidget {
                 texts: ['lorem ipsum lorem ipsum', 'lorem ipsum lorem ipsum'],
               ),
               const SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                onTap: () {},
-                child: const Text(
-                  'Choose plan later',
-                  style: TextStyle(
-                      fontFamily: 'KastelovAxiforma',
-                      fontSize: 20,
-                      color: Color(0xff858585),
-                      fontWeight: FontWeight.w300,
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-              const SizedBox(
                 height: 60,
               ),
             ],
