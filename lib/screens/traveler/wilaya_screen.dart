@@ -118,8 +118,8 @@ class _WilayaScreenState extends State<WilayaScreen> {
                               regions.isEmpty
                                   ? 'Située en Algérie'
                                   : regions.length == 1
-                                      ? 'Située dans la région de ${regions[0]}'
-                                      : 'Située entre ${regions.sublist(0, regions.length - 1).join(', ')} et ${regions[regions.length - 1]}',
+                                      ? 'Située dans ${_getRegionDisplayName(regions[0])}'
+                                      : 'Située entre ${_formatRegionList(regions)}',
                               style: GoogleFonts.poppins(
                                 color: const Color(0xff8E8E8E),
                                 fontSize: 15,
@@ -264,6 +264,70 @@ class _WilayaScreenState extends State<WilayaScreen> {
       ),
     );
   }
+}
+
+String formatRegionMessage(List<String> regions) {
+  if (regions.isEmpty) {
+    return 'Située en Algérie';
+  } else if (regions.length == 1) {
+    return 'Située dans ${_getRegionDisplayName(regions[0])}';
+  } else {
+    List<String> formattedRegions = [];
+    List<String> specialRegions = ['centre', 'ouest', 'est'];
+
+    // Check if there are special regions in the list
+    bool hasSpecialRegion = false;
+    String specialRegion = '';
+
+    for (String region in specialRegions) {
+      if (regions.contains(region)) {
+        hasSpecialRegion = true;
+        specialRegion = region;
+        break;
+      }
+    }
+
+    if (hasSpecialRegion) {
+      // Move the special region to the front
+      formattedRegions.add(_getRegionDisplayName(specialRegion));
+      regions.remove(specialRegion);
+    }
+
+    // Add remaining regions
+    formattedRegions
+        .addAll(regions.map((region) => _getRegionDisplayName(region)));
+
+    // Construct the final message
+    String formattedList = formattedRegions.join(' et ');
+    return 'Située entre $formattedList de l\'Algérie';
+  }
+}
+
+String _getRegionDisplayName(String region) {
+  switch (region) {
+    case 'est':
+      return "l'est de l'Algérie";
+    case 'ouest':
+      return "l'ouest de l'Algérie";
+    case 'aures':
+      return "les Aurès";
+    case 'centre':
+      return "le centre de l'Algérie";
+    case 'kabylie':
+      return "la Kabylie";
+    case 'sahara':
+      return "le Sahara";
+    default:
+      return region;
+  }
+}
+
+String _formatRegionList(List<String> regions) {
+  List<String> formattedRegions =
+      regions.map((region) => _getRegionDisplayName(region)).toList();
+  String lastRegion = formattedRegions.removeLast();
+  String formattedList = formattedRegions.join(', ');
+  return '$formattedList et $lastRegion';
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

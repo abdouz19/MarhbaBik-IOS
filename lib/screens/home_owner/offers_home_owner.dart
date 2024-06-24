@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:marhba_bik/widgets/custom_carousel.dart';
-import 'package:marhba_bik/screens/home_owner/uploading_home_phases/uploading_home_process.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:marhba_bik/screens/home_owner/uploading_home_phases/uploading_home_process.dart';
+import 'package:marhba_bik/widgets/custom_carousel.dart';
+import 'package:marhba_bik/widgets/info_message.dart';
 
 class HomeOwnerOffers extends StatefulWidget {
   const HomeOwnerOffers({super.key});
@@ -14,7 +15,6 @@ class HomeOwnerOffers extends StatefulWidget {
 }
 
 class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
-
   Future<List<Map<String, dynamic>>>? _futureHouses;
 
   @override
@@ -25,12 +25,12 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
 
   void showScreen() {
     showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return const UploadingHomeProcess();
-      });
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return const UploadingHomeProcess();
+        });
   }
 
   Future<List<Map<String, dynamic>>> fetchUserHouses() async {
@@ -40,7 +40,9 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
         .where('ownerId', isEqualTo: userId)
         .orderBy('uploadedAt', descending: true)
         .get();
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   Future<void> _handleRefresh() async {
@@ -62,7 +64,7 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
         title: Text(
           'Vos endroits',
           style: GoogleFonts.poppins(
-            color:const Color(0xff001939),
+            color: const Color(0xff001939),
             fontSize: 25,
             fontWeight: FontWeight.w600,
           ),
@@ -93,9 +95,18 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
+                return const InfoMessageWidget(
+                    iconData: Icons.error,
+                    message:
+                        "Une erreur s'est produite lors de la récupération de vos offres.");
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
+                return InkWell(
+                  onTap: showScreen,
+                  child: const InfoMessageWidget(
+                      iconData: Icons.hourglass_empty,
+                      message:
+                          "Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."),
+                );
               } else {
                 List<Map<String, dynamic>> houses = snapshot.data!;
                 return ListView.builder(
@@ -121,7 +132,9 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 3,),
+                        const SizedBox(
+                          height: 3,
+                        ),
                         Text(
                           '${house['address']}, ${house['wilaya']}',
                           style: GoogleFonts.poppins(
@@ -130,16 +143,20 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
                             fontWeight: FontWeight.w300,
                           ),
                         ),
-                        const SizedBox(height: 3,),
+                        const SizedBox(
+                          height: 3,
+                        ),
                         Text(
                           '${house['price']} DZD/nuit',
                           style: GoogleFonts.poppins(
-                            color:const Color(0xff001939),
+                            color: const Color(0xff001939),
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 30,),
+                        const SizedBox(
+                          height: 30,
+                        ),
                       ],
                     );
                   },
@@ -152,4 +169,3 @@ class _HomeOwnerOffersState extends State<HomeOwnerOffers> {
     );
   }
 }
-

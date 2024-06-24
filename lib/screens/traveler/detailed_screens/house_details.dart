@@ -234,7 +234,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                         ),
                       ),
                       TextSpan(
-                        text: ' /night',
+                        text: ' /nuit',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
@@ -245,7 +245,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
                   ),
                 ),
                 const Text(
-                  'Available',
+                  'Disponible',
                   textAlign: TextAlign.start,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -260,7 +260,7 @@ class _HouseDetailedScreenState extends State<HouseDetailedScreen> {
             const SizedBox(width: 50),
             Expanded(
               child: MaterialButtonAuth(
-                label: 'Reserve',
+                label: 'Réserver',
                 onPressed: () {
                   Navigator.push(
                       context,

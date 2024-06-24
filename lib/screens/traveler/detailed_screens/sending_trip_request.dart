@@ -103,8 +103,8 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
 
   void _requestToBook() async {
     if (_paymentMethod == null) {
-      presentDialog(
-          false, 'Veuillez choisir un moyen de paiement avant d\'envoyer la demande.');
+      presentDialog(false,
+          'Veuillez choisir un moyen de paiement avant d\'envoyer la demande.');
       return;
     }
 
@@ -150,14 +150,15 @@ class _SendingTripRequestScreenState extends State<SendingTripRequestScreen> {
       isLoading = false;
     });
 
-    presentDialog(true, ' Votre demande de réservation a été envoyée avec succès.');
+    presentDialog(
+        true, ' Votre demande de réservation a été envoyée avec succès.');
   }
 
   @override
   Widget build(BuildContext context) {
     DateTime startDate = widget.trip.startDate.toDate();
     DateTime endDate = widget.trip.endDate.toDate();
-
+    
     // Format the dates
     String formattedStartDate = DateFormat('d MMM').format(startDate);
     String formattedEndDate = DateFormat('d MMM').format(endDate);

@@ -15,12 +15,10 @@ import 'package:marhba_bik/components/textfield.dart';
 import 'package:marhba_bik/widgets/profile_image_picker.dart';
 
 class CarOwnerInfoFormScreen extends StatefulWidget {
-  const CarOwnerInfoFormScreen({super.key});
+  const CarOwnerInfoFormScreen({Key? key}) : super(key: key);
 
   @override
-  State<CarOwnerInfoFormScreen> createState() {
-    return _CarOwnerInfoFormScreenState();
-  }
+  _CarOwnerInfoFormScreenState createState() => _CarOwnerInfoFormScreenState();
 }
 
 class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
@@ -33,6 +31,10 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
   File? _imageFile;
   String? _selectedWilaya;
   bool _checkboxChecked = false;
+
+  // Placeholder image URL
+  final String placeholderImageUrl =
+      'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/ProfilePictures%2Fplaceholder.png?alt=media&token=bdd7ceb3-55fc-49d7-83d9-07362b18813d';
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Erreur'),
-          content: Text('Erreur lors de la sélection de l\'image: $error'),
+            content: Text('Erreur lors de la sélection de l\'image: $error'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -94,7 +96,8 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
       try {
         String userId = FirebaseAuth.instance.currentUser!.uid;
 
-        String? downloadURL;
+        String? downloadURL = placeholderImageUrl; // Default to placeholder URL
+
         if (imageFile != null) {
           Reference storageReference = FirebaseStorage.instance.ref().child(
               'ProfilePictures/${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -116,16 +119,16 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
           'personalDataProvided': true,
         });
 
-      // Check if the user has paid their subscription fees
-      final isSubscriptionPaid = await FirestoreService().checkSubscriptionPayment(userId);
+        // Check if the user has paid their subscription fees
+        final isSubscriptionPaid =
+            await FirestoreService().checkSubscriptionPayment(userId);
 
-      // Redirect based on subscription payment status
-      if (isSubscriptionPaid) {
-        Navigator.pushReplacementNamed(context, '/car_owner_home');
-      } else {
-        Navigator.pushReplacementNamed(context, '/subscription_screen');
-      }
-
+        // Redirect based on subscription payment status
+        if (isSubscriptionPaid) {
+          Navigator.pushReplacementNamed(context, '/car_owner_home');
+        } else {
+          Navigator.pushReplacementNamed(context, '/subscription_screen');
+        }
       } catch (e) {
         // Close the circular progress indicator dialog
         Navigator.pop(context);
@@ -185,8 +188,8 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
                 child: Column(
                   children: [
                     Text(
-                      textAlign: TextAlign.center,
                       'Pour continuer en tant que propriétaire de voiture, veuillez remplir ces informations',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: const Color(0xff3F75BB),
                         fontSize: 16,
@@ -290,7 +293,8 @@ class _CarOwnerInfoFormScreenState extends State<CarOwnerInfoFormScreen> {
                         if (_selectedWilaya == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Veuillez sélectionner une wilaya.'),
+                              content:
+                                  Text('Veuillez sélectionner une wilaya.'),
                               duration: Duration(seconds: 2),
                             ),
                           );

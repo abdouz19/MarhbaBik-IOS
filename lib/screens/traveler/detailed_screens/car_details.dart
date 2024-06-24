@@ -235,7 +235,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                         ),
                       ),
                       TextSpan(
-                        text: ' /day',
+                        text: ' /jour',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
@@ -246,7 +246,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
                   ),
                 ),
                 const Text(
-                  'Available',
+                  'Disponible',
                   textAlign: TextAlign.start,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -261,7 +261,7 @@ class _CarDetailedScreenState extends State<CarDetailedScreen> {
             const SizedBox(width: 50),
             Expanded(
               child: MaterialButtonAuth(
-                label: 'Reserve',
+                label: 'Réserver',
                 onPressed: () {
                   Navigator.push(
                       context,

@@ -90,7 +90,7 @@ class _CarOwnerProfileState extends State<CarOwnerProfile> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(
-                                    'assets/images/me.jpeg',
+                                    'assets/images/placeholder.png',
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.cover,

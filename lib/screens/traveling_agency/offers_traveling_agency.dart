@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:marhba_bik/widgets/custom_carousel.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:marhba_bik/screens/traveling_agency/uploading_trip_phases/uploading_trip_process.dart';
+import 'package:marhba_bik/widgets/info_message.dart';
 
 class TravelingAgencyOffers extends StatefulWidget {
   const TravelingAgencyOffers({super.key});
@@ -92,9 +93,18 @@ class _TravelingAgencyOffersState extends State<TravelingAgencyOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
+                return const InfoMessageWidget(
+                    iconData: Icons.error,
+                    message:
+                        "Une erreur s'est produite lors de la récupération de vos offres.");
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
+                return InkWell(
+                  onTap: showScreen,
+                  child: const InfoMessageWidget(
+                      iconData: Icons.hourglass_empty,
+                      message:
+                          "Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."),
+                );
               } else {
                 List<Map<String, dynamic>> trips = snapshot.data!;
                 return ListView.builder(

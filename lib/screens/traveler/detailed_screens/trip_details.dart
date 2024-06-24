@@ -168,14 +168,14 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                   Text(
                     title,
                     style: GoogleFonts.poppins(
-                      fontSize: 20,
+                      fontSize: 18,
                       color: const Color(0xff001939),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Du $formattedStartDate au $formattedEndDate en $wilaya.',
+                    'Du $formattedStartDate au $formattedEndDate à $wilaya.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -203,6 +203,32 @@ class _TripDetailedScreenState extends State<TripDetailedScreen> {
                       color: const Color(0xff001939),
                       fontWeight: FontWeight.w400,
                     ),
+                  ),
+                  const SizedBox(height: 20),
+                  // New activities section
+                  const Text(
+                    'Activités:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: widget.trip.activities.map((activity) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          '• $activity',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: const Color(0xff001939),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ],
               ),

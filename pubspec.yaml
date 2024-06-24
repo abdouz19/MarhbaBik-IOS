@@ -60,7 +60,6 @@ flutter:
   assets:
     - assets/images/marhbabik_new_icon.png
     - assets/images/picture.jpg
-    - assets/images/me.jpeg
     - assets/images/placeholder.png
     - assets/images/homepage_for_now.jpg
     - assets/images/explore_top.jpg

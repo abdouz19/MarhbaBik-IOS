@@ -10,17 +10,16 @@ import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/components/custom_checkbox.dart';
 import 'package:marhba_bik/components/dropdown_form_field.dart';
 import 'package:marhba_bik/components/image_picker.dart';
-import 'package:marhba_bik/widgets/profile_image_picker.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
 import 'package:marhba_bik/components/textfield.dart';
+import 'package:marhba_bik/widgets/profile_image_picker.dart';
 
 class HomeOwnerInfoFormScreen extends StatefulWidget {
-  const HomeOwnerInfoFormScreen({super.key});
+  const HomeOwnerInfoFormScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeOwnerInfoFormScreen> createState() {
-    return _HomeOwnerInfoFormScreenState();
-  }
+  _HomeOwnerInfoFormScreenState createState() =>
+      _HomeOwnerInfoFormScreenState();
 }
 
 class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
@@ -33,6 +32,10 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
   File? _imageFile;
   String? _selectedWilaya;
   bool _checkboxChecked = false;
+
+  // Placeholder image URL
+  final String placeholderImageUrl =
+      'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/ProfilePictures%2Fplaceholder.png?alt=media&token=bdd7ceb3-55fc-49d7-83d9-07362b18813d';
 
   @override
   void initState() {
@@ -52,115 +55,115 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
         });
       } catch (error) {
         showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: Text('Erreur lors de la sélection de l\'image: $error'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Erreur'),
+            content: Text('Erreur lors de la sélection de l\'image: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
     }
   }
 
   Future<void> signUp(
-  BuildContext context,
-  GlobalKey<FormState> formState,
-  TextEditingController firstName,
-  TextEditingController lastName,
-  String? selectedWilaya,
-  TextEditingController phoneNumber,
-  File? imageFile,
-  bool checkboxChecked,
-) async {
-  // Show circular progress indicator
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    },
-  );
+    BuildContext context,
+    GlobalKey<FormState> formState,
+    TextEditingController firstName,
+    TextEditingController lastName,
+    String? selectedWilaya,
+    TextEditingController phoneNumber,
+    File? imageFile,
+    bool checkboxChecked,
+  ) async {
+    // Show circular progress indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
-  if (formState.currentState!.validate()) {
-    try {
-      String userId = FirebaseAuth.instance.currentUser!.uid;
+    if (formState.currentState!.validate()) {
+      try {
+        String userId = FirebaseAuth.instance.currentUser!.uid;
 
-      String? downloadURL;
-      if (imageFile != null) {
-        Reference storageReference = FirebaseStorage.instance.ref().child(
-            'ProfilePictures/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        String? downloadURL = placeholderImageUrl; // Default to placeholder URL
 
-        TaskSnapshot uploadTask = await storageReference.putFile(imageFile);
+        if (imageFile != null) {
+          Reference storageReference = FirebaseStorage.instance.ref().child(
+              'ProfilePictures/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-        downloadURL = await uploadTask.ref.getDownloadURL();
+          TaskSnapshot uploadTask = await storageReference.putFile(imageFile);
+
+          downloadURL = await uploadTask.ref.getDownloadURL();
+        }
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'firstName': firstName.text,
+          'lastName': lastName.text,
+          'wilaya': selectedWilaya,
+          'phoneNumber': phoneNumber.text,
+          'profilePicture': downloadURL,
+          'personalDataProvided': true,
+        });
+
+        // Check if the user has paid their subscription fees
+        final isSubscriptionPaid =
+            await FirestoreService().checkSubscriptionPayment(userId);
+
+        // Redirect based on subscription payment status
+        if (isSubscriptionPaid) {
+          Navigator.pushReplacementNamed(context, '/home_owner_home');
+        } else {
+          Navigator.pushReplacementNamed(context, '/subscription_screen');
+        }
+      } catch (e) {
+        // Close the circular progress indicator dialog
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Erreur'),
+            content: const Text(
+                'Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({
-        'firstName': firstName.text,
-        'lastName': lastName.text,
-        'wilaya': selectedWilaya,
-        'phoneNumber': phoneNumber.text,
-        'profilePicture': downloadURL,
-        'personalDataProvided': true,
-      });
-
-      // Check if the user has paid their subscription fees
-      final isSubscriptionPaid = await FirestoreService().checkSubscriptionPayment(userId);
-
-      // Redirect based on subscription payment status
-      if (isSubscriptionPaid) {
-        Navigator.pushReplacementNamed(context, '/home_owner_home');
-      } else {
-        Navigator.pushReplacementNamed(context, '/subscription_screen');
-      }
-
-    } catch (e) {
-      // Close the circular progress indicator dialog
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: const Text(
-              'Une erreur est survenue lors de l''inscription. Veuillez réessayer plus tard.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
+    } else {
+      // Form validation failed, show snack bar
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs obligatoires.'),
+          duration: Duration(seconds: 2),
         ),
       );
+      // Close the circular progress indicator dialog
+      Navigator.pop(context);
     }
-  } else {
-    // Form validation failed, show snack bar
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Veuillez remplir tous les champs obligatoires.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-    // Close the circular progress indicator dialog
-    Navigator.pop(context);
   }
-}
-
 
   @override
   void dispose() {
@@ -187,8 +190,8 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
                 child: Column(
                   children: [
                     Text(
-                      textAlign: TextAlign.center,
                       'Pour continuer en tant que propriétaire de maison, merci de renseigner ces informations.',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: const Color(0xff3F75BB),
                         fontSize: 16,
@@ -254,8 +257,7 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
                       onWilayaSelected: (wilaya) {
                         // Pass the callback function
                         setState(() {
-                          _selectedWilaya =
-                              wilaya;
+                          _selectedWilaya = wilaya;
                         });
                       },
                     ),
@@ -293,7 +295,8 @@ class _HomeOwnerInfoFormScreenState extends State<HomeOwnerInfoFormScreen> {
                         if (_selectedWilaya == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Veuillez sélectionner une wilaya.'),
+                              content:
+                                  Text('Veuillez sélectionner une wilaya.'),
                               duration: Duration(seconds: 2),
                             ),
                           );

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
+import 'package:marhba_bik/widgets/info_message.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TripsOffersScreen extends StatefulWidget {
@@ -400,31 +401,9 @@ class _TripsOffersScreenState extends State<TripsOffersScreen> {
   }
 
   Widget _buildNoBookingsWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.hourglass_empty,
-            size: 100,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              textAlign: TextAlign.center,
-              "Aucune demande de réservation pour le moment",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return const InfoMessageWidget(
+        iconData: Icons.hourglass_empty,
+        message: "Aucune demande de réservation pour le moment");
   }
 }
 

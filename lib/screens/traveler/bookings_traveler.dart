@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marhba_bik/api/firestore_service.dart';
 import 'package:marhba_bik/launchers/phone_handler.dart';
+import 'package:marhba_bik/widgets/info_message.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -589,27 +590,9 @@ class _TravelerBookingsScreenState extends State<TravelerBookingsScreen> {
   }
 
   Widget _buildNoBookingsWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.hourglass_empty,
-            size: 100,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            "Pas encore de demandes de réservation.",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
+    return const InfoMessageWidget(
+        iconData: Icons.hourglass_empty,
+        message: "Pas encore de demandes de réservation.");
   }
 
   Widget _buildLoadingSkeleton() {

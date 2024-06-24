@@ -11,19 +11,19 @@ class EmptyList extends StatelessWidget {
     final Map<String, Map<String, String>> typeData = {
       'wishlist': {
         'image': 'assets/images/wishlist_illustration.png',
-        'text': 'No items in your wishlist',
+        'text': 'Votre wishlist est vide',
       },
       'car': {
         'image': 'assets/images/car_illustration.png',
-        'text': 'No cars in this destination',
+        'text': 'Aucune voiture dans cette destination',
       },
       'house': {
         'image': 'assets/images/house_illustration.png',
-        'text': 'No houses in this destination',
+        'text': 'Aucune maison dans cette destination',
       },
       'trip': {
         'image': 'assets/images/trip_illustration.png',
-        'text': 'No trips in this destination',
+        'text': 'Aucun voyage prévu dans cette destination',
       },
     };
 

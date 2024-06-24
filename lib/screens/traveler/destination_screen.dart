@@ -185,7 +185,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                        'Place ${category} au coeur de la ${_getRegionDisplayName(region)}, $wilaya.',
+                        'Place ${category} au coeur de ${_getRegionDisplayName(region)}, $wilaya.',
                           style: GoogleFonts.poppins(
                         color: const Color(0xff8E8E8E),
                         fontSize: 15,

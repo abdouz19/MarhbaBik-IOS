@@ -11,8 +11,8 @@ import 'package:marhba_bik/components/custom_checkbox.dart';
 import 'package:marhba_bik/components/dropdown_form_field.dart';
 import 'package:marhba_bik/components/image_picker.dart';
 import 'package:marhba_bik/components/material_button_auth.dart';
-import 'package:marhba_bik/widgets/profile_image_picker.dart';
 import 'package:marhba_bik/components/textfield.dart';
+import 'package:marhba_bik/widgets/profile_image_picker.dart';
 
 class TravelingAgencyInfoFormScreen extends StatefulWidget {
   const TravelingAgencyInfoFormScreen({super.key});
@@ -23,7 +23,8 @@ class TravelingAgencyInfoFormScreen extends StatefulWidget {
   }
 }
 
-class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormScreen> {
+class _TravelingAgencyInfoFormScreenState
+    extends State<TravelingAgencyInfoFormScreen> {
   TextEditingController agencyName = TextEditingController();
   TextEditingController commercialRegisterNumber = TextEditingController();
   TextEditingController wilaya = TextEditingController();
@@ -33,6 +34,10 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
   File? _imageFile;
   String? _selectedWilaya;
   bool _checkboxChecked = false;
+
+  // Placeholder image URL
+  final String placeholderImageUrl =
+      'https://firebasestorage.googleapis.com/v0/b/marhbabik-pfe.appspot.com/o/ProfilePictures%2Fplaceholder.png?alt=media&token=bdd7ceb3-55fc-49d7-83d9-07362b18813d';
 
   @override
   void initState() {
@@ -52,114 +57,115 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
         });
       } catch (error) {
         showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: Text('Erreur lors de la sélection de l\'image: $error'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Erreur'),
+            content: Text('Erreur lors de la sélection de l\'image: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
     }
   }
 
   Future<void> signUp(
-  BuildContext context,
-  GlobalKey<FormState> formState,
-  TextEditingController agencyName,
-  TextEditingController commercialRegisterNumber,
-  String? selectedWilaya,
-  TextEditingController phoneNumber,
-  File? imageFile,
-  bool checkboxChecked,
-) async {
-  // Show circular progress indicator
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    },
-  );
+    BuildContext context,
+    GlobalKey<FormState> formState,
+    TextEditingController agencyName,
+    TextEditingController commercialRegisterNumber,
+    String? selectedWilaya,
+    TextEditingController phoneNumber,
+    File? imageFile,
+    bool checkboxChecked,
+  ) async {
+    // Show circular progress indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
-  if (formState.currentState!.validate()) {
-    try {
-      String userId = FirebaseAuth.instance.currentUser!.uid;
+    if (formState.currentState!.validate()) {
+      try {
+        String userId = FirebaseAuth.instance.currentUser!.uid;
 
-      String? downloadURL;
-      if (imageFile != null) {
-        Reference storageReference = FirebaseStorage.instance.ref().child(
-            'ProfilePictures/${DateTime.now().millisecondsSinceEpoch}.jpg');
+        String? downloadURL = placeholderImageUrl; // Default to placeholder URL
 
-        TaskSnapshot uploadTask = await storageReference.putFile(imageFile);
+        if (imageFile != null) {
+          Reference storageReference = FirebaseStorage.instance.ref().child(
+              'ProfilePictures/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-        downloadURL = await uploadTask.ref.getDownloadURL();
+          TaskSnapshot uploadTask = await storageReference.putFile(imageFile);
+
+          downloadURL = await uploadTask.ref.getDownloadURL();
+        }
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'agencyName': agencyName.text,
+          'commercialRegisterNumber': commercialRegisterNumber.text,
+          'wilaya': selectedWilaya,
+          'phoneNumber': phoneNumber.text,
+          'profilePicture': downloadURL,
+          'personalDataProvided': true,
+        });
+
+        // Check if the user has paid their subscription fees
+        final isSubscriptionPaid =
+            await FirestoreService().checkSubscriptionPayment(userId);
+
+        // Redirect based on subscription payment status
+        if (isSubscriptionPaid) {
+          Navigator.pushReplacementNamed(context, '/travelling_agency_home');
+        } else {
+          Navigator.pushReplacementNamed(context, '/subscription_screen');
+        }
+      } catch (e) {
+        // Close the circular progress indicator dialog
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Erreur'),
+            content: const Text(
+                'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({
-        'agencyName': agencyName.text,
-        'commercialRegisterNumber': commercialRegisterNumber.text,
-        'wilaya': selectedWilaya,
-        'phoneNumber': phoneNumber.text,
-        'profilePicture': downloadURL,
-        'personalDataProvided': true,
-      });
-
-      // Check if the user has paid their subscription fees
-      final isSubscriptionPaid = await FirestoreService().checkSubscriptionPayment(userId);
-
-      // Redirect based on subscription payment status
-      if (isSubscriptionPaid) {
-        Navigator.pushReplacementNamed(context, '/travelling_agency_home');
-      } else {
-        Navigator.pushReplacementNamed(context, '/subscription_screen');
-      }
-    } catch (e) {
-      // Close the circular progress indicator dialog
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Erreur'),
-          content: const Text(
-              'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
+    } else {
+      // Form validation failed, show snack bar
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs obligatoires.'),
+          duration: Duration(seconds: 2),
         ),
       );
+      // Close the circular progress indicator dialog
+      Navigator.pop(context);
     }
-  } else {
-    // Form validation failed, show snack bar
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Veuillez remplir tous les champs obligatoires.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-    // Close the circular progress indicator dialog
-    Navigator.pop(context);
   }
-}
-
 
   @override
   void dispose() {
@@ -185,8 +191,8 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                 child: Column(
                   children: [
                     Text(
+                      'Pour continuer en tant qu\'agence de voyage, veuillez remplir ces informations',
                       textAlign: TextAlign.center,
-                      'Pour continuer en tant que agence de voyage, veuillez remplir ces informations',
                       style: GoogleFonts.poppins(
                         color: const Color(0xff3F75BB),
                         fontSize: 16,
@@ -217,7 +223,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       textEditingController: agencyName,
                       validator: (v) {
                         if (v == "") {
-                                  return "Oups ! Ce champ ne peut pas être vide.";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -232,7 +238,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       keyboardType: TextInputType.number,
                       validator: (v) {
                         if (v == "") {
-                                  return "Oups ! Ce champ ne peut pas être vide.";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -246,15 +252,14 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       labelText: 'Wilaya',
                       validator: (v) {
                         if (v == "") {
-                                  return "Oups ! Ce champ ne peut pas être vide.";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
                       onWilayaSelected: (wilaya) {
                         // Pass the callback function
                         setState(() {
-                          _selectedWilaya =
-                              wilaya;
+                          _selectedWilaya = wilaya;
                         });
                       },
                     ),
@@ -268,7 +273,7 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                       keyboardType: TextInputType.number,
                       validator: (v) {
                         if (v == "") {
-                                  return "Oups ! Ce champ ne peut pas être vide.";
+                          return "Oups ! Ce champ ne peut pas être vide.";
                         }
                         return null;
                       },
@@ -292,7 +297,8 @@ class _TravelingAgencyInfoFormScreenState extends State<TravelingAgencyInfoFormS
                         if (_selectedWilaya == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Veuillez sélectionner une wilaya.'),
+                              content:
+                                  Text('Veuillez sélectionner une wilaya.'),
                               duration: Duration(seconds: 2),
                             ),
                           );

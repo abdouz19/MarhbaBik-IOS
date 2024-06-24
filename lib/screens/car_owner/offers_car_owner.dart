@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:marhba_bik/widgets/custom_carousel.dart';
-import 'package:marhba_bik/screens/car_owner/uploading_car_phases/uploading_car_process.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:marhba_bik/screens/car_owner/uploading_car_phases/uploading_car_process.dart';
+import 'package:marhba_bik/widgets/custom_carousel.dart';
+import 'package:marhba_bik/widgets/info_message.dart';
 
 class CarOwnerOffers extends StatefulWidget {
   const CarOwnerOffers({super.key});
@@ -14,7 +15,6 @@ class CarOwnerOffers extends StatefulWidget {
 }
 
 class _CarOwnerOffersState extends State<CarOwnerOffers> {
-
   Future<List<Map<String, dynamic>>>? _futureCars;
 
   @override
@@ -25,12 +25,12 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
 
   void showScreen() {
     showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return const UploadingCarProcess();
-      });
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return const UploadingCarProcess();
+        });
   }
 
   Future<List<Map<String, dynamic>>> fetchUserCars() async {
@@ -40,7 +40,9 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
         .where('ownerId', isEqualTo: userId)
         .orderBy('uploadedAt', descending: true)
         .get();
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   Future<void> _handleRefresh() async {
@@ -62,7 +64,7 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
         title: Text(
           'Vos voitures',
           style: GoogleFonts.poppins(
-            color:const Color(0xff001939),
+            color: const Color(0xff001939),
             fontSize: 25,
             fontWeight: FontWeight.w600,
           ),
@@ -93,9 +95,18 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('Une erreur s\'est produite lors de la récupération de vos offres.'));
+                return const InfoMessageWidget(
+                    iconData: Icons.error,
+                    message:
+                        "Une erreur s'est produite lors de la récupération de vos offres.");
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text("Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."));
+                return InkWell(
+                  onTap: showScreen,
+                  child: const InfoMessageWidget(
+                      iconData: Icons.hourglass_empty,
+                      message:
+                          "Vous n'avez pas encore publié d'offres. Cliquez ici pour ajouter vos offres."),
+                );
               } else {
                 List<Map<String, dynamic>> cars = snapshot.data!;
                 return ListView.builder(
@@ -122,7 +133,9 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 3,),
+                        const SizedBox(
+                          height: 3,
+                        ),
                         Text(
                           '${car['brand']} ${car['model']}, ${car['wilaya']}',
                           style: GoogleFonts.poppins(
@@ -131,16 +144,20 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
                             fontWeight: FontWeight.w300,
                           ),
                         ),
-                        const SizedBox(height: 3,),
+                        const SizedBox(
+                          height: 3,
+                        ),
                         Text(
                           '${car['price']} DZD/jour',
                           style: GoogleFonts.poppins(
-                            color:const Color(0xff001939),
+                            color: const Color(0xff001939),
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 30,),
+                        const SizedBox(
+                          height: 30,
+                        ),
                       ],
                     );
                   },
@@ -153,4 +170,3 @@ class _CarOwnerOffersState extends State<CarOwnerOffers> {
     );
   }
 }
-
